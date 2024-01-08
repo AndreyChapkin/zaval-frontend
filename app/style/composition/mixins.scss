@@ -1,0 +1,177 @@
+@mixin row($gap: 0px) {
+	display: flex;
+	flex-direction: row;
+	gap: $gap;
+}
+
+@mixin row-center($gap: 0px) {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: $gap;
+}
+
+@mixin row-align-center($gap: 0px) {
+	display: flex;
+	align-items: center;
+	gap: $gap;
+}
+
+@mixin row-center-and-align-center($gap: 0px) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: $gap;
+}
+
+@mixin row-justify($gap: 0px) {
+	display: flex;
+	justify-content: space-between;
+	gap: $gap;
+}
+
+@mixin row-stretch($gap: 0px) {
+	display: flex;
+	align-items: stretch;
+	gap: $gap;
+}
+
+@mixin row-start($gap: 0px) {
+	display: flex;
+	justify-items: flex-start;
+	gap: $gap;
+}
+
+@mixin row-start-and-align-center($gap: 0px) {
+	display: flex;
+	justify-items: flex-start;
+	align-items: center;
+	gap: $gap;
+}
+
+@mixin row-start-and-stretch($gap: 0px) {
+	display: flex;
+	justify-items: flex-start;
+	align-items: stretch;
+	gap: $gap;
+}
+
+@mixin row-align-start($gap: 0px) {
+	display: flex;
+	align-items: flex-start;
+	gap: $gap;
+}
+
+@mixin row-start-and-align-start($gap: 0px) {
+	display: flex;
+	align-items: start;
+	justify-content: flex-start;
+	gap: $gap;
+}
+
+@mixin row-justify-and-align-center($gap: 0px) {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: $gap;
+}
+
+@mixin column($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	gap: $gap;
+}
+
+@mixin column-start($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	gap: $gap;
+}
+
+@mixin column-start-and-stretch($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: $gap;
+}
+
+@mixin column-wrapping($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	gap: $gap;
+	flex-wrap: wrap;
+}
+
+@mixin column-justify($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: $gap;
+}
+
+@mixin column-stretch($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: $gap;
+}
+
+@mixin column-center($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: $gap;
+}
+
+@mixin column-justify-and-align-center($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+	gap: $gap;
+}
+
+@mixin scrollable-in-column() {
+	flex: 1;
+	min-height: 0px;
+	overflow-y: auto;
+	@include styled-scrollbar;
+}
+
+@mixin scrollable-in-column-horizontally() {
+	overflow-x: auto;
+	@include styled-scrollbar;
+}
+
+@mixin content-centered {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+@mixin responsive-grid($min-cell-width: 200px, $x-gap: $normal-size, $y-gap: $normal-size) {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax($min-cell-width, 1fr));
+	align-content: start;
+	gap: $x-gap $y-gap;
+}
+
+@mixin modal-window-background {
+	position: absolute;
+	z-index: 10;
+	padding: $space-normal-size;
+	@include full-screen;
+	@include content-centered;
+}
+
+// alignments
+@mixin screen-centered-x($element-width) {
+	left: calc((100vw - $indicatodWidth) / 2);
+}
+
+@mixin screen-centered-y($element-height) {
+	left: calc((100vh - $element-height) / 2);
+}

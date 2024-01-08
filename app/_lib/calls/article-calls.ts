@@ -1,5 +1,5 @@
-import { callDelete, callGet, callPatch, callPost } from "$lib/utils/call-helpers";
-import { baseURL } from "./base";
+import { callDelete, callGet, callPatch, callPost } from "./base-calls";
+import { baseURL } from "../constants/url-constants";
 
 const baseArticleURL = baseURL + "/article";
 

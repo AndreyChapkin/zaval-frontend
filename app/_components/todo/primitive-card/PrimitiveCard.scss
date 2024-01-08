@@ -1,0 +1,65 @@
+@import '/static/style/todo-variables.scss';
+@import '/static/style/common/composition/';
+@import '/static/style/common/facade/';
+@import '/static/style/common/size/';
+@import '/static/style/common/color/';
+
+.primitiveCard {
+    padding: $normal-size;
+    background-color: $second-color;
+    color: $base-contrast-color;
+    font-size: small;
+    border-radius: $normal-size;
+
+    @include row-start-and-align-center($normal-size);
+
+    img {
+        @include icon-normal-sized;
+    }
+
+    .goToTodo {
+        .linkArea {
+            height: 100%;
+        }
+    }
+
+    .todoInfo {
+        overflow: hidden;
+    }
+
+    .todoName {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .todoStatusIndicator {
+        min-width: $wide-size;
+        min-height: $wide-size;
+        border-radius: 2 * $normal-size;
+    }
+
+    .doneStatus {
+        background-color: $done-status-color;
+    }
+
+    .backlogStatus {
+        background-color: $backlog-status-color;
+    }
+
+    .willBeBackStatus {
+        background-color: $will-be-back-status-color;
+    }
+
+    .pingMeStatus {
+        background-color: $ping-me-status-color;
+    }
+
+    .nextToTakeStatus {
+        background-color: $next-to-take-status-color;
+    }
+
+    .inProgressStatus {
+        background-color: $in-progress-status-color;
+    }
+}

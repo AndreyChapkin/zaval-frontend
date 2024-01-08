@@ -1,0 +1,87 @@
+@mixin bordered($side: all, $color: white, $size: $border-normal-size) {
+	border-color: $color;
+	@if $side == all {
+		border-width: $size;
+	} @else if $side == bottom {
+		border-bottom-width: $size;
+	} @else if $side == top {
+		border-top-width: $size;
+	} @else if $side == left {
+		border-left-width: $size;
+	} @else if $side == right {
+		border-right-width: $size;
+	}
+}
+
+@mixin styled-scrollbar($background-color: transparent) {
+
+	&::-webkit-scrollbar {
+		width: $wide-size;
+		height: $wide-size;
+		background-color: $background-color;
+	}
+
+	&::-webkit-scrollbar-track {
+		border-radius: $small-size;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: transparent;
+		border-radius: $normal-size;
+	}
+
+	&:hover::-webkit-scrollbar-thumb {
+		background-color: rgba(white, 0.2);
+	}
+}
+
+@mixin normal-shadow {
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+@mixin standard-container {
+	padding: $normal-size;
+	border-radius: $normal-size;
+}
+
+@mixin standard-input {
+	padding: $normal-size;
+	border-radius: $normal-size;
+}
+
+@mixin standard-button {
+	cursor: pointer;
+	background-color: $action-color;
+	color: $base-contrast-color;
+	padding: $normal-size $wide-size $normal-size $wide-size;
+	border-radius: $normal-size;
+
+	&:hover {
+		background-color: $action-lighter-color;
+	}
+}
+
+@mixin menu-button {
+	cursor: pointer;
+	color: $base-contrast-color;
+	padding: $small-size;
+	border-radius: $normal-size;
+
+	&:hover {
+		background-color: $base-light-color;
+	}
+}
+
+@mixin standard-basis {
+	background-color: $base-color;
+	border-radius: $normal-size;
+	padding: $normal-size;
+}
+
+@mixin like-normal-button {
+	cursor: pointer;
+
+	img {
+		@include icon-normal-sized;
+	}
+}

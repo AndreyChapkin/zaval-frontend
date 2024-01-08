@@ -1,34 +1,34 @@
-import type { TodosListDto } from "$lib/types/pages-data";
-import type { CreateTodoDto, DetailedTodoDto, LightTodoDto, MoveTodoDto, TodoHeavyDetailsDto, TodoHistoryDto, TodoStatus, UpdateTodoDto } from "$lib/types/todo";
-import { callDelete, callGet, callPatch, callPost } from "$lib/utils/call-helpers";
-import { baseURL } from "./base";
+import { baseURL } from "../constants/url-constants";
+import { TodosListDto } from "../types/pages-data";
+import { TodoCreateDto, TodoLightDto, MoveTodoDto, TodoHistoryDto, TodoStatus, UpdateTodoDto } from "../types/todo";
+import { callDelete, callGet, callPatch, callPost } from "./base-calls";
 
 const baseTodoURL = baseURL + "/todo";
 
-export async function createTodo(createTodoDto: CreateTodoDto): Promise<LightTodoDto> {
+export async function createTodo(createTodoDto: TodoCreateDto): Promise<TodoLightDto> {
     const url = baseTodoURL;
-    const result = await callPost<LightTodoDto>(url, createTodoDto);
+    const result = await callPost<TodoLightDto>(url, createTodoDto);
     return result.data;
 }
 
-export async function getTodo(todoId: number): Promise<LightTodoDto> {
+export async function getTodo(todoId: number): Promise<TodoLightDto> {
     const url = `${baseTodoURL}/${todoId}`;
-    const result = await callGet<LightTodoDto>(url);
+    const result = await callGet<TodoLightDto>(url);
     return result.data;
 }
 
-export async function getTheMostDatedLightTodos(count?: number, orderType?: 'recent' | 'old'): Promise<LightTodoDto[]> {
+export async function getTheMostDatedLightTodos(count?: number, orderType?: 'recent' | 'old'): Promise<TodoLightDto[]> {
     const url = `${baseTodoURL}/recent`;
-    const result = await callGet<LightTodoDto[]>(url, {
+    const result = await callGet<TodoLightDto[]>(url, {
         count,
         orderType
     });
     return result.data;
 }
 
-export async function updateTodo(todoId: number, updateTodoDto: UpdateTodoDto): Promise<LightTodoDto> {
+export async function updateTodo(todoId: number, updateTodoDto: UpdateTodoDto): Promise<TodoLightDto> {
     const url = `${baseTodoURL}/${todoId}`;
-    const result = await callPatch<LightTodoDto>(url, updateTodoDto);
+    const result = await callPatch<TodoLightDto>(url, updateTodoDto);
     return result.data;
 }
 
@@ -37,27 +37,15 @@ export async function deleteTodo(todoId: number): Promise<void> {
     await callDelete<void>(url);
 }
 
-export async function getRootTodos(): Promise<LightTodoDto[]> {
+export async function getRootTodos(): Promise<TodoLightDto[]> {
     const url = `${baseTodoURL}/root`;
-    const result = await callGet<LightTodoDto[]>(url);
+    const result = await callGet<TodoLightDto[]>(url);
     return result.data;
 }
 
-export async function getDetailedTodo(todoId: number | null): Promise<DetailedTodoDto> {
-    const url = `${baseTodoURL}/detailed/${todoId === null ? '' : todoId}`;
-    const result = await callGet<DetailedTodoDto>(url);
-    return result.data;
-}
-
-export async function getTodoHeavyDetails(todoId: number): Promise<TodoHeavyDetailsDto | null> {
-    const url = `${baseTodoURL}/heavy-details/${todoId}`;
-    const result = await callGet<TodoHeavyDetailsDto | null>(url);
-    return result.data;
-}
-
-export async function getAllTodos(): Promise<LightTodoDto[]> {
+export async function getAllTodos(): Promise<TodoLightDto[]> {
     const url = baseTodoURL;
-    const result = await callGet<LightTodoDto[]>(url);
+    const result = await callGet<TodoLightDto[]>(url);
     return result.data;
 }
 
@@ -90,9 +78,9 @@ export async function updateTodoHistory(todoId: number, todoHistoryDto: TodoHist
     return response.data;
 }
 
-export async function findTodosWithNameFragment(nameFragment: string): Promise<LightTodoDto[]> {
+export async function findTodosWithNameFragment(nameFragment: string): Promise<TodoLightDto[]> {
     const url = `${baseTodoURL}/with-name-fragment`;
-    const response = await callGet<LightTodoDto[]>(url, {
+    const response = await callGet<TodoLightDto[]>(url, {
         "name-fragment": nameFragment
     });
     return response.data;

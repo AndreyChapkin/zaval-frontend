@@ -1,0 +1,13 @@
+@import '../../../style/color/variables.scss';
+@import '../../../style/size/variables.scss';
+@import '../../../style/size/mixins.scss';
+@import '../../../style/composition/mixins.scss';
+@import '../../../style/facade/mixins.scss';
+
+.createTodo {
+    .editPanel {
+        @include row();
+    }
+
+    .controlPanel {}
+}

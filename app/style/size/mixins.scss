@@ -1,0 +1,57 @@
+@mixin min-max-width($min-width: 400px, $max-width: 800px) {
+	min-width: $min-width;
+	max-width: $max-width;
+}
+
+@mixin icon-small-sized {
+	height: $icon-small-size;
+	min-width: $icon-small-size;
+}
+
+@mixin icon-normal-sized {
+	height: $icon-normal-size;
+	min-width: $icon-normal-size;
+}
+
+@mixin icon-large-sized {
+	height: $icon-large-size;
+	min-width: $icon-large-size;
+}
+
+@mixin icon-larger-sized {
+	height: $icon-larger-size;
+	min-width: $icon-larger-size;
+}
+
+@mixin icon-super-large-sized {
+	height: $icon-super-large-size;
+	min-width: $icon-super-large-size;
+}
+
+@mixin full-screen-height {
+	min-height: 100vh;
+	max-height: 100vh;
+}
+
+@mixin full-screen-width {
+	min-width: 100vw;
+	max-width: 100vw;
+}
+
+@mixin full-screen {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+@mixin screen-sized($width-percent: 100, $height-percent: 100) {
+	height: #{$height-percent}vh;
+	width: #{$width-percent}vw;
+}
+
+@mixin scrollable {
+	overflow-y: auto;
+	@include styled-scrollbar;
+}

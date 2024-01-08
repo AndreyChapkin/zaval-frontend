@@ -1,0 +1,116 @@
+@import '/static/style/todo-variables.scss';
+@import '/static/style/common/composition/';
+@import '/static/style/common/facade/';
+@import '/static/style/common/size/';
+@import '/static/style/common/color/';
+
+.todoCard {
+    background-color: $second-color;
+    color: $base-contrast-color;
+    padding: $normal-size $normal-size;
+    position: relative;
+    overflow: hidden;
+    min-height: 70px;
+    @include bordered(all, $second-light-color, 2px);
+
+    @include row-start-and-align-start($large-size);
+    border-radius: $normal-size;
+
+    .todoInteractionPanel {
+        z-index: 3;
+        background-color: $base-light-color;
+        border-radius: 1.5 * $normal-size;
+        padding: 0.8 * $normal-size;
+        @include column-center($normal-size);
+
+        .goToTodo,
+        .editMenu {
+            @include like-normal-button;
+        }
+    }
+
+    .todoStatusIndicator {
+        width: 3 * $normal-size;
+        height: 5 * $normal-size;
+        top: -1 * $normal-size;
+        left: -1 * $normal-size;
+
+        position: absolute;
+        z-index: 2;
+    }
+
+    .todoStatusIndicatorSecondary {
+        width: 8 * $normal-size;
+        height: 19 * $normal-size;
+        top: -11 * $normal-size;
+        left: -4.5 * $normal-size;
+        border-radius: 4px;
+        position: absolute;
+        z-index: 1;
+    }
+
+    .todoInfo {
+        flex: 1;
+        align-self: stretch;
+        @include column-start-and-stretch($large-size);
+
+        .additionalInfo {
+            @include row-start-and-stretch($large-size);
+            font-size: smaller;
+            color: $base-weak-contrast-color;
+        }
+    }
+}
+
+$secondaryStatusAdjustPercent: -0.7;
+
+.doneStatus {
+    background-color: $done-status-color;
+}
+
+.doneStatusSecondary {
+    background-color: adjust-color($done-status-color, $alpha: $secondaryStatusAdjustPercent);
+}
+
+.backlogStatus {
+    background-color: $backlog-status-color;
+}
+
+.backlogStatusSecondary {
+    background-color: adjust-color($backlog-status-color, $alpha: $secondaryStatusAdjustPercent);
+}
+
+.willBeBackStatus {
+    background-color: $will-be-back-status-color;
+}
+
+.willBeBackStatusSecondary {
+    background-color: adjust-color($will-be-back-status-color,
+            $alpha: $secondaryStatusAdjustPercent );
+}
+
+.pingMeStatus {
+    background-color: $ping-me-status-color;
+}
+
+.pingMeStatusSecondary {
+    background-color: adjust-color($ping-me-status-color, $alpha: $secondaryStatusAdjustPercent);
+}
+
+.nextToTakeStatus {
+    background-color: $next-to-take-status-color;
+}
+
+.nextToTakeStatusSecondary {
+    background-color: adjust-color($next-to-take-status-color,
+            $alpha: $secondaryStatusAdjustPercent );
+}
+
+.inProgressStatus {
+    background-color: $in-progress-status-color;
+}
+
+.inProgressStatusSecondary {
+    background-color: adjust-color($in-progress-status-color,
+            $alpha: $secondaryStatusAdjustPercent );
+}

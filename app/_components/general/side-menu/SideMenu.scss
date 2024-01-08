@@ -1,0 +1,41 @@
+@import '../../../style/color/variables.scss';
+@import '../../../style/size/variables.scss';
+@import '../../../style/size/mixins.scss';
+@import '../../../style/composition/mixins.scss';
+@import '../../../style/facade/mixins.scss';
+
+.todoSideMenu {
+    background-color: $base-darker-color;
+    @include column-center($normal-size);
+    padding: $normal-size $small-size;
+
+    img {
+        @include icon-large-sized;
+    }
+
+    .todo-side-menu-item {
+        cursor: pointer;
+        border-radius: $normal-size;
+        padding: 1px;
+    }
+
+    .todo-side-menu-item:hover {
+        background-color: $base-light-color;
+    }
+
+    .separator {
+        height: 2px;
+        width: 20px;
+        background-color: $second-lighter-color;
+    }
+
+    :global(.todo-side-menu-item img) {
+        @include icon-large-sized;
+    }
+
+    .normal-sized {
+        img {
+            @include icon-normal-sized;
+        }
+    }
+}

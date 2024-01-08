@@ -1,0 +1,54 @@
+// base colors
+$base-color: #44405e;
+$base-dark-color: darken($base-color, 15%);
+$base-darker-color: darken($base-color, 20%);
+$base-light-color: lighten($base-color, 10%);
+
+// secondary colors
+$second-color: lighten(#331D2C, 5%);
+$second-dark-color: darken($second-color, 10%);
+$second-light-color: lighten($second-color, 10%);
+$second-lighter-color: lighten($second-light-color, 10%);
+$second-more-lighter-color: lighten($second-light-color, 30%);
+
+// action-colors
+$action-color: rgb(50, 140, 116);
+$action-lighter-color: lighten($action-color, 5%);
+$action-light-color: lighten($action-color, 10%);
+$action-dark-color: darken($action-color, 10%);
+
+// strong color
+$strong-color: #c43c45;
+$strong-light-color: lighten($strong-color, 15%);
+$strong-dark-color: darken($strong-color, 15%);
+
+$strong-second-color: #dda045;
+$strong-second-light-color: lighten($strong-second-color, 15%);
+$strong-second-weak-color: rgb(220, 155, 81);
+$strong-second-dark-color: darken(#dda045, 20%);
+$strong-second-darker-color: darken(#dda045, 30%);
+
+$second-adjusted-color: adjust-hue($second-color, -40deg);
+$second-light-adjusted-color: adjust-hue($second-light-color, -50deg);
+
+$second-gradient: linear-gradient(215deg, $second-adjusted-color 10%, lighten($second-adjusted-color, 9%) 50%, $second-adjusted-color 90%);
+$strong-gradient: linear-gradient(215deg, $strong-light-color 0%, adjust-hue($strong-color, -30deg) 50%, $strong-color 100%);
+
+$base-contrast-color: white;
+$base-weak-contrast-color: darken($base-contrast-color, 10%);
+$base-weaker-contrast-color: darken($base-contrast-color, 20%);
+
+$second-contrast-color: #ce87b9;
+
+// other colors
+$background-gradient: linear-gradient(
+    0deg,
+    rgba($color: #000000, $alpha: 1) 0%,
+    rgba($color: #000000, $alpha: 0.9) 100%
+);
+
+$background-weak-gradient: linear-gradient(
+    0deg,
+    rgba($color: #000000, $alpha: 0.7) 0%,
+    rgba($color: #000000, $alpha: 0.5) 100%
+);
