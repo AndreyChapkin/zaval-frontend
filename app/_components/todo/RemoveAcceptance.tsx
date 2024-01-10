@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { ModalWindow } from "../general/ModalWindow";
+import { ModalWindow } from "../general/modal-window/ModalWindow";
 
 export interface RemoveAcceptanceProps {
     acceptHandler: () => void;

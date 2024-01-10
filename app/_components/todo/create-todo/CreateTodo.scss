@@ -1,13 +1,51 @@
-@import '../../../style/color/variables.scss';
-@import '../../../style/size/variables.scss';
-@import '../../../style/size/mixins.scss';
-@import '../../../style/composition/mixins.scss';
-@import '../../../style/facade/mixins.scss';
+@import '/app/styles/color/variables.scss';
+@import '/app/styles/size/mixins.scss';
+@import '/app/styles/composition/mixins.scss';
+@import '/app/styles/facade/mixins.scss';
+@import '/app/styles/todo/variables.scss';
+
+$normal-size: 5px;
+$wide-size: 10px;
 
 .createTodo {
-    .editPanel {
-        @include row();
+    background-color: $main-light-1-color;
+    @include screen-sized(40, 30);
+    @include column-space-and-stretch($normal-size);
+    padding: 30px 20px;
+
+    img {
+        @include icon-normal-sized;
     }
 
-    .controlPanel {}
+    .editPanel {
+        @include column($normal-size);
+    }
+
+    .controlPanel {
+        @include row-center($wide-size);
+    }
+}
+
+.doneStatusColor {
+    color: $done-status-color;
+}
+
+.backlogStatusColor {
+    color: $backlog-status-color;
+}
+
+.willBeBackStatusColor {
+    color: $will-be-back-status-color;
+}
+
+.pingMeStatusColor {
+    color: $ping-me-status-color;
+}
+
+.nextToTakeStatusColor {
+    color: $next-to-take-status-color;
+}
+
+.inProgressStatusColor {
+    color: $in-progress-status-color;
 }

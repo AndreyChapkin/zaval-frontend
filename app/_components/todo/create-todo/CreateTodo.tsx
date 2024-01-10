@@ -1,13 +1,18 @@
-import { TodoStatus } from "@/app/_lib/types/todo";
+import { All_TODO_STATUSES, TodoLightDto, TodoStatus } from "@/app/_lib/types/todo";
 import { useState } from "react";
-import { ModalWindow } from "../../general/ModalWindow";
-import { TodoStatusMenu } from "../TodoStatusMenu";
+import { ModalWindow } from "../../general/modal-window/ModalWindow";
 import { createTodo } from "@/app/_lib/calls/todo-calls";
+
+import './CreateTodo.scss';
+import { ActionButton } from "../../general/action-button/ActionButton";
+import { StandardInput } from "../../general/standard-input/StandardInput";
+import { GeneralSelect } from "../../general/general-select/GeneralSelect";
+import { chooseStatusColorClass, chooseStatusImgUrl, todoStatusToLabel } from "@/app/_lib/utils/todo-helpers";
 
 export interface CreateTodoProps {
     parentId?: number;
     cancelHandler: () => void;
-    successHandler: () => void;
+    successHandler: (todo: TodoLightDto) => void;
 }
 
 function CreateTodo({ parentId, cancelHandler, successHandler }: CreateTodoProps) {
@@ -16,35 +21,32 @@ function CreateTodo({ parentId, cancelHandler, successHandler }: CreateTodoProps
     const [status, setStatus] = useState<TodoStatus>('BACKLOG');
 
     return (
-        <ModalWindow>
+        <ModalWindow closeHandler={cancelHandler}>
             <div className="createTodo">
                 <div className="editPanel">
-                    <TodoStatusMenu
-                        currentStatus={status}
-                        selectHandler={setStatus} />
-                    <input
-                        className="editName"
-                        type="text"
-                        onChange={(e) => setName(e.target.value)}
+                    <GeneralSelect
+                        currentElement={status}
+                        allElements={All_TODO_STATUSES}
+                        selectHandler={setStatus}
+                        mapper={(status) => ({
+                            label: todoStatusToLabel(status),
+                            classNames: chooseStatusColorClass(status),
+                            imageUrl: chooseStatusImgUrl(status)
+                        })}
                     />
+                    <StandardInput value={name} onChange={setName} />
                 </div>
                 <div className="controlPanel">
-                    <button
-                        className="createButton"
+                    <ActionButton
+                        label="Create"
                         onClick={() => createTodo({
                             name,
                             status,
                             parentId: parentId ?? null
-                        }).then(successHandler)}
-                    >
-                        Create
-                    </button>
-                    <button
-                        className="cancelButton"
-                        onClick={() => cancelHandler()}
-                    >
-                        Cancel
-                    </button>
+                        }).then(successHandler)} />
+                    <ActionButton
+                        label="Cancel"
+                        onClick={cancelHandler} />
                 </div>
             </div>
         </ModalWindow>

@@ -1,0 +1,47 @@
+@import '/app/styles/color/variables.scss';
+@import '/app/styles/todo/variables.scss';
+@import '/app/styles/size/mixins.scss';
+@import '/app/styles/facade/mixins.scss';
+@import '/app/styles/composition/mixins.scss';
+
+$small-size: 3px;
+$normal-size: 6px;
+$wide-size: 10px;
+
+.generalSelectBackground {
+    position: absolute;
+    z-index: 10;
+    @include full-screen;
+}
+
+.aboveBackground {
+    z-index: 12;
+}
+
+.generalSelect {
+    img {
+        @include icon-normal-sized;
+    }
+
+    .option {
+        cursor: pointer;
+        background-color: $secondary-dark-2-color;
+        padding: $normal-size;
+        @include row-start-and-align-center($small-size);
+
+        &:hover {
+            background-color: $secondary-dark-1-color;
+        }
+    }
+
+    .currentOption {
+        border-radius: $normal-size;
+    }
+
+    .allOptions {
+        position: absolute;
+        border-radius: $normal-size;
+        overflow: hidden;
+        @include normal-shadow;
+    }
+}

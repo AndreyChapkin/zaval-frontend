@@ -1,6 +1,6 @@
 import { KeyboardEventHandler, useCallback, useState } from "react";
-import { ModalWindow } from "../general/ModalWindow";
-import { TodoStatusMenu } from "./TodoStatusMenu";
+import { ModalWindow } from "../general/modal-window/ModalWindow";
+import { TodoStatusSelect } from "./todo-status-select/TodoStatusSelect";
 import { TodoLightDto, TodoStatus } from "@/app/_lib/types/todo";
 import { createTodo, deleteTodo, updateTodo } from "@/app/_lib/calls/todo-calls";
 import { useRouter } from "next/router";
@@ -74,7 +74,7 @@ export function TodoMenu({ todoDto, moveHandler, closeHandler }: TodoMenuProps) 
         <ModalWindow closeHandler={closeHandler}>
             <div className="todo-menu">
                 <div className="edit-pane" onKeyUp={enterKeyHandler}>
-                    <TodoStatusMenu currentStatus={editStatus} selectHandler={(status) => setEditStatus(status)} />
+                    <TodoStatusSelect currentStatus={editStatus} selectHandler={(status) => setEditStatus(status)} />
                     <input
                         className="edit-name"
                         type="text"

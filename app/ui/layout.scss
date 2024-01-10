@@ -1,5 +1,17 @@
+@import "/app/styles/color/variables.scss";
+@import "/app/styles/size/mixins.scss";
+@import "/app/styles/composition/mixins.scss";
+
 .workspace {
-    display: flex;
-    flex-direction: row;
-    height: 100vh;
+    @include row;
+    @include full-screen-height;
+}
+
+.page {
+    background-color: $main-color;
+    @include full-screen-height;
+    box-sizing: border-box;
+    flex: 1;
+    padding: 10px;
+    color: $main-font-color;   
 }

@@ -1,4 +1,13 @@
-interface TodoFamilyDto {
+export interface TodoLightDto {
+    id: number;
+    name: string;
+    priority: number;
+    status: TodoStatus;
+    parentId: number | null;
+    interactedOn: string;
+}
+
+export interface TodoFamilyDto {
     id: number;
     name: string;
     description: string;
@@ -7,15 +16,6 @@ interface TodoFamilyDto {
     interactedOn: string;
     parents: TodoLightDto[];
     children: TodoLightDto[];
-}
-
-export interface TodoLightDto {
-    id: number;
-    name: string;
-    priority: number;
-    status: TodoStatus;
-    parentId: number | null;
-    interactedOn: string;
 }
 
 export interface TodoHistoryDto {

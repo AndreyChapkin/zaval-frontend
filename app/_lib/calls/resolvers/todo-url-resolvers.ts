@@ -1,3 +1,3 @@
-export function frontTodoUrl(id: number) {
+export function resolveTodoUrl(id: number) {
     return `/ui/todo/${id}`;
 }

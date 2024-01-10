@@ -118,6 +118,14 @@
 	gap: $gap;
 }
 
+@mixin column-space-and-stretch($gap: 0px) {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: stretch;
+	gap: $gap;
+}
+
 @mixin column-center($gap: 0px) {
 	display: flex;
 	flex-direction: column;
@@ -125,7 +133,7 @@
 	gap: $gap;
 }
 
-@mixin column-justify-and-align-center($gap: 0px) {
+@mixin column-around-and-center($gap: 0px) {
 	display: flex;
 	flex-direction: column;
 	align-items: center;

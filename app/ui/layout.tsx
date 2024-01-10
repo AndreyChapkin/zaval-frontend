@@ -9,10 +9,8 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
     return (
         <div className='workspace'>
-            <SideMenu/>
-            <div className='content'>
-                {children}
-            </div>
+            <SideMenu />
+            {children}
         </div>
     );
 };

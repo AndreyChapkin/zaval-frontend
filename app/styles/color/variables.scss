@@ -1,0 +1,32 @@
+$main-color: rgb(16, 22, 31);
+$main-light-1-color: lighten($main-color, 5%);
+$main-light-2-color: lighten($main-color, 10%);
+$main-dark-1-color: darken($main-color, 10%);
+$main-dark-2-color: darken($main-color, 20%);
+$main-font-color: white;
+
+$secondary-color: #A2678A;
+$secondary-pale-1-color: desaturate($secondary-color, 10%);
+$secondary-pale-dark-1-color: darken($secondary-pale-1-color, 20%);
+$secondary-dark-1-color: darken($secondary-color, 20%);
+$secondary-dark-2-color: darken($secondary-color, 25%);
+$secondary-light-1-color: lighten($secondary-color, 5%);
+$secondary-font-color: white;
+
+$accent-color: #E19898;
+$accent-light-1-color: lighten($accent-color, 5%);
+$accent-pale-1-color: desaturate($accent-color, 20%);
+$accent-font-color: rgb(255, 255, 255);
+
+// // other colors
+// $background-gradient: linear-gradient(
+//     0deg,
+//     rgba($color: #000000, $alpha: 1) 0%,
+//     rgba($color: #000000, $alpha: 0.9) 100%
+// );
+
+// $background-weak-gradient: linear-gradient(
+//     0deg,
+//     rgba($color: #000000, $alpha: 0.7) 0%,
+//     rgba($color: #000000, $alpha: 0.5) 100%
+// );

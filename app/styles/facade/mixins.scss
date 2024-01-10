@@ -44,23 +44,6 @@
 	border-radius: $normal-size;
 }
 
-@mixin standard-input {
-	padding: $normal-size;
-	border-radius: $normal-size;
-}
-
-@mixin standard-button {
-	cursor: pointer;
-	background-color: $action-color;
-	color: $base-contrast-color;
-	padding: $normal-size $wide-size $normal-size $wide-size;
-	border-radius: $normal-size;
-
-	&:hover {
-		background-color: $action-lighter-color;
-	}
-}
-
 @mixin menu-button {
 	cursor: pointer;
 	color: $base-contrast-color;

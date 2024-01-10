@@ -1,0 +1,13 @@
+@import "app/styles/color/variables.scss";
+
+$normal-size: 5px;
+
+.standardInput {
+    background-color: $secondary-dark-2-color;
+    padding: $normal-size 8px;
+    border-radius: $normal-size;
+    outline: none;
+    border-width: 0px;
+    font-size: medium;
+    color: $secondary-font-color;
+}

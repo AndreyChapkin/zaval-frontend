@@ -1,0 +1,18 @@
+@import '/app/styles/color/variables.scss';
+
+$normal-size: 5px;
+$wide-size: 8px;
+
+.actionButton {
+    font-size: medium;
+    cursor: pointer;
+    background-color: $accent-color;
+    color: $accent-font-color;
+    padding: $normal-size $wide-size $normal-size $wide-size;
+    border-radius: $normal-size;
+    border-width: 0px;
+
+    &:hover {
+        background-color: $accent-light-1-color;
+    }
+}

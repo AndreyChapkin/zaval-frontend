@@ -1,11 +1,13 @@
-@import '../../../style/color/variables.scss';
-@import '../../../style/size/variables.scss';
-@import '../../../style/size/mixins.scss';
-@import '../../../style/composition/mixins.scss';
-@import '../../../style/facade/mixins.scss';
+@import '../../../styles/color/variables.scss';
+@import '../../../styles/size/mixins.scss';
+@import '../../../styles/composition/mixins.scss';
+@import '../../../styles/facade/mixins.scss';
+
+$normal-size: 5px;
+$small-size: 3px;
 
 .todoSideMenu {
-    background-color: $base-darker-color;
+    background-color: $main-light-1-color;
     @include column-center($normal-size);
     padding: $normal-size $small-size;
 
@@ -20,13 +22,13 @@
     }
 
     .todo-side-menu-item:hover {
-        background-color: $base-light-color;
+        background-color: $main-color;
     }
 
     .separator {
         height: 2px;
         width: 20px;
-        background-color: $second-lighter-color;
+        background-color: $secondary-pale-1-color;
     }
 
     :global(.todo-side-menu-item img) {

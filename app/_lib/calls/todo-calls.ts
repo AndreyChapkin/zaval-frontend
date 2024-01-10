@@ -1,6 +1,6 @@
 import { baseURL } from "../constants/url-constants";
 import { TodosListDto } from "../types/pages-data";
-import { TodoCreateDto, TodoLightDto, MoveTodoDto, TodoHistoryDto, TodoStatus, UpdateTodoDto } from "../types/todo";
+import { TodoCreateDto, TodoLightDto, MoveTodoDto, TodoHistoryDto, TodoStatus, UpdateTodoDto, TodoFamilyDto } from "../types/todo";
 import { callDelete, callGet, callPatch, callPost } from "./base-calls";
 
 const baseTodoURL = baseURL + "/todo";
@@ -14,6 +14,12 @@ export async function createTodo(createTodoDto: TodoCreateDto): Promise<TodoLigh
 export async function getTodo(todoId: number): Promise<TodoLightDto> {
     const url = `${baseTodoURL}/${todoId}`;
     const result = await callGet<TodoLightDto>(url);
+    return result.data;
+}
+
+export async function getTodoFamily(todoId: number): Promise<TodoFamilyDto> {
+    const url = `${baseTodoURL}/family/${todoId}`;
+    const result = await callGet<TodoFamilyDto>(url);
     return result.data;
 }
 

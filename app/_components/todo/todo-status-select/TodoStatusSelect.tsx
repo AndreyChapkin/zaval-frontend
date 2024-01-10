@@ -2,12 +2,14 @@ import { All_TODO_STATUSES, TodoStatus } from "@/app/_lib/types/todo";
 import { chooseStatusColorClass, chooseStatusImgUrl, todoStatusToLabel } from "@/app/_lib/utils/todo-helpers";
 import { MouseEventHandler, useCallback, useState } from "react";
 
+import './TodoStatusSelect.scss';
+
 export interface TodoMenuProps {
     currentStatus?: TodoStatus;
     selectHandler: (todoStatus: TodoStatus) => void;
 }
 
-export function TodoStatusMenu({ currentStatus = 'BACKLOG', selectHandler }: TodoMenuProps) {
+export function TodoStatusSelect({ currentStatus = 'BACKLOG', selectHandler }: TodoMenuProps) {
 
     const otherStatuses = All_TODO_STATUSES.filter((i) => i !== currentStatus);
     const [isOpen, setIsOpen] = useState(false);
@@ -19,16 +21,17 @@ export function TodoStatusMenu({ currentStatus = 'BACKLOG', selectHandler }: Tod
         setIsOpen(prev => !prev);
     }, []);
 
-    const innerSelectHandler = useCallback((status: TodoStatus) => () => {
+    const innerSelectHandler = useCallback((status: TodoStatus) => {
+        console.log('@@@ hello from innerSelectHandler');
         setIsOpen(false);
         selectHandler(status);
     }, [selectHandler]);
 
     return (
-        <div className="todo-status-menu">
+        <div className="todoStatusSelect">
             <div
                 onClick={openHandler}
-                className={`current-status ${chooseStatusColorClass(currentStatus)}`}
+                className={`currentStatus ${chooseStatusColorClass(currentStatus)}`}
             >
                 <img
                     src={chooseStatusImgUrl(currentStatus)}
@@ -38,12 +41,12 @@ export function TodoStatusMenu({ currentStatus = 'BACKLOG', selectHandler }: Tod
             </div>
             {isOpen && (
                 <div
-                    className="options-pane"
+                    className="optionsPane"
                     style={{ top: `${optionsY}px` }}
                 >
                     {otherStatuses.map((status) => (
                         <div
-                            className={`option-status ${chooseStatusColorClass(status)}`}
+                            className={`optionStatus ${chooseStatusColorClass(status)}`}
                             onClick={() => innerSelectHandler(status)}
                             key={status}
                         >

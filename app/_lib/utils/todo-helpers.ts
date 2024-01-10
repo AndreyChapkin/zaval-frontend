@@ -62,16 +62,16 @@ export function chooseStatusClass(status: TodoStatus): string {
 export function chooseStatusColorClass(status: TodoStatus): string {
 	switch (status) {
 		case 'DONE':
-			return 'done-status-color';
+			return 'doneStatusColor';
 		case 'BACKLOG':
-			return 'backlog-status-color';
+			return 'backlogStatusColor';
 		case 'WILL_BE_BACK':
-			return 'will-be-back-status-color';
+			return 'willBeBackStatusColor';
 		case 'PING_ME':
-			return 'ping-me-status-color';
+			return 'pingMeStatusColor';
 		case 'NEXT_TO_TAKE':
-			return 'next-to-take-status-color';
+			return 'nextToTakeStatusColor';
 		case 'IN_PROGRESS':
-			return 'in-progress-status-color';
+			return 'inProgressStatusColor';
 	}
 }

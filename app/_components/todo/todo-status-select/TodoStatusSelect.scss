@@ -1,0 +1,65 @@
+@import '/app/styles/color/variables.scss';
+@import '/app/styles/size/variables.scss';
+@import '/app/styles/todo/variables.scss';
+@import '/app/styles/size/mixins.scss';
+@import '/app/styles/facade/mixins.scss';
+@import '/app/styles/composition/mixins.scss';
+
+.todoStatusSelect {
+    @include row-stretch;
+
+    img {
+        @include icon-normal-sized;
+    }
+
+    .optionStatus,
+    .currentStatus {
+        cursor: pointer;
+        background-color: $second-light-color;
+        padding: $normal-size $wide-size $normal-size $wide-size;
+        @include row-start-and-align-center($small-size);
+    }
+
+    .currentStatus {
+        border-radius: $normal-size;
+    }
+
+    .optionsPane {
+        position: absolute;
+        border-radius: $normal-size;
+        overflow: hidden;
+        @include normal-shadow;
+    }
+
+    .optionStatus:hover {
+        background-color: $base-color;
+    }
+
+    .optionStatus:hover {
+        background-color: $base-dark-color;
+    }
+}
+
+.doneStatusColor {
+    color: $done-status-color;
+}
+
+.backlogStatusColor {
+    color: $backlog-status-color;
+}
+
+.willBeBackStatusColor {
+    color: $will-be-back-status-color;
+}
+
+.pingMeStatusColor {
+    color: $ping-me-status-color;
+}
+
+.nextToTakeStatusColor {
+    color: $next-to-take-status-color;
+}
+
+.inProgressStatusColor {
+    color: $in-progress-status-color;
+}

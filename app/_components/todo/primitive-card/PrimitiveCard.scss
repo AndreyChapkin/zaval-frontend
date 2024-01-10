@@ -1,13 +1,16 @@
-@import '/static/style/todo-variables.scss';
-@import '/static/style/common/composition/';
-@import '/static/style/common/facade/';
-@import '/static/style/common/size/';
-@import '/static/style/common/color/';
+@import '/app/styles/todo/variables.scss';
+@import '/app/styles/composition/mixins.scss';
+@import '/app/styles/facade/mixins.scss';
+@import '/app/styles/size/mixins.scss';
+@import '/app/styles/color/variables.scss';
+
+$normal-size: 5px;
+$wide-size: 10px;
 
 .primitiveCard {
     padding: $normal-size;
-    background-color: $second-color;
-    color: $base-contrast-color;
+    background-color: $secondary-color;
+    color: $secondary-font-color;
     font-size: small;
     border-radius: $normal-size;
 

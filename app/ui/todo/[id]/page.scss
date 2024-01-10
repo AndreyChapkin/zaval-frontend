@@ -1,0 +1,29 @@
+@import "/app/styles/composition/mixins.scss";
+@import "/app/styles/size/mixins.scss";
+
+$normal-size: 5px;
+
+.todoItemPage {
+
+    img {
+        @include icon-normal-sized;       
+    }
+
+    .mainAndChildren {
+        @include row($normal-size);
+    }
+
+    .main {
+        flex: 3;
+        @include column($normal-size);
+
+        .additionalInfo {
+            @include row($normal-size);
+            font-size: small;
+        }
+    }
+
+    .children {
+        flex: 2;
+    }
+}

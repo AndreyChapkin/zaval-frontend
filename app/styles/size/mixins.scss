@@ -4,28 +4,28 @@
 }
 
 @mixin icon-small-sized {
-	height: $icon-small-size;
-	min-width: $icon-small-size;
+	height: 5px;
+	min-width: 5px;
 }
 
 @mixin icon-normal-sized {
-	height: $icon-normal-size;
-	min-width: $icon-normal-size;
+	height: 20px;
+	min-width: 20px;
 }
 
 @mixin icon-large-sized {
-	height: $icon-large-size;
-	min-width: $icon-large-size;
+	height: 20px;
+	min-width: 20px;
 }
 
 @mixin icon-larger-sized {
-	height: $icon-larger-size;
-	min-width: $icon-larger-size;
+	height: 12px;
+	min-width: 12px;
 }
 
 @mixin icon-super-large-sized {
-	height: $icon-super-large-size;
-	min-width: $icon-super-large-size;
+	height: 16px;
+	min-width: 16px;
 }
 
 @mixin full-screen-height {

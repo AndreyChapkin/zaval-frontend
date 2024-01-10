@@ -3,7 +3,7 @@ import { TodoLightDto } from "@/app/_lib/types/todo";
 import { decreaseNumberOfCalls } from "@/app/_lib/utils/function-helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { ModalWindow } from "../general/ModalWindow";
+import { ModalWindow } from "../general/modal-window/ModalWindow";
 import { TodoMoveCard } from "./TodoMoveCard";
 
 export interface TodoMovingPanelProps {
