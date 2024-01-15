@@ -22,7 +22,6 @@ export function TodoStatusSelect({ currentStatus = 'BACKLOG', selectHandler }: T
     }, []);
 
     const innerSelectHandler = useCallback((status: TodoStatus) => {
-        console.log('@@@ hello from innerSelectHandler');
         setIsOpen(false);
         selectHandler(status);
     }, [selectHandler]);

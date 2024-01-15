@@ -1,7 +1,7 @@
-@import '../../../styles/color/variables.scss';
-@import '../../../styles/size/mixins.scss';
-@import '../../../styles/composition/mixins.scss';
-@import '../../../styles/facade/mixins.scss';
+@import '../../../_styles/color/variables.scss';
+@import '../../../_styles/size/mixins.scss';
+@import '../../../_styles/composition/mixins.scss';
+@import '../../../_styles/facade/mixins.scss';
 
 $normal-size: 5px;
 $small-size: 3px;
@@ -10,10 +10,6 @@ $small-size: 3px;
     background-color: $main-light-1-color;
     @include column-center($normal-size);
     padding: $normal-size $small-size;
-
-    img {
-        @include icon-large-sized;
-    }
 
     .todo-side-menu-item {
         cursor: pointer;
@@ -33,11 +29,5 @@ $small-size: 3px;
 
     :global(.todo-side-menu-item img) {
         @include icon-large-sized;
-    }
-
-    .normal-sized {
-        img {
-            @include icon-normal-sized;
-        }
     }
 }

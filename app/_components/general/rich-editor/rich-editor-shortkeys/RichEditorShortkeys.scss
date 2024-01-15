@@ -1,0 +1,33 @@
+@import '/app/_styles/composition/mixins.scss';
+@import '/app/_styles/facade/mixins.scss';
+@import '/app/_styles/color/variables.scss';
+
+$small-size: 4px;
+$normal-size: 8px;
+$wide-size: 8px;
+$large-size: 12px;
+
+.richEditorShortkeys {
+    @include row($large-size);
+    @include standard-container;
+    flex-wrap: wrap;
+    border-radius: 0 0 $normal-size $normal-size;
+    padding: $wide-size;
+    background-color: $secondary-color;
+
+    .column {
+        @include column($small-size);
+    }
+
+    .controlPrompt {
+        @include row-justify($wide-size);
+        min-width: 300px;
+        max-width: 450px;
+        margin: 0 10px;
+        color: $main-font-color;
+
+        b {
+            color: $accent-light-1-color;
+        }
+    }
+}

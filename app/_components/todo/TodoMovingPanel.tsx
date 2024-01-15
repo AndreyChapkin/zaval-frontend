@@ -49,7 +49,7 @@ export function TodoMovingPanel({ movingTodoDto, closeHandler }: TodoMovingPanel
     }, [searchValue]);
 
     return (
-        <ModalWindow closeHandler={closeHandler}>
+        <ModalWindow onClose={closeHandler}>
             <div className="moving-todo-panel">
                 <div className="moving-todo">
                     {movingTodoDto.name}

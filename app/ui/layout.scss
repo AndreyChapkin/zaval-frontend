@@ -1,6 +1,6 @@
-@import "/app/styles/color/variables.scss";
-@import "/app/styles/size/mixins.scss";
-@import "/app/styles/composition/mixins.scss";
+@import "/app/_styles/color/variables.scss";
+@import "/app/_styles/size/mixins.scss";
+@import "/app/_styles/composition/mixins.scss";
 
 .workspace {
     @include row;
@@ -12,6 +12,6 @@
     @include full-screen-height;
     box-sizing: border-box;
     flex: 1;
-    padding: 10px;
+    padding: 5px;
     color: $main-font-color;   
 }

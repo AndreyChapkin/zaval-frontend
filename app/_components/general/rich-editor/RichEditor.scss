@@ -1,0 +1,43 @@
+@import '/app/_styles/composition/mixins.scss';
+@import '/app/_styles/facade/mixins.scss';
+@import '/app/_styles/color/variables.scss';
+@import '/app/_styles/size/mixins.scss';
+
+@font-face {
+    font-family: Nunito;
+    font-weight: normal;
+    src: url('/fonts/Nunito-Regular.ttf');
+}
+
+@font-face {
+    font-family: Nunito;
+    font-weight: bold;
+    src: url('/fonts/Nunito-Black.ttf');
+}
+
+$small-size: 4px;
+$normal-size: 6px;
+$wide-size: 10px;
+$large-size: 12px;
+
+.richEditor {
+
+    .richEditorMenu {
+        background-color: $main-light-1-color;
+        padding: $small-size;
+        color: $main-font-color;
+
+        img {
+            @include icon-normal-sized;
+        }
+
+        .separator {
+            height: 4px;
+            width: 4px;
+            border-radius: 2px;
+            margin: 0 $normal-size;
+            background-color: $main-light-1-color;
+        }
+    }
+
+}

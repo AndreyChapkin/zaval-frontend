@@ -1,0 +1,18 @@
+@import "app/_styles/size/mixins.scss";
+@import "app/_styles/composition/mixins.scss";
+
+.iconButton {
+    @include icon-normal-sized;
+    padding: 2px;
+    border-radius: 4px;
+    display: inline-block;
+    cursor: pointer;
+
+    img {
+        @include icon-normal-sized;
+    }
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }   
+}

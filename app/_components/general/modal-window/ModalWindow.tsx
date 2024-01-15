@@ -2,17 +2,17 @@ import { MouseEventHandler, useCallback } from 'react';
 import './ModalWindow.scss';
 
 export interface ModalWindowProps {
-    closeHandler?: () => void;
+    onClose?: () => void;
     children: React.ReactNode;
 }
 
-export function ModalWindow({ closeHandler, children }: ModalWindowProps) {
+export function ModalWindow({ onClose, children }: ModalWindowProps) {
 
     const innerCloseHandler: MouseEventHandler = useCallback((e) => {
         if (e.button === 0 && e.target === e.currentTarget) {
-            closeHandler?.();
+            onClose?.();
         }
-    }, [closeHandler]);
+    }, [onClose]);
 
     return (
         <div

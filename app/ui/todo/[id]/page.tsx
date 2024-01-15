@@ -11,14 +11,19 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import './page.scss';
-import { MOVE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
+import { EDIT_ICON_URL, MOVE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
+import { IconButton } from "@/app/_components/general/icon-button/IconButton";
+import { RichText } from "@/app/_components/general/rich-text/RichText";
+import { RichEditor } from "@/app/_components/general/rich-editor/RichEditor";
 
 function TodoItemPage() {
 
     const params = useParams<{ id: string }>();
     const id = Number(params.id);
     const [todoFamily, setTodoFamily] = useState<TodoFamilyDto>();
+    const [description, setDescription] = useState<string>('');
     const [isCreatingTodo, setIsCreatingTodo] = useState(false);
+    const [isEditingTodo, setIsEditingTodo] = useState(false);
 
     const router = useRouter();
 
@@ -27,25 +32,53 @@ function TodoItemPage() {
     }, []);
 
     return (
-        <div className="page todoItemPage">
+        <div className="page todoItemPage column">
+            {/* <div>First</div>
+            <div>Second</div>
+            <div className="column">
+                <div className="">Third-one</div>
+                <div className="">Third-two</div>
+                <div className="scrollableInColumn">
+                    {
+                        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1, 1, 11, 1, 1, 11, 1, 1, 11, 1, 1, 1]
+                            .map((_, index) => (
+                                <div key={index} style={{ margin: "10px" }}>Long text</div>
+                            ))
+                    }
+                </div>
+            </div> */}
             {
                 todoFamily ?
                     <>
                         <div className="parents">
-                            <img src={MOVE_ICON_URL} alt="move" />
+                            <IconButton iconUrl={MOVE_ICON_URL} onClick={() => { }} />
                             {
                                 todoFamily.parents.map((parent) => (
                                     <PrimitiveCard item={parent} key={parent.id} />
                                 ))
                             }
                         </div>
-                        <div className="mainAndChildren">
-                            <div className="main">
-                                <span>{todoFamily.name}</span>
+                        <div className="mainAndChildren row">
+                            <div className="main column">
+                                <span className="mainInfo">{todoFamily.name}</span>
                                 <div className="additionalInfo">
                                     <span>{todoFamily.status}</span>
                                     <span>{presentDate(todoFamily.interactedOn)}</span>
                                 </div>
+                                {
+                                    isEditingTodo ?
+                                        <RichEditor
+                                            content={todoFamily.description}
+                                            onSave={(content) => Promise.resolve()}
+                                            onCancel={() => { setIsEditingTodo(false) }} />
+                                        :
+                                        <>
+                                            <div className="editionMenu">
+                                                <IconButton iconUrl={EDIT_ICON_URL} onClick={() => setIsEditingTodo(true)} />
+                                            </div>
+                                            <RichText content={todoFamily.description} />
+                                        </>
+                                }
                             </div>
                             {
                                 <div className="children">

@@ -1,8 +1,8 @@
-@import '/static/styles/todo-variables.scss';
-@import '/static/styles/common/composition/';
-@import '/static/styles/common/facade/';
-@import '/static/styles/common/size/';
-@import '/static/styles/common/color/';
+@import '/static/_styles/todo-variables.scss';
+@import '/static/_styles/common/composition/';
+@import '/static/_styles/common/facade/';
+@import '/static/_styles/common/size/';
+@import '/static/_styles/common/color/';
 
 .todoCard {
     background-color: $second-color;

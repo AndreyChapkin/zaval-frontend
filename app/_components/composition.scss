@@ -1,0 +1,110 @@
+@import "/app/_styles/facade/mixins.scss";
+
+.row {
+	display: flex;
+	flex-direction: row;
+    min-height: 0px;
+    min-width: 0px;
+}
+
+.rowCenter {
+    @extend .row;
+	justify-content: center;
+}
+
+.rowCenterAndCenter {
+	@extend .row;
+	align-items: center;
+	justify-content: center;
+}
+
+.rowStart {
+	@extend .row;
+	justify-items: flex-start;
+}
+
+.rowStartAndStart {
+	@extend .rowStart;
+	align-items: start;
+}
+
+.rowStartAndCenter {
+    @extend .rowStart;
+	align-items: center;
+}
+
+.rowStartAndStretch {
+    @extend .rowStart;
+	align-items: stretch;
+}
+
+.rowJustify {
+    @extend .row;
+	justify-content: space-between;
+}
+
+.rowJustifyAndCenter {
+    @extend .rowJustify;
+	align-items: center;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+    min-height: 0px;
+    min-width: 0px;
+}
+
+.columnStart {
+    @extend .column;
+	justify-content: flex-start;
+}
+
+.columnStartAndStretch {
+    @extend .columnStart;
+	align-items: stretch;
+}
+
+.columnWrap {
+    @extend .column;
+	flex-wrap: wrap;
+}
+
+.columnJustify {
+    @extend .column;
+	justify-content: space-between;
+}
+
+.columnStretch {
+    @extend .column;
+	align-items: stretch;
+}
+
+.columnSpaceAndStretch {
+    @extend .column;
+	justify-content: space-between;
+	align-items: stretch;
+}
+
+.columnCenter {
+    @extend .column;
+	align-items: center;
+}
+
+.columnAroundAndCenter {
+    @extend .column;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.scrollableInColumn {
+	flex: 1;
+	overflow-y: auto;
+	@include styled-scrollbar;
+}
+
+.scrollableInColumnHorizontally {
+    flex: 1;
+	overflow-x: auto;
+	@include styled-scrollbar;
+}

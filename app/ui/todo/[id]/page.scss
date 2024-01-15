@@ -1,5 +1,5 @@
-@import "/app/styles/composition/mixins.scss";
-@import "/app/styles/size/mixins.scss";
+@import "/app/_styles/composition/mixins.scss";
+@import "/app/_styles/size/mixins.scss";
 
 $normal-size: 5px;
 
@@ -9,17 +9,22 @@ $normal-size: 5px;
         @include icon-normal-sized;       
     }
 
+    .parents {
+    }
+
     .mainAndChildren {
-        @include row($normal-size);
     }
 
     .main {
         flex: 3;
-        @include column($normal-size);
+
+        .mainInfo {}
 
         .additionalInfo {
-            @include row($normal-size);
             font-size: small;
+        }
+
+        .richEditor {
         }
     }
 

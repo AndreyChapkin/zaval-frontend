@@ -17,7 +17,7 @@ export function RemoveAcceptance({ acceptHandler, cancelHandler }: RemoveAccepta
     }, []);
 
     return (
-        <ModalWindow closeHandler={cancelHandler}>
+        <ModalWindow onClose={cancelHandler}>
             <div className="remove-acceptance">
                 <div className="message">Really want to remove?</div>
                 <button tabIndex={0} ref={buttonRef} onClick={acceptHandler}>

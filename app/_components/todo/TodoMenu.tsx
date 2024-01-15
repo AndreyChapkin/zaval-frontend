@@ -71,7 +71,7 @@ export function TodoMenu({ todoDto, moveHandler, closeHandler }: TodoMenuProps) 
     };
 
     return (
-        <ModalWindow closeHandler={closeHandler}>
+        <ModalWindow onClose={closeHandler}>
             <div className="todo-menu">
                 <div className="edit-pane" onKeyUp={enterKeyHandler}>
                     <TodoStatusSelect currentStatus={editStatus} selectHandler={(status) => setEditStatus(status)} />

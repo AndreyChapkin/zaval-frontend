@@ -21,7 +21,7 @@ function CreateTodo({ parentId, cancelHandler, successHandler }: CreateTodoProps
     const [status, setStatus] = useState<TodoStatus>('BACKLOG');
 
     return (
-        <ModalWindow closeHandler={cancelHandler}>
+        <ModalWindow onClose={cancelHandler}>
             <div className="createTodo">
                 <div className="editPanel">
                     <GeneralSelect
