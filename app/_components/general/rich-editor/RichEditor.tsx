@@ -1,199 +1,138 @@
-import { createNewSimpleRichElement, findNearestRichParentElement, findSelectedRichElement, fixSuspiciousElements, isEditorEmpty, serializeRichContent, switchSelectedElement, useManageRichCopy, useManageRichRemoval, useManageRichReplace, useManageRichUndoRemoval } from '@/app/_lib/rich-editor/rich-editor-helpers';
-import React, { KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, useRef, useState } from 'react';
-import { IconButton } from '../icon-button/IconButton';
 import { CANCEL_ICON_URL, HELP_ICON_URL, SAVE_ICON_URL } from '@/app/_lib/constants/image-url-constants';
-import { decreaseNumberOfCalls } from '@/app/_lib/utils/function-helpers';
-import { detectNativeActions, rewriteDefaultBehaviourForSomeInputs, translateEventToEditorCommand, tryToProcessActionEvent } from '@/app/_lib/rich-editor/event-helpers';
-import { EditorCommand } from '@/app/_lib/rich-editor/editor-actions/editor-action-general-types';
-import { RichText } from '../rich-text/RichText';
+import React, { KeyboardEventHandler, MouseEventHandler, useEffect, useMemo } from 'react';
+import { IconButton } from '../icon-button/IconButton';
 import RichEditorShortkeys from './rich-editor-shortkeys/RichEditorShortkeys';
 
+import { RichElement } from '@/app/_lib/types/rich-text';
 import './RichEditor.scss';
+import { doesActionNeedFullfillment, isReservedShortcut, planRichAction, useActionProcessor } from './lib/rich-action-processors';
+import { createRichHTMLElement, useRichDomManipulator } from './lib/rich-dom-manipulations';
+import { toActionApplyingState, toActionFillingState, toNativeEditionState, toPromptShowingState, toWaitingForActionFillingState, useRichEditorStateManager } from './lib/rich-editor-state';
+import { RichEditorFulfillment } from './rich-editor-fulfillment/RichEditorFulfillment';
 
 // const
 const TEMP_RICH_EDITOR_CONTENT_KEY = `tempRichEditorContent-${window.location.pathname}`;
 
-type RemovedStackElementType = {
-	element: HTMLElement;
-	relativeToAnchor: 'before' | 'after' | 'inside';
-	anchorElement: HTMLElement;
-};
-
 interface RichEditorProps {
-	content: string;
+	richContent: string;
 	className?: string;
 	onSave: (content: string) => Promise<void>;
 	onCancel: () => void;
 }
 
-export const RichEditor: React.FC<RichEditorProps> = ({ className, content: richContent, onSave, onCancel }) => {
+export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, onSave, onCancel }) => {
 
-	const [effectiveRichContent, setEffectiveRichContent] = useState(richContent);
-	const [isPromptShown, setIsPromptShown] = useState(false);
-	const richRemovedStackRef = useRef<RemovedStackElementType[]>([]);
-
-	const selectedElementRef = useRef<HTMLElement | null>(null);
 	const richContentContainerRef = React.useRef<HTMLDivElement>(null);
+	const { currentState, previousState, switchToState, switchToPreviousState } = useRichEditorStateManager(toNativeEditionState());
+	const manipulator = useRichDomManipulator(richContentContainerRef);
+	const actionProcessor = useActionProcessor(manipulator);
 
-	const reserve = useMemo(() => decreaseNumberOfCalls(() => {
-		const content = serializeRichContent(richContentContainerRef.current!!);
-		localStorage.setItem(TEMP_RICH_EDITOR_CONTENT_KEY, content);
-	}, 1500), [richContentContainerRef]);
+	// Handle editor state transitions
+	useEffect(() => {
+		switch (currentState.name) {
+			case 'actionFilling':
+				if (previousState?.name === 'waitingForActionFilling') {
+					const action = actionProcessor.fulfillDraftAction(previousState.draftAction, currentState.fulfillmentInfo);
+					if (action) {
+						// Switch to next state
+						switchToState(toActionApplyingState([action]));
+					}
+				}
+				break;
+			case 'actionApplying':
+				// process current state
+				for (let action of currentState.actions) {
+					actionProcessor.applyRichAction(action);
+				}
+				// Switch to next state
+				switchToState(toNativeEditionState());
+				break;
+		}
+	}, [currentState]);
+
+
+	// const reserve = useMemo(() => decreaseNumberOfCalls(() => {
+	// 	const content = serializeRichContent(richContentContainerRef.current!!);
+	// 	localStorage.setItem(TEMP_RICH_EDITOR_CONTENT_KEY, content);
+	// }, 1500), [richContentContainerRef]);
 
 	let saveHandler = () => {
-		const actualContent = serializeRichContent(richContentContainerRef.current!!);
-		onSave(actualContent)
-			.then(() => {
-				localStorage.removeItem(TEMP_RICH_EDITOR_CONTENT_KEY);
-			});
+		// const actualContent = serializeRichContent(richContentContainerRef.current!!);
+		// onSave(actualContent)
+		// 	.then(() => {
+		// 		localStorage.removeItem(TEMP_RICH_EDITOR_CONTENT_KEY);
+		// 	});
 	};
 
 	let cancelHandler = () => {
-		localStorage.removeItem(TEMP_RICH_EDITOR_CONTENT_KEY);
-		onCancel();
+		// localStorage.removeItem(TEMP_RICH_EDITOR_CONTENT_KEY);
+		// onCancel();
 	};
-
-	const changeSelectedElement = useMemo(() => () => {
-		const prevSelectedElement = selectedElementRef.current;
-		const newSelectedElement = findSelectedRichElement(richContentContainerRef.current!!)?.element ?? null;
-		switchSelectedElement(prevSelectedElement, newSelectedElement);
-		selectedElementRef.current = newSelectedElement;
-	}, []);
 
 	const mouseupHandler: MouseEventHandler = (event) => {
-		changeSelectedElement();
+		manipulator?.findSelectedRichElement();
 	};
 
-	const keyupHandler: KeyboardEventHandler = (event) => {
-		const nativeAction = detectNativeActions(event);
-		if (nativeAction === 'paste') {
-			reserve();
-			return;
-		}
-		// Not interfer with existing command shortkey
-		const editorCommand = translateEventToEditorCommand(event);
-		console.log("@@@ " + richContentContainerRef.current?.innerHTML);
+	const keyupHandler: KeyboardEventHandler<HTMLElement> = (event) => {
 		// Process selected element indication
-		if (
-			!editorCommand &&
-			(event.code === 'ArrowDown' ||
+		if (!isReservedShortcut(event)) {
+			if (event.code === 'ArrowDown' ||
 				event.code === 'ArrowUp' ||
 				event.code === 'ArrowRight' ||
-				event.code === 'ArrowLeft')
-		) {
-			changeSelectedElement();
+				event.code === 'ArrowLeft') {
+				manipulator?.findSelectedRichElement();
+			}
 		}
 	};
 
-	const keydownHandler: KeyboardEventHandler = (event) => {
-		// Process global events like save, cancel and etc.
-		const editorCommand = translateEventToEditorCommand(event);
-		if (editorCommand) {
-			manageEditorCommand(editorCommand);
-			return;
-		}
-		// Process content manipulation actions and get new/changed element
-		const actionResult = tryToProcessActionEvent(event, selectedElementRef.current, richContentContainerRef.current!!);
-		if (actionResult) {
-			if (actionResult.elementInfo) {
-				const { name: actionName, elementInfo } = actionResult;
-				if (actionName === 'created' && elementInfo.richType === 'link') {
-					// Delegate logic to assistance handler
+	let keydownHandler: KeyboardEventHandler<HTMLElement> = (event) => {
+		// Process global editor commands
+		// TODO: process
+		// Process content manipulation actions
+		const actionDraft = planRichAction(event);
+		if (actionDraft) {
+			if (doesActionNeedFullfillment(actionDraft)) {
+				switchToState(toWaitingForActionFillingState(actionDraft));
+			} else {
+				const action = actionProcessor.fulfillDraftAction(actionDraft);
+				if (action) {
+					switchToState(toActionApplyingState([action]));
 				}
 			}
-			return;
-		}
-		const rewriteResult = rewriteDefaultBehaviourForSomeInputs(event);
-		if (rewriteResult === 'done') {
-			return;
 		}
 	};
 
-	const manageRichCopy = useManageRichCopy(selectedElementRef);
-	const manageRichReplace = useManageRichReplace(selectedElementRef);
-	const manageRichRemoval = useManageRichRemoval(selectedElementRef, richRemovedStackRef);
-	const manageRichUndoRemoval = useManageRichUndoRemoval(richRemovedStackRef);
-
-	function manageEditorCommand(command: EditorCommand) {
-		switch (command.name) {
-			case 'save':
-				saveHandler();
-				break;
-			case 'copy':
-				manageRichCopy();
-				break;
-			case 'replace':
-				manageRichReplace();
-				break;
-			case 'delete':
-				manageRichRemoval();
-				break;
-			case 'undoDelete':
-				manageRichUndoRemoval();
-				break;
-			case 'upgradeSelection':
-				if (selectedElementRef.current) {
-					const selectedElement = selectedElementRef.current;
-					const container = richContentContainerRef.current!!;
-					const parentInfo = findNearestRichParentElement(selectedElement, container);
-					if (parentInfo && parentInfo.element !== container) {
-						switchSelectedElement(selectedElement, parentInfo.element);
-					}
-				}
-				break;
-			case 'help':
-				setIsPromptShown(true);
-				break;
-			case 'cancel':
-				cancelHandler();
-				break;
+	const richContentHtml = useMemo(() => {
+		const storedRichContentHtml = localStorage.getItem(TEMP_RICH_EDITOR_CONTENT_KEY);
+		if (storedRichContentHtml) {
+			return storedRichContentHtml;
 		}
-	}
+		return "";
+	}, []);
 
-	// onMount
 	useEffect(() => {
-		// Browser can create inappropriate elements during content edition. Mark such elements.
-		if (richContentContainerRef.current) {
-			// Options for the observer (which mutations to observe)
-			const config = { attributes: true, childList: true, subtree: true };
-			// Callback function to execute when mutations are observed
-			const callback = (mutations: MutationRecord[], _: MutationObserver) => {
-				for (const mutation of mutations) {
-					if (mutation.type === 'childList' || mutation.type === 'characterData') {
-						mutation.addedNodes.forEach((n) => {
-							if (n instanceof HTMLElement) {
-								fixSuspiciousElements(n);
-								reserve();
-							}
-						});
+		const container = richContentContainerRef.current!!;
+		container.innerHTML = "";	// clear previous content to escape conflicts
+		if (richContentHtml) {
+			container.innerHTML = richContentHtml;
+		} else {
+			let richElements: RichElement[] = richContent && JSON.parse(richContent) || [];
+			if (richElements.length < 1) {
+				richElements = [
+					{
+						type: 'simple',
+						text: "Placeholder",
 					}
-				}
-			};
-			// Create an observer instance linked to the callback function
-			const observer = new MutationObserver(callback);
-			// Start observing the target node for configured mutations
-			observer.observe(richContentContainerRef.current, config);
-
-			// Initialize editor content
-			const unpersistedContent = localStorage.getItem(TEMP_RICH_EDITOR_CONTENT_KEY);
-			if (unpersistedContent) {
-				setEffectiveRichContent(unpersistedContent);
-			} else if (isEditorEmpty(richContentContainerRef.current)) {
-				// fill with default paragraph
-				const paragraphElement = createNewSimpleRichElement('paragraph', 'placeholder');
-				richContentContainerRef.current.append(paragraphElement);
+				];
 			}
-			richContentContainerRef.current.focus();
-			// Listen for changes and make reserve when it is needed
-			richContentContainerRef.current.addEventListener('input', reserve);
-
-			return () => observer.disconnect();
+			const richHtmlElements = richElements.map(createRichHTMLElement);
+			container.append(...richHtmlElements);
 		}
 	}, []);
 
 	return (
 		<div className={`richEditor column ${className}`}>
-			<div className="richEditorMenu">
+			<div className="richEditorMenu rowStartAndCenter">
 				<IconButton
 					iconUrl={SAVE_ICON_URL}
 					onClick={saveHandler} />
@@ -203,24 +142,29 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, content: rich
 				<div className="separator" />
 				<IconButton
 					iconUrl={HELP_ICON_URL}
-					onClick={() => setIsPromptShown(prev => !prev)} />
+					onClick={() => switchToState(toPromptShowingState())} />
 			</div>
 			<div
-				className="richEditorBody scrollableInColumn"
-				contentEditable={true}
-				tabIndex={-1}
 				onMouseUp={mouseupHandler}
 				onKeyUp={keyupHandler}
 				onKeyDown={keydownHandler}
-			>
-				<RichText
-					content={effectiveRichContent}
-					ref={richContentContainerRef}
-					isEditionMode={true} />
-			</div>
+				ref={richContentContainerRef}
+				className="richEditorBody scrollableInColumn"
+				contentEditable={true}
+			// dangerouslySetInnerHTML={{ __html: richContentHtml }}
+			/>
 			{
-				isPromptShown &&
-				<RichEditorShortkeys onClose={() => setIsPromptShown(false)} />
+				currentState.name === 'promptShowing' &&
+				<RichEditorShortkeys onClose={() => switchToPreviousState()} />
+			}
+			{
+				currentState.name === 'waitingForActionFilling' &&
+				<RichEditorFulfillment
+					draftAction={currentState.draftAction}
+					onAccept={info => {
+						switchToState(toActionFillingState(info))
+					}}
+					onCancel={() => switchToPreviousState()} />
 			}
 		</div >
 	);

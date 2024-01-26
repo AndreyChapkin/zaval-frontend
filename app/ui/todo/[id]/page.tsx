@@ -33,20 +33,6 @@ function TodoItemPage() {
 
     return (
         <div className="page todoItemPage column">
-            {/* <div>First</div>
-            <div>Second</div>
-            <div className="column">
-                <div className="">Third-one</div>
-                <div className="">Third-two</div>
-                <div className="scrollableInColumn">
-                    {
-                        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1, 1, 11, 1, 1, 11, 1, 1, 11, 1, 1, 1]
-                            .map((_, index) => (
-                                <div key={index} style={{ margin: "10px" }}>Long text</div>
-                            ))
-                    }
-                </div>
-            </div> */}
             {
                 todoFamily ?
                     <>
@@ -68,7 +54,7 @@ function TodoItemPage() {
                                 {
                                     isEditingTodo ?
                                         <RichEditor
-                                            content={todoFamily.description}
+                                            richContent={todoFamily.description ?? ''}
                                             onSave={(content) => Promise.resolve()}
                                             onCancel={() => { setIsEditingTodo(false) }} />
                                         :
@@ -76,7 +62,7 @@ function TodoItemPage() {
                                             <div className="editionMenu">
                                                 <IconButton iconUrl={EDIT_ICON_URL} onClick={() => setIsEditingTodo(true)} />
                                             </div>
-                                            <RichText content={todoFamily.description} />
+                                            <RichText richElements={todoFamily.description ? JSON.parse(todoFamily.description) : []} />
                                         </>
                                 }
                             </div>

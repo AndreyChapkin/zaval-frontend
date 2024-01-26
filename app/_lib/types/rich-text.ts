@@ -1,130 +1,184 @@
-export const RICH_SIMPLE_TYPES = [
-	'title', 'title-1', 'title-2', 'title-3', 'title-4',
-	'paragraph', 'unknown', 'strong', 'obscure', 'link',
-] as const;
-export type RichSimpleTypes = (typeof RICH_SIMPLE_TYPES)[number];
 
-export const RICH_COMPLEX_TYPES = [
-	'list', 'list-item',
-	'expandable-block', 'united-block', 'code-block',
-	'info-block', 'warning-block',
-] as const;
-export type RichComplexTypes = (typeof RICH_COMPLEX_TYPES)[number];
-export function isComplexRichType(value: RichTypes): value is RichComplexTypes {
-	return RICH_COMPLEX_TYPES.indexOf(value as any) > -1;
+export interface RichElementBase {
+	type: RichType;
 }
 
-export const RICH_TYPES = [...RICH_SIMPLE_TYPES, ...RICH_COMPLEX_TYPES] as const;
-export type RichTypes = (typeof RICH_TYPES)[number];
-export function isRichType(value: string): value is RichTypes {
+export interface RichTitleElement extends RichElementBase {
+	type: RichTitleType;
+	text: string;
+	id: string;
+}
+
+export interface RichSimpleElement extends RichElementBase {
+	type: 'simple';
+	text: string;
+}
+
+export interface RichLinkElement extends RichElementBase {
+	type: 'link';
+	name: string;
+	href: string;
+}
+
+export interface RichStrongElement extends RichElementBase {
+	type: 'strong';
+	text: string;
+}
+
+export interface RichListElement extends RichElementBase {
+	type: 'list';
+	children: RichListItemElement[];
+}
+
+export interface RichListItemElement extends RichElementBase {
+	type: 'list-item';
+	children: RichElement[];
+
+}
+
+export interface RichParagraphElement {
+	type: 'paragraph';
+	children: RichElement[];
+}
+
+export interface RichExpandableBlockElement {
+	type: 'expandable-block';
+	title: string;
+	children: RichElement[];
+}
+
+export interface RichUnitedBlockElement {
+	type: 'united-block';
+	children: RichElement[];
+}
+
+export interface RichCodeBlockElement {
+	type: 'code-block';
+	text: string;
+}
+
+export interface RichUnknownElement {
+	type: 'unknown';
+	text: string;
+}
+
+export type RichElementParent = RichParagraphElement | RichListElement
+	| RichListItemElement | RichExpandableBlockElement
+	| RichUnitedBlockElement | RichCodeBlockElement;
+
+export function isRichParentElement(elementType: RichType): boolean {
+	return [
+		'paragraph', 'list', 'list-item', 'expandable-block', 'united-block', 'code-block'
+	].indexOf(elementType) > -1;
+}
+
+export type RichElement = RichSimpleElement | RichLinkElement | RichStrongElement
+	| RichTitleElement | RichElementParent | RichUnknownElement;
+
+export const RICH_TYPES = [
+	'simple', 'title-1', 'title-2', 'title-3', 'title-4',
+	'paragraph', 'unknown', 'strong', 'link', 'list', 'list-item',
+	'expandable-block', 'united-block', 'code-block',
+] as const;
+export type RichType = (typeof RICH_TYPES)[number];
+
+export function isRichType(value: string): value is RichType {
 	return RICH_TYPES.indexOf(value as any) > -1;
 }
 
-export type RichTitleTypes = Extract<RichSimpleTypes, 'title-1' | 'title-2' | 'title-3' | 'title-4'>;
+export type RichTitleType = Extract<RichType, 'title-1' | 'title-2' | 'title-3' | 'title-4'>;
+export const TITLES_ARRAY: RichTitleType[] = ['title-1', 'title-2', 'title-3', 'title-4'] as const;
 
-export const RICH_CLASSES = [
-	'rich-title', 'rich-title-1', 'rich-title-2', 'rich-title-3', 'rich-title-4',
-	'rich-paragraph', 'rich-unknown', 'rich-strong', 'rich-obscure', 'rich-link',
-	'rich-list', 'rich-list-item',
-	'rich-expandable-block', 'rich-united-block', 'rich-code-block',
-	'rich-info-block', 'rich-warning-block',
+export const RICH_CLASS_NAMES = [
+	'richSimple', 'richTitle1', 'richTitle2', 'richTitle3', 'richTitle4',
+	'richParagraph', 'richUnknown', 'richStrong', 'richLink',
+	'richList', 'richListItem',
+	'richExpandableBlock', 'richUnitedBlock', 'richCodeBlock',
 ] as const;
-export type RichClasses = (typeof RICH_CLASSES)[number];
+export type RichClassName = (typeof RICH_CLASS_NAMES)[number];
 
-export const RICH_ATTRIBUTES: Partial<Record<RichTypes, string[]>> = {
-	'link': ['href'],
-	'title-1': ['id'],
-	'title-2': ['id'],
-	'title-3': ['id'],
-	'title-4': ['id'],
-};
-
-export type NewPositionType = 'before' | 'after';
-
-export type NewTransformationType = 'left' | 'right';
-
-export type EditorModes = 'edit' | 'read';
-
-export type PossibleRichParentTypes = RichTypes | 'root' | 'any-parent';
-
-export const SIMPLE_RICH_TYPES_TO_TAGS_MAP: Record<RichSimpleTypes, string> = {
-	"title": 'h1',
-	"title-1": 'h1',
-	"title-2": 'h2',
-	"title-3": 'h3',
-	"title-4": 'h4',
-	'paragraph': 'p',
-	'unknown': 'div',
-	'strong': 'b',
-	'obscure': 'span',
-	'link': 'a',
+export const RICH_TYPE_TO_CLASS_NAME_MAP: Record<RichType, RichClassName> = {
+	'simple': 'richSimple',
+	'title-1': 'richTitle1',
+	'title-2': 'richTitle2',
+	'title-3': 'richTitle3',
+	'title-4': 'richTitle4',
+	'paragraph': 'richParagraph',
+	'unknown': 'richUnknown',
+	'strong': 'richStrong',
+	'link': 'richLink',
+	'list': 'richList',
+	'list-item': 'richListItem',
+	'expandable-block': 'richExpandableBlock',
+	'united-block': 'richUnitedBlock',
+	'code-block': 'richCodeBlock',
 } as const;
 
-export const TAGS_TO_SIMPLE_RICH_TYPES_MAP: Record<string, RichSimpleTypes> = Object.entries(
-	SIMPLE_RICH_TYPES_TO_TAGS_MAP
+export const RICH_CLASS_NAME_TO_TYPE_MAP: Record<RichClassName, RichType> = Object.entries(
+	RICH_TYPE_TO_CLASS_NAME_MAP
 ).reduce((acc, cur) => {
 	acc[cur[1]] = cur[0];
 	return acc;
-}, {} as Record<string, string>) as Record<string, RichSimpleTypes>;
+}, {} as Record<string, string>) as Record<RichClassName, RichType>;
 
-export const RICH_TYPES_TO_POSSIBLE_PARENT_TYPES: Record<RichTypes, PossibleRichParentTypes[]> = {
-	'title': ['root'],
-	'title-1': ['root'],
-	'title-2': ['root'],
-	'title-3': ['root'],
-	'title-4': ['root'],
-	'paragraph': ['root', 'list-item', 'united-block', 'expandable-block'],
-	'unknown': ['any-parent'],
-	'strong': ['paragraph'],
-	'obscure': ['paragraph'],
-	'link': ['paragraph'],
-	'list': ['root', 'list-item', 'united-block', 'expandable-block'],
-	'list-item': ['list', 'list-item', 'united-block', 'expandable-block'],
-	'expandable-block': ['root', 'list-item', 'united-block'],
-	'united-block': ['root', 'list-item'],
-	'code-block': ['root', 'list-item', 'united-block', 'expandable-block'],
-	'info-block': ['root', 'list-item'],
-	'warning-block': ['root', 'list-item']
-};
+export const RICH_TYPE_TO_DEFAULT_MAP: Record<RichType, RichElement> = {
+	'simple': { type: 'simple', text: 'Placeholder' },
+	'title-1': { type: 'title-1', text: 'Placeholder', id: 'Placeholder' },
+	'title-2': { type: 'title-2', text: 'Placeholder', id: 'Placeholder' },
+	'title-3': { type: 'title-3', text: 'Placeholder', id: 'Placeholder' },
+	'title-4': { type: 'title-4', text: 'Placeholder', id: 'Placeholder' },
+	'paragraph': {
+		type: 'paragraph',
+		children: [
+			{ type: 'simple', text: 'Placeholder' },
+		]
+	},
+	'unknown': { type: 'unknown', text: 'Placeholder' },
+	'strong': { type: 'strong', text: 'Placeholder' },
+	'link': { type: 'link', name: 'Placeholder', href: 'Placeholder' },
+	'list': {
+		type: 'list',
+		children: [{
+			type: 'list-item',
+			children: [
+				{ type: 'simple', text: 'Placeholder' },
+			]
+		}]
+	},
+	'list-item': {
+		type: 'list-item',
+		children: [
+			{ type: 'simple', text: 'Placeholder' },
+		]
+	},
+	'expandable-block': {
+		type: 'expandable-block', title: 'Placeholder',
+		children: [
+			{ type: 'simple', text: 'Placeholder' },
+		]
+	},
+	'united-block': {
+		type: 'united-block',
+		children: [
+			{ type: 'simple', text: 'Placeholder' },
+		]
+	},
+	'code-block': {
+		type: 'code-block',
+		text: 'Placeholder',
+	},
+} as const;
 
-export const RICH_TYPES_TO_RICH_CLASSES_MAP: Record<RichTypes, RichClasses> = {
-	'title': 'rich-title',
-	'title-1': 'rich-title-1',
-	'title-2': 'rich-title-2',
-	'title-3': 'rich-title-3',
-	'title-4': 'rich-title-4',
-	'paragraph': 'rich-paragraph',
-	'unknown': 'rich-unknown',
-	'strong': 'rich-strong',
-	'obscure': 'rich-obscure',
-	'link': 'rich-link',
-	'list': 'rich-list',
-	'list-item': 'rich-list-item',
-	'expandable-block': 'rich-expandable-block',
-	'united-block': 'rich-united-block',
-	'code-block': 'rich-code-block',
-	'info-block': 'rich-info-block',
-	'warning-block': 'rich-warning-block',
-};
+export type NewPositionType = 'before' | 'after';
+export type NewTransformationType = 'left' | 'right';
 
-export const RICH_LIST_ITEM_SIGN_CLASS = `${RICH_TYPES_TO_RICH_CLASSES_MAP['list-item']}-sign`;
-export const RICH_LIST_ITEM_CONTENT_CLASS = `${RICH_TYPES_TO_RICH_CLASSES_MAP['list-item']}-content`;
+export const RICH_LIST_ITEM_SIGN_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['list-item']}-sign`;
+export const RICH_LIST_ITEM_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['list-item']}-content`;
 
-export const RICH_CODE_BLOCK_ICON_CLASS = `${RICH_TYPES_TO_RICH_CLASSES_MAP['code-block']}-icon`;
-export const RICH_CODE_BLOCK_CONTENT_CLASS = `${RICH_TYPES_TO_RICH_CLASSES_MAP['code-block']}-content`;
+export const RICH_CODE_BLOCK_ICON_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['code-block']}-icon`;
+export const RICH_CODE_BLOCK_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['code-block']}-content`;
 
-export const RICH_EXPANDABLE_BLOCK_TITLE_CLASS = `${RICH_TYPES_TO_RICH_CLASSES_MAP['expandable-block']}-title`;
-export const RICH_EXPANDABLE_BLOCK_CONTENT_CLASS = `${RICH_TYPES_TO_RICH_CLASSES_MAP['expandable-block']}-content`;
+export const RICH_EXPANDABLE_BLOCK_TITLE_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['expandable-block']}-title`;
+export const RICH_EXPANDABLE_BLOCK_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['expandable-block']}-content`;
 
-export const RICH_CLASSES_TO_RICH_TYPES_MAP: Record<RichClasses, RichTypes> = Object.entries(
-	RICH_TYPES_TO_RICH_CLASSES_MAP
-).reduce((acc, cur) => {
-	acc[cur[1]] = cur[0];
-	return acc;
-}, {} as Record<string, string>) as Record<RichClasses, RichTypes>;
-
-export interface DescriptionFragment {
-	richType: RichTypes;
-	attributes?: Record<string, string> | null;
-	children: (string | DescriptionFragment)[];
-}
+export const RICH_SELECTED_ELEMENT_CLASS = 'richSelectedElement';

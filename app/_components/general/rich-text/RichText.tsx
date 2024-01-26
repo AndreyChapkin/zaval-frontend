@@ -1,14 +1,22 @@
 import React from 'react';
 
+import { RichElement } from '@/app/_lib/types/rich-text';
 import './RichText.scss';
+import { resolveRichFragment } from './rich-fragments/RichFragments';
 
 interface RichTextProps {
-    content: string;
+    richElements: RichElement[];
     isEditionMode?: boolean;
 }
 
-export const RichText = React.forwardRef<HTMLDivElement, RichTextProps>(({ content, isEditionMode = false }, ref) => {
+export const RichText = React.forwardRef<HTMLDivElement, RichTextProps>(({ richElements, isEditionMode = false }, ref) => {
     return (
-        <div className='richText' contentEditable={isEditionMode} ref={ref} dangerouslySetInnerHTML={{ __html: content }} />
+        <div className='richText columnStartAndStretch'>
+            {
+                richElements.map((richElement) => {
+                    return resolveRichFragment(richElement);
+                })
+            }
+        </div>
     );
 });
