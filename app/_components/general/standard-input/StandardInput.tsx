@@ -4,10 +4,11 @@ import './StandardInput.scss';
 
 interface StandardInputProps {
     value: string;
+    autofocus?: boolean;
     onChange: (value: string) => void;
 }
 
-export const StandardInput: React.FC<StandardInputProps> = ({ value, onChange }) => {
+export const StandardInput: React.FC<StandardInputProps> = ({ value, autofocus, onChange }) => {
     
     const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value);
@@ -15,6 +16,7 @@ export const StandardInput: React.FC<StandardInputProps> = ({ value, onChange })
 
     return (
         <input
+            autoFocus={autofocus}
             className="standardInput"
             type="text"
             value={value}

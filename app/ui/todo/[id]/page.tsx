@@ -4,7 +4,7 @@ import { ActionButton } from "@/app/_components/general/action-button/ActionButt
 import CreateTodo from "@/app/_components/todo/create-todo/CreateTodo";
 import PrimitiveCard from "@/app/_components/todo/primitive-card/PrimitiveCard";
 import { resolveTodoUrl } from "@/app/_lib/calls/resolvers/todo-url-resolvers";
-import { getTodoFamily } from "@/app/_lib/calls/todo-calls";
+import { getTodoFamily, updateTodo } from "@/app/_lib/calls/todo-calls";
 import { TodoFamilyDto } from "@/app/_lib/types/todo";
 import { presentDate } from "@/app/_lib/utils/presentation-helpers";
 import { useParams, useRouter } from "next/navigation";
@@ -55,8 +55,11 @@ function TodoItemPage() {
                                     isEditingTodo ?
                                         <RichEditor
                                             richContent={todoFamily.description ?? ''}
-                                            onSave={(content) => Promise.resolve()}
-                                            onCancel={() => { setIsEditingTodo(false) }} />
+                                            onSave={
+                                                (content) => updateTodo(id, { description: content })
+                                                    .then(() => window.location.reload())
+                                            }
+                                            onCancel={() => setIsEditingTodo(false)} />
                                         :
                                         <>
                                             <div className="editionMenu">

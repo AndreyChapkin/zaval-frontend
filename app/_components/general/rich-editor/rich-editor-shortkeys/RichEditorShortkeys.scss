@@ -13,7 +13,7 @@ $large-size: 12px;
     flex-wrap: wrap;
     border-radius: 0 0 $normal-size $normal-size;
     padding: $wide-size;
-    background-color: $secondary-color;
+    background-color: $secondary-dark-2-color;
 
     .column {
         @include column($small-size);

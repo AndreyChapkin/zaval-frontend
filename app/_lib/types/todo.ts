@@ -29,11 +29,6 @@ export interface TodoCreateDto {
     parentId: number | null;
 }
 
-export interface UpdateTodoData {
-    id: number;
-    updateTodoDto: UpdateTodoDto;
-}
-
 export interface UpdateTodoDto {
     general?: UpdateTodoGeneralDto,
     description?: string

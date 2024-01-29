@@ -1,4 +1,5 @@
 import { RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichUnitedBlockElement, RichUnknownElement } from "@/app/_lib/types/rich-text";
+import { useState } from "react";
 
 export function resolveRichFragment(richElement: RichElement | string): React.ReactNode {
     if (typeof richElement === 'string') {
@@ -82,24 +83,33 @@ export const RichList: React.FC<RichElementProps<RichListElement>> = ({ richElem
 );
 
 export const RichListItem: React.FC<RichElementProps<RichListItemElement>> = ({ richElement }) => (
-    <li className={RICH_TYPE_TO_CLASS_NAME_MAP['list-item']}>
+    <li className={`${RICH_TYPE_TO_CLASS_NAME_MAP['list-item']} rowStartAndStart`}>
         <div className={RICH_LIST_ITEM_SIGN_CLASS} />
-        <div className={RICH_LIST_ITEM_CONTENT_CLASS}>
+        <div className={`${RICH_LIST_ITEM_CONTENT_CLASS} rowStartAndStart`}>
             {richElement.children.map(resolveRichFragment)}
         </div>
     </li>
 );
 
-export const RichExpandableBlock: React.FC<RichElementProps<RichExpandableBlockElement>> = ({ richElement }) => (
-    <div className={RICH_TYPE_TO_CLASS_NAME_MAP['expandable-block']}>
-        <div className={RICH_EXPANDABLE_BLOCK_TITLE_CLASS}>
+export const RichExpandableBlock: React.FC<RichElementProps<RichExpandableBlockElement>> = ({ richElement }) => {
+
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const clickHandler = () => setIsExpanded(!isExpanded);
+
+
+    return (<div className={RICH_TYPE_TO_CLASS_NAME_MAP['expandable-block']}>
+        <div className={RICH_EXPANDABLE_BLOCK_TITLE_CLASS} onClick={clickHandler}>
             {richElement.title}
         </div>
-        <div className={RICH_EXPANDABLE_BLOCK_CONTENT_CLASS}>
-            {richElement.children.map(resolveRichFragment)}
-        </div>
-    </div>
-);
+        {
+            isExpanded &&
+            <div className={RICH_EXPANDABLE_BLOCK_CONTENT_CLASS}>
+                {richElement.children.map(resolveRichFragment)}
+            </div>
+        }
+    </div>);
+};
 
 export const RichUnitedBlock: React.FC<RichElementProps<RichUnitedBlockElement>> = ({ richElement }) => (
     <div className={RICH_TYPE_TO_CLASS_NAME_MAP['united-block']}>

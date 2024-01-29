@@ -1,17 +1,18 @@
 import { CANCEL_ICON_URL, HELP_ICON_URL, SAVE_ICON_URL } from '@/app/_lib/constants/image-url-constants';
-import React, { KeyboardEventHandler, MouseEventHandler, useEffect, useMemo } from 'react';
+import React, { KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import { IconButton } from '../icon-button/IconButton';
 import RichEditorShortkeys from './rich-editor-shortkeys/RichEditorShortkeys';
 
 import { RichElement } from '@/app/_lib/types/rich-text';
+import { decreaseNumberOfCalls, readFromClipboard, writeToClipboard } from '@/app/_lib/utils/function-helpers';
 import './RichEditor.scss';
-import { doesActionNeedFullfillment, isReservedShortcut, planRichAction, useActionProcessor } from './lib/rich-action-processors';
-import { createRichHTMLElement, useRichDomManipulator } from './lib/rich-dom-manipulations';
-import { toActionApplyingState, toActionFillingState, toNativeEditionState, toPromptShowingState, toWaitingForActionFillingState, useRichEditorStateManager } from './lib/rich-editor-state';
+import { useRichActionConveyor } from './lib/rich-action-conveyor';
+import { RichDeleteAction, RichReplaceAction, asDeleteAction, asReplaceAction, isReservedShortcut, planRichAction } from './lib/rich-action-processors';
+import { EditorCommand, translateEventToEditorCommand } from './lib/rich-command-processors';
+import { createRichHTMLElement, removeEmptyRichElements, useRichDomManipulator } from './lib/rich-dom-manipulations';
 import { RichEditorFulfillment } from './rich-editor-fulfillment/RichEditorFulfillment';
 
-// const
-const TEMP_RICH_EDITOR_CONTENT_KEY = `tempRichEditorContent-${window.location.pathname}`;
+import "../rich-text/rich-fragments/rich-elements.scss";
 
 interface RichEditorProps {
 	richContent: string;
@@ -22,51 +23,40 @@ interface RichEditorProps {
 
 export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, onSave, onCancel }) => {
 
-	const richContentContainerRef = React.useRef<HTMLDivElement>(null);
-	const { currentState, previousState, switchToState, switchToPreviousState } = useRichEditorStateManager(toNativeEditionState());
+	// const
+	const TEMP_RICH_EDITOR_CONTENT_KEY = `tempRichEditorContent-${window.location.pathname}`;
+
+	const [isPromptShown, setIsPromptShown] = useState(false);
+	const richContentContainerRef = useRef<HTMLDivElement>(null);
 	const manipulator = useRichDomManipulator(richContentContainerRef);
-	const actionProcessor = useActionProcessor(manipulator);
+	const actionConveyor = useRichActionConveyor(manipulator);
 
-	// Handle editor state transitions
+	// Handle conveyor status
 	useEffect(() => {
-		switch (currentState.name) {
-			case 'actionFilling':
-				if (previousState?.name === 'waitingForActionFilling') {
-					const action = actionProcessor.fulfillDraftAction(previousState.draftAction, currentState.fulfillmentInfo);
-					if (action) {
-						// Switch to next state
-						switchToState(toActionApplyingState([action]));
-					}
-				}
-				break;
-			case 'actionApplying':
-				// process current state
-				for (let action of currentState.actions) {
-					actionProcessor.applyRichAction(action);
-				}
-				// Switch to next state
-				switchToState(toNativeEditionState());
-				break;
+		if (actionConveyor.status === 'readyToProcess') {
+			actionConveyor.processActions();
 		}
-	}, [currentState]);
+	}, [actionConveyor.status]);
 
-
-	// const reserve = useMemo(() => decreaseNumberOfCalls(() => {
-	// 	const content = serializeRichContent(richContentContainerRef.current!!);
-	// 	localStorage.setItem(TEMP_RICH_EDITOR_CONTENT_KEY, content);
-	// }, 1500), [richContentContainerRef]);
+	const reserve = useMemo(() => decreaseNumberOfCalls(() => {
+		const richHtml = richContentContainerRef.current!!.innerHTML;
+		localStorage.setItem(TEMP_RICH_EDITOR_CONTENT_KEY, richHtml);
+	}, 1500), [richContentContainerRef]);
 
 	let saveHandler = () => {
-		// const actualContent = serializeRichContent(richContentContainerRef.current!!);
-		// onSave(actualContent)
-		// 	.then(() => {
-		// 		localStorage.removeItem(TEMP_RICH_EDITOR_CONTENT_KEY);
-		// 	});
+		let actualRichElements = manipulator?.extractAllRichElements();
+		if (actualRichElements) {
+			actualRichElements = removeEmptyRichElements(actualRichElements);
+		}
+		onSave(JSON.stringify(actualRichElements))
+			.then(() => {
+				localStorage.removeItem(TEMP_RICH_EDITOR_CONTENT_KEY);
+			});
 	};
 
 	let cancelHandler = () => {
-		// localStorage.removeItem(TEMP_RICH_EDITOR_CONTENT_KEY);
-		// onCancel();
+		localStorage.removeItem(TEMP_RICH_EDITOR_CONTENT_KEY);
+		onCancel();
 	};
 
 	const mouseupHandler: MouseEventHandler = (event) => {
@@ -83,25 +73,89 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				manipulator?.findSelectedRichElement();
 			}
 		}
+		// reserve content
+		reserve();
 	};
 
 	let keydownHandler: KeyboardEventHandler<HTMLElement> = (event) => {
 		// Process global editor commands
-		// TODO: process
+		const command = translateEventToEditorCommand(event);
+		if (command) {
+			manageEditorCommand(command);
+			return;
+		}
 		// Process content manipulation actions
 		const actionDraft = planRichAction(event);
 		if (actionDraft) {
-			if (doesActionNeedFullfillment(actionDraft)) {
-				switchToState(toWaitingForActionFillingState(actionDraft));
-			} else {
-				const action = actionProcessor.fulfillDraftAction(actionDraft);
-				if (action) {
-					switchToState(toActionApplyingState([action]));
-				}
-			}
+			actionConveyor.submitDraft(actionDraft);
+			return;
 		}
 	};
 
+	let manageEditorCommand = async (command: EditorCommand) => {
+		switch (command.name) {
+			case 'save':
+				saveHandler();
+				break;
+			case 'copy':
+				manageRichCopy();
+				break;
+			case 'replace':
+				const replaceAction = await manageRichReplace();
+				replaceAction
+					&& actionConveyor.submitActions([replaceAction]);
+				break;
+			case 'delete':
+				const removeAction = manageRichRemoval();
+				removeAction
+					&& actionConveyor.submitActions([removeAction]);
+				break;
+			case 'undoDelete':
+				manageRichUndoRemoval();
+				break;
+			case 'upgradeSelection':
+				manipulator?.selectNearestRichParentOfSelectedElement();
+				break;
+			case 'help':
+				setIsPromptShown(true);
+				break;
+			case 'cancel':
+				onCancel();
+				break;
+		}
+	}
+
+	function manageRichCopy() {
+		const selectedContent = manipulator?.extractSelectedElementHtml();
+		if (selectedContent) {
+			writeToClipboard(selectedContent, 'text/html');
+		}
+	}
+
+	async function manageRichReplace(): Promise<RichReplaceAction | null> {
+		if (manipulator?.selectedElementInfo) {
+			const selectedElement = manipulator.selectedElementInfo.element;
+			const clipboardElements = await readFromClipboard('text/html') as HTMLElement[];
+			if (clipboardElements) {
+				return asReplaceAction(selectedElement, clipboardElements);
+			}
+		}
+		return null;
+	}
+
+	function manageRichRemoval(): RichDeleteAction | null {
+		if (manipulator?.selectedElementInfo) {
+			const selectedElement = manipulator.selectedElementInfo.element;
+			return asDeleteAction(selectedElement);
+		}
+		return null;
+	}
+
+	function manageRichUndoRemoval() {
+		// TODO: implement
+	}
+
+	// read persisted content
 	const richContentHtml = useMemo(() => {
 		const storedRichContentHtml = localStorage.getItem(TEMP_RICH_EDITOR_CONTENT_KEY);
 		if (storedRichContentHtml) {
@@ -110,6 +164,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 		return "";
 	}, []);
 
+	// update rich content
 	useEffect(() => {
 		const container = richContentContainerRef.current!!;
 		container.innerHTML = "";	// clear previous content to escape conflicts
@@ -117,12 +172,18 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 			container.innerHTML = richContentHtml;
 		} else {
 			let richElements: RichElement[] = richContent && JSON.parse(richContent) || [];
+			// default content
 			if (richElements.length < 1) {
 				richElements = [
 					{
-						type: 'simple',
-						text: "Placeholder",
-					}
+						type: 'paragraph',
+						children: [
+							{
+								type: 'simple',
+								text: 'Placeholder',
+							}
+						],
+					},
 				];
 			}
 			const richHtmlElements = richElements.map(createRichHTMLElement);
@@ -142,7 +203,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				<div className="separator" />
 				<IconButton
 					iconUrl={HELP_ICON_URL}
-					onClick={() => switchToState(toPromptShowingState())} />
+					onClick={() => setIsPromptShown(true)} />
 			</div>
 			<div
 				onMouseUp={mouseupHandler}
@@ -151,20 +212,19 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				ref={richContentContainerRef}
 				className="richEditorBody scrollableInColumn"
 				contentEditable={true}
-			// dangerouslySetInnerHTML={{ __html: richContentHtml }}
 			/>
 			{
-				currentState.name === 'promptShowing' &&
-				<RichEditorShortkeys onClose={() => switchToPreviousState()} />
+				isPromptShown &&
+				<RichEditorShortkeys onClose={() => setIsPromptShown(false)} />
 			}
 			{
-				currentState.name === 'waitingForActionFilling' &&
+				actionConveyor.status === 'needFulfillment' &&
 				<RichEditorFulfillment
-					draftAction={currentState.draftAction}
+					draftAction={actionConveyor.info.draft!!}
 					onAccept={info => {
-						switchToState(toActionFillingState(info))
+						actionConveyor.completeDraft(info);
 					}}
-					onCancel={() => switchToPreviousState()} />
+					onCancel={() => actionConveyor.discardDraft()} />
 			}
 		</div >
 	);

@@ -3,7 +3,6 @@ import { ActionButton } from '../../action-button/ActionButton';
 import { ModalWindow } from '../../modal-window/ModalWindow';
 import { StandardInput } from '../../standard-input/StandardInput';
 import { FulfillmentInfo, FulfillmentLinkInfo, RichActionDraft } from '../lib/rich-action-processors';
-import { RichType } from '@/app/_lib/types/rich-text';
 
 interface RichEditorFulfillmentProps {
     draftAction: RichActionDraft;
@@ -33,7 +32,7 @@ const LinkFulfillment: React.FC<LinkFulfillmentProps> = ({ onAccept }) => {
     const [href, setHref] = React.useState('');
     return (
         <div className="linkFulfillment column">
-            <StandardInput value={name} onChange={setName} />
+            <StandardInput autofocus value={name} onChange={setName} />
             <StandardInput value={href} onChange={setHref} />
             <div className='linkFulfillmentControl'>
                 <ActionButton

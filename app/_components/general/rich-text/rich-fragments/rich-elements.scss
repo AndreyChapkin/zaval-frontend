@@ -1,0 +1,159 @@
+@import 'app/_styles/size/mixins.scss';
+@import 'app/_styles/composition/mixins.scss';
+@import 'app/_styles/facade/mixins.scss';
+@import 'app/_styles/color/variables.scss';
+@import 'app/_components/composition.scss';
+
+@font-face {
+    font-family: Nunito;
+    font-weight: normal;
+    src: url('/fonts/Nunito-Regular.ttf');
+}
+
+@font-face {
+    font-family: Nunito;
+    font-weight: bold;
+    src: url('/fonts/Nunito-Black.ttf');
+}
+
+$title-color: rgb(208, 170, 87);
+$title-font-size: 28px;
+
+.richTitle {
+    color: rgb(236, 178, 70);
+    font-size: larger;
+    font-weight: bold;
+    font-family: Nunito;
+    margin-bottom: 10px;
+}
+
+.richTitle-1 {
+    color: $title-color;
+    font-size: $title-font-size;
+    font-weight: bold;
+    font-family: Nunito;
+    margin: 20px 0;
+    @include bordered(left, $title-color, 5px);
+    padding-left: 10px;
+}
+
+.richTitle-2 {
+    color: $title-color;
+    font-size: $title-font-size - 4px;
+    font-weight: bold;
+    font-family: Nunito;
+    margin: 10px 0;
+}
+
+.richTitle-3 {
+    color: darken($title-color, 12%);
+    font-size: $title-font-size - 8px;
+    font-weight: bold;
+    font-family: Nunito;
+    margin: 10px 0;
+}
+
+.richTitle-4 {
+    color: darken($title-color, 12%);
+    font-size: $title-font-size - 12px;
+    font-weight: bold;
+    font-family: Nunito;
+    margin: 10px 0;
+}
+
+.richParagraph {
+    color: $main-font-color;
+    font-family: Nunito;
+    margin: 0px;
+}
+
+.richUnknown {
+    @include standard-container;
+    background-color: rgb(173, 30, 30);
+}
+
+.richStrong {
+    color: $secondary-light-1-color;
+}
+
+.richLink {
+    color: rgb(125, 180, 212);
+    text-decoration: underline dotted;
+}
+
+.richList {
+    display: flex;
+    justify-content: flex-start;
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+.richListItem {
+    
+}
+
+.richListItemSign {
+    margin: 6px 15px 0 0;
+    width: 6px;
+    height: 6px;
+    background-color: $secondary-color;
+}
+
+.richUnitedBlock {
+    padding: 5px;
+    margin: 5px 0;
+    border: 2px solid $secondary-dark-1-color;
+    border-radius: 5px;
+}
+
+.richExpandableBlock {
+    @include column-start;
+    border: 2px solid $secondary-dark-1-color;
+    border-radius: 5px;
+    margin: 5px 0;
+    overflow: hidden;
+}
+
+.richExpandableBlockTitle {
+    background-color: $secondary-dark-1-color;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.richExpandableBlockContent {
+    padding: 5px;
+}
+
+.richCodeBlock {
+    @include row-start;
+    border-radius: 5px;
+    margin: 10px 0;
+    background-color: $main-dark-1-color;
+    position: relative;
+}
+
+.richCodeBlockIcon {
+    @include row;
+    background-color: $secondary-light-1-color;
+    padding: 10px;
+    cursor: pointer;
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    width: 25px;
+    height: 20px;
+}
+
+.richCodeBlockIcon img {
+    @include icon-normal-sized;
+    position: absolute;
+    left: 2px;
+    top: 0px;
+}
+
+.richCodeBlockContent {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 10px 5px;
+    overflow-x: auto;
+    @include styled-scrollbar;
+}

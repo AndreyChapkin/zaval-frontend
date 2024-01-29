@@ -1,7 +1,8 @@
-import { RICH_CLASS_NAMES, RICH_CLASS_NAME_TO_TYPE_MAP, RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_SELECTED_ELEMENT_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichClassName, RichCodeBlockElement, RichElement, RichElementBase, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichTitleType, RichType, RichUnitedBlockElement, RichUnknownElement } from "@/app/_lib/types/rich-text";
-import { htmlElem } from "./dom-builders";
-import { findNearestParentElement, findSelectedElement } from "./dom-manipulation";
+import { RICH_CLASS_NAMES, RICH_CLASS_NAME_TO_TYPE_MAP, RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_SELECTED_ELEMENT_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichClassName, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichParentElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichTitleType, RichType, RichUnitedBlockElement, RichUnknownElement, TITLES_ARRAY, isRichParentElement } from "@/app/_lib/types/rich-text";
 import { useEffect, useState } from "react";
+import { htmlElem } from "./dom-builders";
+import { findNearestParentElement } from "./dom-manipulation";
+import { findSelectedElement, selectTextInNode } from "./dom-selections";
 
 export interface SelectedElementInfo {
 	element: HTMLElement;
@@ -28,6 +29,20 @@ export class RichDomManipulator {
 		this.containerElement = containerElement;
 	}
 
+	setAsSelectedElement(element: HTMLElement, richType?: RichType): { element: HTMLElement, richType: RichType } {
+		const selectedType = richType ?? defineElementRichType(element)!!;
+		// change selected element class indicator
+		if (this.selectedElementInfo) {
+			this.selectedElementInfo.element.classList.remove(RICH_SELECTED_ELEMENT_CLASS);
+		}
+		element.classList.add(RICH_SELECTED_ELEMENT_CLASS);
+		this.selectedElementInfo = {
+			element,
+			richType: selectedType
+		}
+		return this.selectedElementInfo;
+	}
+
 	findSelectedRichElement(): { element: HTMLElement, richType: RichType } | null {
 		let element = findSelectedElement();
 		let richType = element && defineElementRichType(element);
@@ -39,30 +54,33 @@ export class RichDomManipulator {
 			richType = element && defineElementRichType(element);
 		}
 		if (richType && element) {
-			// change selected element class indicator
-			if (this.selectedElementInfo) {
-				this.selectedElementInfo.element.classList.remove(RICH_SELECTED_ELEMENT_CLASS);
-			}
-			element.classList.add(RICH_SELECTED_ELEMENT_CLASS);
-			this.selectedElementInfo = {
-				element,
-				richType
-			}
-			return this.selectedElementInfo;
+			return this.setAsSelectedElement(element, richType);
 		}
 		return null;
 	}
 
-	findNearestRichParentElement(
+	selectNearestRichParentOfSelectedElement(): { element: HTMLElement, richType: RichType } | null {
+		const selectedElementInfo = this.findSelectedRichElement();
+		if (selectedElementInfo) {
+			const parentElement = findNearestParentElement(selectedElementInfo.element);
+			if (parentElement) {
+				return this.setAsSelectedElement(parentElement);
+			}
+		}
+		return null;
+	}
+
+	findNearestRichElement(
 		childElement: Node,
-	): { element: HTMLElement, type: RichType } | { type: 'root', containerElement: HTMLElement } | null {
+		excludeTypes: RichType[] = [],
+	): { element: HTMLElement, type: RichType | 'container' } | null {
 		let element = findNearestParentElement(childElement);
 		let richType = element && defineElementRichType(element);
-		while (element && !richType) {
+		while (element && (!richType || excludeTypes.indexOf(richType) > -1)) {
 			if (element === this.containerElement) {
 				return {
-					type: 'root',
-					containerElement: this.containerElement,
+					type: 'container',
+					element: this.containerElement,
 				};
 			}
 			element = findNearestParentElement(element);
@@ -77,10 +95,27 @@ export class RichDomManipulator {
 		return null;
 	}
 
+	findNearestRichParentElement(
+		childElement: Node,
+		excludeTypes: RichType[] = [],
+	): { element: HTMLElement, type: RichType | 'container' } | null {
+		let elementInfo = this.findNearestRichElement(childElement);
+		while (elementInfo && elementInfo.type !== 'container' && excludeTypes.indexOf(elementInfo.type) > -1) {
+			elementInfo = this.findNearestRichElement(elementInfo.element);
+		}
+		if (elementInfo && isRichParentElement(elementInfo.type as any)) {
+			return elementInfo;
+		}
+		return null;
+	}
+
 	findNearestRichRootElement(childElement: Node): HTMLElement | null {
 		let searchResult = this.findNearestRichParentElement(childElement);
+		if (searchResult && searchResult.type === 'container') {
+			return childElement as HTMLElement;
+		}
 		let prevSearchResult = null;
-		while (searchResult && searchResult.type !== 'root') {
+		while (searchResult && searchResult.type !== 'container') {
 			prevSearchResult = searchResult;
 			searchResult = this.findNearestRichParentElement(searchResult.element);
 		}
@@ -89,11 +124,24 @@ export class RichDomManipulator {
 
 	findNearestElementWithType(richType: RichType, childElement: Node): HTMLElement | null {
 		let searchResult = this.findNearestRichParentElement(childElement);
-		while (searchResult && searchResult.type !== 'root') {
+		while (searchResult && searchResult.type !== 'container') {
 			if (searchResult.type === richType) {
 				return searchResult.element;
 			}
 			searchResult = this.findNearestRichParentElement(searchResult.element);
+		}
+		return null;
+	}
+
+	extractAllRichElements(): RichElement[] {
+		const children = Array.from(this.containerElement.children) as HTMLElement[];
+		return children.map(parseRichHTMLElement);
+	}
+
+	extractSelectedElementHtml(): string | null {
+		const content = this.selectedElementInfo?.element.outerHTML;
+		if (content) {
+			return content;
 		}
 		return null;
 	}
@@ -264,7 +312,7 @@ const RichTranslators: Record<RichType, {
 		toHtml: (richElement: RichListItemElement): HTMLElement => {
 			return htmlElem({
 				tag: 'li',
-				classes: RICH_TYPE_TO_CLASS_NAME_MAP['list-item'],
+				classes: [RICH_TYPE_TO_CLASS_NAME_MAP['list-item'], "rowStartAndStart"],
 				children: [
 					htmlElem({
 						tag: 'div',
@@ -306,11 +354,13 @@ const RichTranslators: Record<RichType, {
 				]
 			});
 		},
-		fromHtml: (htmlElem: HTMLElement): RichListItemElement => {
+		fromHtml: (htmlElem: HTMLElement): RichExpandableBlockElement => {
+			const titleElement = htmlElem.querySelector(`.${RICH_EXPANDABLE_BLOCK_TITLE_CLASS}`)!! as HTMLElement;
 			const contentElement = htmlElem.querySelector(`.${RICH_EXPANDABLE_BLOCK_CONTENT_CLASS}`)!!;
 			const children = Array.from(contentElement.children) as HTMLElement[];
 			return {
-				type: 'list-item',
+				type: 'expandable-block',
+				title: titleElement.innerText,
 				children: children.map(parseRichHTMLElement),
 			};
 		},
@@ -374,3 +424,32 @@ const RichTranslators: Record<RichType, {
 		},
 	}
 };
+
+export function removeEmptyRichElements(elements: RichElement[]): RichElement[] {
+	const nonEmptyElement = elements.filter(canBeAdded);
+	return nonEmptyElement;
+}
+
+function canBeAdded(richElement: RichElement): boolean {
+	if (isRichParentElement(richElement.type)) {
+		const parent = richElement as RichParentElement;
+		parent.children = parent.children.filter(canBeAdded);
+		return parent.children.length > 0;
+	}
+	switch (richElement.type) {
+		case 'title-1':
+		case 'title-2':
+		case 'title-3':
+		case 'title-4':
+			return richElement.text.length > 0;
+		case 'simple':
+			return richElement.text.length > 0;
+		case 'link':
+			return richElement.name.length > 0;
+		case 'strong':
+			return richElement.text.length > 0;
+		case 'unknown':
+			return richElement.text.length > 0;
+	}
+	return true;
+}

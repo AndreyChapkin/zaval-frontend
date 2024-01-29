@@ -3,6 +3,10 @@ export interface RichElementBase {
 	type: RichType;
 }
 
+export interface RichParentElement {
+	children: RichElement[];
+}
+
 export interface RichTitleElement extends RichElementBase {
 	type: RichTitleType;
 	text: string;
@@ -25,34 +29,34 @@ export interface RichStrongElement extends RichElementBase {
 	text: string;
 }
 
-export interface RichListElement extends RichElementBase {
+export interface RichListElement extends RichElementBase, RichParentElement {
 	type: 'list';
 	children: RichListItemElement[];
 }
 
-export interface RichListItemElement extends RichElementBase {
+export interface RichListItemElement extends RichElementBase, RichParentElement {
 	type: 'list-item';
 	children: RichElement[];
 
 }
 
-export interface RichParagraphElement {
+export interface RichParagraphElement extends RichElementBase, RichParentElement {
 	type: 'paragraph';
 	children: RichElement[];
 }
 
-export interface RichExpandableBlockElement {
+export interface RichExpandableBlockElement extends RichElementBase, RichParentElement {
 	type: 'expandable-block';
 	title: string;
 	children: RichElement[];
 }
 
-export interface RichUnitedBlockElement {
+export interface RichUnitedBlockElement extends RichElementBase, RichParentElement {
 	type: 'united-block';
 	children: RichElement[];
 }
 
-export interface RichCodeBlockElement {
+export interface RichCodeBlockElement extends RichElementBase {
 	type: 'code-block';
 	text: string;
 }
@@ -141,7 +145,10 @@ export const RICH_TYPE_TO_DEFAULT_MAP: Record<RichType, RichElement> = {
 		children: [{
 			type: 'list-item',
 			children: [
-				{ type: 'simple', text: 'Placeholder' },
+				{
+					type: 'paragraph',
+					children: [{ type: 'simple', text: 'Placeholder' }]
+				}
 			]
 		}]
 	},
@@ -172,13 +179,13 @@ export const RICH_TYPE_TO_DEFAULT_MAP: Record<RichType, RichElement> = {
 export type NewPositionType = 'before' | 'after';
 export type NewTransformationType = 'left' | 'right';
 
-export const RICH_LIST_ITEM_SIGN_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['list-item']}-sign`;
-export const RICH_LIST_ITEM_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['list-item']}-content`;
+export const RICH_LIST_ITEM_SIGN_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['list-item']}Sign`;
+export const RICH_LIST_ITEM_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['list-item']}Content`;
 
-export const RICH_CODE_BLOCK_ICON_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['code-block']}-icon`;
-export const RICH_CODE_BLOCK_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['code-block']}-content`;
+export const RICH_CODE_BLOCK_ICON_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['code-block']}Icon`;
+export const RICH_CODE_BLOCK_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['code-block']}Content`;
 
-export const RICH_EXPANDABLE_BLOCK_TITLE_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['expandable-block']}-title`;
-export const RICH_EXPANDABLE_BLOCK_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['expandable-block']}-content`;
+export const RICH_EXPANDABLE_BLOCK_TITLE_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['expandable-block']}Title`;
+export const RICH_EXPANDABLE_BLOCK_CONTENT_CLASS = `${RICH_TYPE_TO_CLASS_NAME_MAP['expandable-block']}Content`;
 
 export const RICH_SELECTED_ELEMENT_CLASS = 'richSelectedElement';
