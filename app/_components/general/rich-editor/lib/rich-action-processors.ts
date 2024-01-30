@@ -1,6 +1,6 @@
 import { RICH_TYPE_TO_DEFAULT_MAP, RichTitleElement, RichTitleType, RichType, TITLES_ARRAY, isRichParentElement } from "@/app/_lib/types/rich-text";
 import { useEffect, useState } from "react";
-import { RichDomManipulator, createRichHTMLElement, defineElementRichType, parseRichHTMLElement } from "./rich-dom-manipulations";
+import { RichDomManipulator, RichTranslators, createRichHTMLElement, defineElementRichType, parseRichHTMLElement } from "./rich-dom-manipulations";
 import { translateEventToEditorCommand } from "./rich-command-processors";
 
 const KEY_TO_EDITION_ACTION_MAP: Record<string, RichActionDraft> = {
@@ -77,6 +77,16 @@ export interface RichCreateAction {
             anchorElement: HTMLElement;
             position: 'before' | 'after' | 'begin' | 'end';
         };
+    };
+}
+
+export function asCreateAction(newElements: HTMLElement[], placement: RichCreateAction['payload']['placement']): RichCreateAction {
+    return {
+        name: 'create',
+        payload: {
+            newElements,
+            placement,
+        }
     };
 }
 
@@ -289,14 +299,6 @@ export class ActionProcessor {
                     anchorElement: listItemElement,
                     position: 'after',
                 };
-            } else {
-                const listElement = this.manipulator.findNearestElementWithType('list', selectedElementInfo.element);
-                if (listElement) {
-                    return {
-                        anchorElement: listElement,
-                        position: 'end',
-                    };
-                }
             }
             return null;
         }
@@ -305,7 +307,7 @@ export class ActionProcessor {
             let appropriateParentInfo = this.manipulator.findNearestRichParentElement(selectedElementInfo.element, ['paragraph', 'list']);
             let nearestParentInfo = this.manipulator.findNearestRichParentElement(selectedElementInfo.element);
             if (appropriateParentInfo) {
-                if (nearestParentInfo) {
+                if (nearestParentInfo && nearestParentInfo.element !== appropriateParentInfo.element) {
                     return {
                         anchorElement: nearestParentInfo.element,
                         position: 'after'
@@ -318,6 +320,8 @@ export class ActionProcessor {
             }
             // if no parent, try to create in container
             const rootElement = this.manipulator.findNearestRichRootElement(selectedElementInfo.element);
+            console.log('@@@ rootElement', rootElement);
+            console.log('@@@ rootElement', rootElement);
             if (!rootElement) {
                 return {
                     anchorElement: this.manipulator.containerElement,
@@ -345,14 +349,25 @@ export class ActionProcessor {
         // place new elements
         if (richCreateAction.payload.placement) {
             const { anchorElement, position } = richCreateAction.payload.placement;
-            if (position === 'begin') {
-                anchorElement.prepend(...newElements);
-            } else if (position === 'end') {
-                anchorElement.append(...newElements);
-            } else if (position === 'before') {
-                anchorElement.before(...newElements);
-            } else if (position === 'after') {
-                anchorElement.after(...newElements);
+            const anchorType = defineElementRichType(anchorElement);
+            if (anchorType) {
+                if (position === 'begin') {
+                    if (RichTranslators[anchorType].contentHtml) {
+                        RichTranslators[anchorType].contentHtml!!(anchorElement).prepend(...newElements);
+                    } else {
+                        anchorElement.prepend(...newElements);
+                    }                    
+                } else if (position === 'end') {
+                    if (RichTranslators[anchorType].contentHtml) {
+                        RichTranslators[anchorType].contentHtml!!(anchorElement).append(...newElements);
+                    } else {
+                        anchorElement.append(...newElements);
+                    }
+                } else if (position === 'before') {
+                    anchorElement.before(...newElements);
+                } else if (position === 'after') {
+                    anchorElement.after(...newElements);
+                }
             }
         }
         return {
@@ -419,7 +434,7 @@ export class ActionProcessor {
         if (this.manipulator) {
             let createDraft = draftAction as RichCreateDraft;
             const selectedElementInfo = this.manipulator.selectedElementInfo;
-            // adapt text creation according to selected context
+            // adapt text creation draft according to selected context
             if (createDraft.richType === 'text') {
                 let isInsideParagraph = false;
                 if (selectedElementInfo) {
@@ -452,6 +467,7 @@ export class ActionProcessor {
             // define new element placement
             if (newElement) {
                 const placement = this.definePlacementPosition(createDraft);
+                console.log('@@@ placement', placement);
                 if (placement) {
                     return {
                         name: 'create',

@@ -2,6 +2,7 @@ import { RichElement } from '@/app/_lib/types/rich-text';
 import { resolveRichFragment } from './rich-fragments/RichFragments';
 
 import "./rich-fragments/rich-elements.scss";
+import "./RichText.scss";
 import { forwardRef } from 'react';
 
 interface RichTextProps {
@@ -11,7 +12,7 @@ interface RichTextProps {
 
 export const RichText = forwardRef<HTMLDivElement, RichTextProps>(({ richElements }, ref) => {
     return (
-        <div className='richText columnStartAndStretch'>
+        <div className='richText columnStartAndStretch scrollableInColumn'>
             {
                 richElements.map((richElement) => {
                     return resolveRichFragment(richElement);

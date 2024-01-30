@@ -1,5 +1,5 @@
 export interface EditorCommand {
-    name: 'save' | 'copy' | 'replace' | 'delete' | 'undoDelete' | 'upgradeSelection' | 'help' | 'cancel';
+    name: 'save' | 'copy' | 'paste' | 'replace' | 'delete' | 'undoDelete' | 'upgradeSelection' | 'help' | 'cancel';
 }
 
 const KEY_TO_EDITION_COMMAND_MAP: Record<string, EditorCommand> = {
@@ -9,7 +9,10 @@ const KEY_TO_EDITION_COMMAND_MAP: Record<string, EditorCommand> = {
 	'Alt+KeyC': {
 		name: 'copy',
 	},
-	'Alt+Shift+KeyC': {
+	'Alt+KeyV': {
+		name: 'paste',
+	},
+	'Alt+Shift+KeyR': {
 		name: 'replace',
 	},
 	'Alt+KeyH': {

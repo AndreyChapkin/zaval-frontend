@@ -1,8 +1,8 @@
-import { RICH_CLASS_NAMES, RICH_CLASS_NAME_TO_TYPE_MAP, RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_SELECTED_ELEMENT_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichClassName, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichParentElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichTitleType, RichType, RichUnitedBlockElement, RichUnknownElement, TITLES_ARRAY, isRichParentElement } from "@/app/_lib/types/rich-text";
+import { RICH_CLASS_NAMES, RICH_CLASS_NAME_TO_TYPE_MAP, RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_SELECTED_ELEMENT_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichClassName, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichParentElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichTitleType, RichType, RichUnitedBlockElement, RichUnknownElement, isRichParentElement } from "@/app/_lib/types/rich-text";
 import { useEffect, useState } from "react";
 import { htmlElem } from "./dom-builders";
 import { findNearestParentElement } from "./dom-manipulation";
-import { findSelectedElement, selectTextInNode } from "./dom-selections";
+import { findSelectedElement } from "./dom-selections";
 
 export interface SelectedElementInfo {
 	element: HTMLElement;
@@ -54,18 +54,10 @@ export class RichDomManipulator {
 			richType = element && defineElementRichType(element);
 		}
 		if (richType && element) {
-			return this.setAsSelectedElement(element, richType);
-		}
-		return null;
-	}
-
-	selectNearestRichParentOfSelectedElement(): { element: HTMLElement, richType: RichType } | null {
-		const selectedElementInfo = this.findSelectedRichElement();
-		if (selectedElementInfo) {
-			const parentElement = findNearestParentElement(selectedElementInfo.element);
-			if (parentElement) {
-				return this.setAsSelectedElement(parentElement);
-			}
+			return {
+				element,
+				richType
+			};
 		}
 		return null;
 	}
@@ -110,14 +102,19 @@ export class RichDomManipulator {
 	}
 
 	findNearestRichRootElement(childElement: Node): HTMLElement | null {
-		let searchResult = this.findNearestRichParentElement(childElement);
-		if (searchResult && searchResult.type === 'container') {
-			return childElement as HTMLElement;
+		let searchResult = this.findNearestRichElement(childElement);
+		if (searchResult?.type === 'container') {
+			if (childElement instanceof HTMLElement) {
+				const childType = defineElementRichType(childElement);
+				if (childType) {
+					return childElement as HTMLElement;
+				}
+			}
 		}
 		let prevSearchResult = null;
 		while (searchResult && searchResult.type !== 'container') {
 			prevSearchResult = searchResult;
-			searchResult = this.findNearestRichParentElement(searchResult.element);
+			searchResult = this.findNearestRichElement(searchResult.element);
 		}
 		return prevSearchResult && prevSearchResult.element;
 	}
@@ -218,9 +215,10 @@ const titleTranslator = {
 	},
 };
 
-const RichTranslators: Record<RichType, {
+export const RichTranslators: Record<RichType, {
 	toHtml: (richElem: any) => HTMLElement;
 	fromHtml: (htmlElem: HTMLElement) => RichElement;
+	contentHtml?: (parentElement: HTMLElement) => HTMLElement;
 }> = {
 	'paragraph': {
 		toHtml: (elem: RichParagraphElement): HTMLElement => {
@@ -326,13 +324,22 @@ const RichTranslators: Record<RichType, {
 				]
 			});
 		},
-		fromHtml: (htmlElem: HTMLElement): RichListItemElement => {
-			const contentElement = htmlElem.querySelector(`.${RICH_LIST_ITEM_CONTENT_CLASS}`)!!;
-			const children = Array.from(contentElement.children) as HTMLElement[];
+		fromHtml: (htmlElem: HTMLElement): RichListItemElement | RichUnknownElement => {
+			const contentElement = htmlElem.querySelector(`.${RICH_LIST_ITEM_CONTENT_CLASS}`);
+			if (contentElement) {
+				const children = Array.from(contentElement.children) as HTMLElement[];
+				return {
+					type: 'list-item',
+					children: children.map(parseRichHTMLElement),
+				};
+			}
 			return {
-				type: 'list-item',
-				children: children.map(parseRichHTMLElement),
+				type: 'unknown',
+				text: htmlElem.innerText,
 			};
+		},
+		contentHtml: (parentElement: HTMLElement) => {
+			return parentElement.querySelector(`.${RICH_LIST_ITEM_CONTENT_CLASS}`)!!;
 		},
 	},
 	'expandable-block': {
@@ -363,6 +370,9 @@ const RichTranslators: Record<RichType, {
 				title: titleElement.innerText,
 				children: children.map(parseRichHTMLElement),
 			};
+		},
+		contentHtml: (parentElement: HTMLElement) => {
+			return parentElement.querySelector(`.${RICH_EXPANDABLE_BLOCK_CONTENT_CLASS}`)!!;
 		},
 	},
 	'united-block': {
@@ -406,6 +416,9 @@ const RichTranslators: Record<RichType, {
 				type: 'code-block',
 				text: contentElement.innerText,
 			};
+		},
+		contentHtml: (parentElement: HTMLElement) => {
+			return parentElement.querySelector(`.${RICH_CODE_BLOCK_CONTENT_CLASS}`)!!;
 		},
 	},
 	'unknown': {

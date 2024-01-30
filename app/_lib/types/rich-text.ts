@@ -72,7 +72,7 @@ export type RichElementParent = RichParagraphElement | RichListElement
 
 export function isRichParentElement(elementType: RichType): boolean {
 	return [
-		'paragraph', 'list', 'list-item', 'expandable-block', 'united-block', 'code-block'
+		'paragraph', 'list', 'list-item', 'expandable-block', 'united-block',
 	].indexOf(elementType) > -1;
 }
 

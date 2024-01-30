@@ -1,13 +1,13 @@
 import { CANCEL_ICON_URL, HELP_ICON_URL, SAVE_ICON_URL } from '@/app/_lib/constants/image-url-constants';
 import React, { KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import { IconButton } from '../icon-button/IconButton';
-import RichEditorShortkeys from './rich-editor-shortkeys/RichEditorShortkeys';
+import RichEditorPrompt from './rich-editor-shortkeys/RichEditorPrompt';
 
-import { RichElement } from '@/app/_lib/types/rich-text';
+import { RichElement, RichType } from '@/app/_lib/types/rich-text';
 import { decreaseNumberOfCalls, readFromClipboard, writeToClipboard } from '@/app/_lib/utils/function-helpers';
 import './RichEditor.scss';
 import { useRichActionConveyor } from './lib/rich-action-conveyor';
-import { RichDeleteAction, RichReplaceAction, asDeleteAction, asReplaceAction, isReservedShortcut, planRichAction } from './lib/rich-action-processors';
+import { RichDeleteAction, RichReplaceAction, asCreateAction, asDeleteAction, asReplaceAction, isReservedShortcut, planRichAction } from './lib/rich-action-processors';
 import { EditorCommand, translateEventToEditorCommand } from './lib/rich-command-processors';
 import { createRichHTMLElement, removeEmptyRichElements, useRichDomManipulator } from './lib/rich-dom-manipulations';
 import { RichEditorFulfillment } from './rich-editor-fulfillment/RichEditorFulfillment';
@@ -60,7 +60,10 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 	};
 
 	const mouseupHandler: MouseEventHandler = (event) => {
-		manipulator?.findSelectedRichElement();
+		const selectedElementInfo = manipulator?.findSelectedRichElement();
+		if (selectedElementInfo) {
+			manipulator?.setAsSelectedElement(selectedElementInfo.element, selectedElementInfo.richType);
+		}
 	};
 
 	const keyupHandler: KeyboardEventHandler<HTMLElement> = (event) => {
@@ -70,7 +73,10 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				event.code === 'ArrowUp' ||
 				event.code === 'ArrowRight' ||
 				event.code === 'ArrowLeft') {
-				manipulator?.findSelectedRichElement();
+				const selectedElementInfo = manipulator?.findSelectedRichElement();
+				if (selectedElementInfo) {
+					manipulator?.setAsSelectedElement(selectedElementInfo.element, selectedElementInfo.richType);
+				}
 			}
 		}
 		// reserve content
@@ -100,6 +106,11 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 			case 'copy':
 				manageRichCopy();
 				break;
+			case 'paste':
+				const createAction = await manageRichPaste();
+				createAction
+					&& actionConveyor.submitActions([createAction]);
+				break;
 			case 'replace':
 				const replaceAction = await manageRichReplace();
 				replaceAction
@@ -114,7 +125,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				manageRichUndoRemoval();
 				break;
 			case 'upgradeSelection':
-				manipulator?.selectNearestRichParentOfSelectedElement();
+				manageSelectionUpgrade();
 				break;
 			case 'help':
 				setIsPromptShown(true);
@@ -125,11 +136,35 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 		}
 	}
 
+	function manageSelectionUpgrade() {
+		const selectedElement = manipulator?.selectedElementInfo?.element;
+		if (selectedElement) {
+			const richParentInfo = manipulator?.findNearestRichElement(selectedElement);
+			if (richParentInfo && richParentInfo.type !== 'container') {
+				manipulator?.setAsSelectedElement(richParentInfo.element, richParentInfo.type);
+			}
+		}
+	}
+
 	function manageRichCopy() {
 		const selectedContent = manipulator?.extractSelectedElementHtml();
 		if (selectedContent) {
 			writeToClipboard(selectedContent, 'text/html');
 		}
+	}
+
+	async function manageRichPaste() {
+		if (manipulator?.selectedElementInfo) {
+			const selectedElement = manipulator.selectedElementInfo.element;
+			const clipboardElements = await readFromClipboard('text/html') as HTMLElement[];
+			if (clipboardElements) {
+				return asCreateAction(clipboardElements, {
+					anchorElement: selectedElement,
+					position: 'after',
+				});
+			}
+		}
+		return null;
 	}
 
 	async function manageRichReplace(): Promise<RichReplaceAction | null> {
@@ -215,7 +250,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 			/>
 			{
 				isPromptShown &&
-				<RichEditorShortkeys onClose={() => setIsPromptShown(false)} />
+				<RichEditorPrompt onClose={() => setIsPromptShown(false)} />
 			}
 			{
 				actionConveyor.status === 'needFulfillment' &&

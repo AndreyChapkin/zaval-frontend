@@ -1,3 +1,4 @@
+import { CODE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
 import { RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichUnitedBlockElement, RichUnknownElement } from "@/app/_lib/types/rich-text";
 import { useState } from "react";
 
@@ -85,7 +86,7 @@ export const RichList: React.FC<RichElementProps<RichListElement>> = ({ richElem
 export const RichListItem: React.FC<RichElementProps<RichListItemElement>> = ({ richElement }) => (
     <li className={`${RICH_TYPE_TO_CLASS_NAME_MAP['list-item']} rowStartAndStart`}>
         <div className={RICH_LIST_ITEM_SIGN_CLASS} />
-        <div className={`${RICH_LIST_ITEM_CONTENT_CLASS} rowStartAndStart`}>
+        <div className={`${RICH_LIST_ITEM_CONTENT_CLASS}`}>
             {richElement.children.map(resolveRichFragment)}
         </div>
     </li>
@@ -119,7 +120,12 @@ export const RichUnitedBlock: React.FC<RichElementProps<RichUnitedBlockElement>>
 
 export const RichCodeBlock: React.FC<RichElementProps<RichCodeBlockElement>> = ({ richElement }) => (
     <div className={RICH_TYPE_TO_CLASS_NAME_MAP['code-block']}>
-        <div className={RICH_CODE_BLOCK_ICON_CLASS} />
+        <div className={`${RICH_CODE_BLOCK_ICON_CLASS} rowCenterAndCenter`}>
+            <img
+                src={CODE_ICON_URL}
+                alt="status"
+            />
+        </div>
         <pre className={RICH_CODE_BLOCK_CONTENT_CLASS}>
             {richElement.text}
         </pre>
