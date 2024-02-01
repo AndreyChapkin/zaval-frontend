@@ -81,7 +81,6 @@ $title-font-size: 28px;
     list-style-type: none;
     padding-left: 0px;
     margin: 5px 0px;
-    // padding: 5px 0px;
 }
 
 .richListItem {
@@ -103,7 +102,6 @@ $title-font-size: 28px;
 }
 
 .richExpandableBlock {
-    @include column-start;
     border: 2px solid $secondary-dark-2-color;
     border-radius: 5px;
     margin: 10px 0;
@@ -120,7 +118,6 @@ $title-font-size: 28px;
 }
 
 .richCodeBlock {
-    @include row-start;
     border-radius: 5px;
     margin-top: 20px;
     margin-bottom: 10px;
@@ -129,7 +126,6 @@ $title-font-size: 28px;
 }
 
 .richCodeBlockIcon {
-    @include row;
     background-color: $secondary-dark-1-color;
     cursor: pointer;
     position: absolute;
@@ -137,10 +133,6 @@ $title-font-size: 28px;
     left: 10px;
     width: 24px;
     height: 20px;
-}
-
-.richCodeBlockIcon img {
-    @include icon-normal-sized;
 }
 
 .richCodeBlockContent {

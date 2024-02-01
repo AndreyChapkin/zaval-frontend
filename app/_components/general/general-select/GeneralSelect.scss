@@ -19,15 +19,12 @@ $wide-size: 10px;
 }
 
 .generalSelect {
-    img {
-        @include icon-normal-sized;
-    }
 
     .option {
         cursor: pointer;
-        background-color: $secondary-dark-2-color;
-        padding: $normal-size;
-        @include row-start-and-align-center($small-size);
+        background-color: $main-light-3-color;
+        padding: $small-size;
+        gap: 5px;
 
         &:hover {
             background-color: $secondary-dark-1-color;

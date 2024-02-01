@@ -22,8 +22,8 @@ function CreateTodo({ parentId, cancelHandler, successHandler }: CreateTodoProps
 
     return (
         <ModalWindow onClose={cancelHandler}>
-            <div className="createTodo">
-                <div className="editPanel">
+            <div className="createTodo columnStartAndStretch">
+                <div className="editPanel columnStartAndStretch">
                     <GeneralSelect
                         currentElement={status}
                         allElements={All_TODO_STATUSES}
@@ -36,7 +36,7 @@ function CreateTodo({ parentId, cancelHandler, successHandler }: CreateTodoProps
                     />
                     <StandardInput value={name} onChange={setName} />
                 </div>
-                <div className="controlPanel">
+                <div className="controlPanel rowCenter">
                     <ActionButton
                         label="Create"
                         onClick={() => createTodo({

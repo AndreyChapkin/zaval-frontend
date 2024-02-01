@@ -3,31 +3,6 @@
 	max-width: $max-width;
 }
 
-@mixin icon-small-sized {
-	height: 5px;
-	min-width: 5px;
-}
-
-@mixin icon-normal-sized {
-	height: 20px;
-	min-width: 20px;
-}
-
-@mixin icon-large-sized {
-	height: 20px;
-	min-width: 20px;
-}
-
-@mixin icon-larger-sized {
-	height: 12px;
-	min-width: 12px;
-}
-
-@mixin icon-super-large-sized {
-	height: 16px;
-	min-width: 16px;
-}
-
 @mixin full-screen-height {
 	min-height: 100vh;
 	max-height: 100vh;

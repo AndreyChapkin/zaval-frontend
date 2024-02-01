@@ -11,13 +11,13 @@ export interface TodoRootPageData {
 	oldLightTodos: TodoLightDto[];
 }
 
-export interface TodoAndParentBranchIdDto {
-    todo: TodoLightDto;
+export interface TodoLeafWithBranchIdDto {
+    leafTodo: TodoLightDto;
     parentBranchId: number | null;
 }
 
 export interface TodosListDto {
-    todos: TodoAndParentBranchIdDto[];
+    leafTodos: TodoLeafWithBranchIdDto[];
     parentBranchesMap: Record<number, TodoLightDto[]>;
 }
 

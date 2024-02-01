@@ -1,21 +1,20 @@
 @import '/app/_styles/color/variables.scss';
-@import '/app/_styles/size/variables.scss';
 @import '/app/_styles/todo/variables.scss';
 @import '/app/_styles/size/mixins.scss';
 @import '/app/_styles/facade/mixins.scss';
 @import '/app/_styles/composition/mixins.scss';
 
+$small-size: 5px;
+$normal-size: 8px;
+$wide-size: 10px;
+
 .todoStatusSelect {
     @include row-stretch;
-
-    img {
-        @include icon-normal-sized;
-    }
 
     .optionStatus,
     .currentStatus {
         cursor: pointer;
-        background-color: $second-light-color;
+        background-color: $main-light-3-color;
         padding: $normal-size $wide-size $normal-size $wide-size;
         @include row-start-and-align-center($small-size);
     }
@@ -32,11 +31,11 @@
     }
 
     .optionStatus:hover {
-        background-color: $base-color;
+        background-color: $main-color;
     }
 
     .optionStatus:hover {
-        background-color: $base-dark-color;
+        background-color: $main-dark-1-color;
     }
 }
 

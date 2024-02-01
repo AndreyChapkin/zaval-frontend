@@ -1,5 +1,9 @@
 @import "/app/_styles/facade/mixins.scss";
 
+.fullWidth {
+	width: 100%;
+}
+
 .row {
 	display: flex;
 	flex-direction: row;

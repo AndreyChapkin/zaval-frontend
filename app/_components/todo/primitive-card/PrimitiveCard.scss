@@ -1,7 +1,4 @@
 @import '/app/_styles/todo/variables.scss';
-@import '/app/_styles/composition/mixins.scss';
-@import '/app/_styles/facade/mixins.scss';
-@import '/app/_styles/size/mixins.scss';
 @import '/app/_styles/color/variables.scss';
 
 $normal-size: 5px;
@@ -13,12 +10,6 @@ $wide-size: 10px;
     color: $secondary-font-color;
     font-size: small;
     border-radius: $normal-size;
-
-    @include row-start-and-align-center($normal-size);
-
-    img {
-        @include icon-normal-sized;
-    }
 
     .goToTodo {
         .linkArea {

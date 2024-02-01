@@ -4,8 +4,10 @@ import { presentDate } from "@/app/_lib/utils/presentation-helpers";
 import { chooseStatusColorClass } from "@/app/_lib/utils/todo-helpers";
 import Link from "next/link";
 import { MouseEventHandler, useState } from "react";
-import { TodoMenu } from "../TodoMenu";
 import { TodoMovingPanel } from "../TodoMovingPanel";
+import { IconButton } from "../../general/icon-button/IconButton";
+
+import "./TodoCard.scss";
 
 export interface TodoCardProps {
   todo: TodoLightDto;
@@ -18,20 +20,12 @@ export default function TodoCard({ isNavigable = false, todo, selectHandler }: T
   const [isMoveMenuOpen, setIsMoveMenuOpen] = useState(false);
 
   const statusClass = chooseStatusColorClass(todo.status);
-  const secondaryStatusClass = `${statusClass}-secondary`;
-
-  const innerSelectHandler: MouseEventHandler = (e) => {
-    const LEFT_BUTTON = 0;
-    if (e.ctrlKey && e.button === LEFT_BUTTON) {
-      selectHandler && selectHandler(todo);
-    }
-  };
 
   const backgroundClickHandler = () => {
     setIsMenuOpen(false);
   };
 
-  const editClickHandler = (e: React.MouseEvent<HTMLImageElement>) => {
+  const editClickHandler = () => {
     setIsMenuOpen(true);
   };
 
@@ -44,37 +38,25 @@ export default function TodoCard({ isNavigable = false, todo, selectHandler }: T
   };
 
   return (
-    <div className="todo-card" onClick={innerSelectHandler}>
-      <div className={`todo-status-indicator ${statusClass}`} />
-      <div className={`todo-status-indicator-secondary ${secondaryStatusClass}`} />
-      <div className="todo-interaction-panel">
+    <div className="todoCard rowStartAndStart">
+      <div className="todoInteractionPanel column">
         {isNavigable && (
-          <div className="go-to-todo" onClick={innerSelectHandler}>
-            <Link href={`/todo/${todo.id}`}>
-              <div className="link-area">
-                <img src={TODO_COMPLEX_ICON_URL} alt="composition" />
-              </div>
-            </Link>
-          </div>
+          <Link href={`/ui/todo/${todo.id}`}>
+            <IconButton size="small" iconUrl={TODO_COMPLEX_ICON_URL} />
+          </Link>
         )}
-        <div className="edit-menu">
-          <img
-            src={EDIT_ICON_URL}
-            alt="composition"
-            onClick={editClickHandler}
-          />
+        <div className="editMenu">
+          <IconButton size="small" iconUrl={EDIT_ICON_URL} onClick={editClickHandler} />
         </div>
       </div>
-      <div className="todo-info">
-        <div className="todo-name">{todo.name}</div>
-        <div className="additional-info">
-          <div className="todo-priority">{todo.priority}</div>
-          <div className="todo-interacted-on">{presentDate(todo.interactedOn)}</div>
+      <div className="todoInfo columnStart">
+        <div className="todoName">{todo.name}</div>
+        <div className="additionalInfo">
+          <div className="todoPriority">{todo.priority}</div>
+          <div className="todoInteractedOn">{presentDate(todo.interactedOn)}</div>
         </div>
       </div>
-      {isMenuOpen && (
-        <TodoMenu todoDto={todo} moveHandler={moveHandler} clo={backgroundClickHandler} />
-      )}
+      {isMenuOpen}
       {isMoveMenuOpen && (
         <TodoMovingPanel movingTodoDto={todo} closeHandler={moveMenuCloseHandler} />
       )}

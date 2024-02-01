@@ -1,6 +1,7 @@
 import { MouseEventHandler, useState } from "react";
 
 import './GeneralSelect.scss';
+import { IconButton } from "../icon-button/IconButton";
 
 export type OptionDescription = {
     label: string;
@@ -20,10 +21,7 @@ function CreateOptionContent(description: OptionDescription) {
         <>
             {
                 description.imageUrl &&
-                <img
-                    src={description.imageUrl}
-                    alt="img"
-                />
+                <IconButton iconUrl={description.imageUrl} />
             }
             <span>{description.label}</span>
         </>
@@ -67,7 +65,7 @@ export function GeneralSelect<T>({ currentElement, allElements: elements, mapper
             <div className={`generalSelect ${isOpen ? 'aboveBackground' : ''}`}>
                 <div
                     onClick={openHandler}
-                    className={`option currentOption ${currentDescription.classNames ?? ''}`}
+                    className={`option rowStartAndCenter currentOption ${currentDescription.classNames ?? ''}`}
                 >
                     {CreateOptionContent(currentDescription)}
                 </div>
@@ -83,7 +81,7 @@ export function GeneralSelect<T>({ currentElement, allElements: elements, mapper
                                 const description = mapper(element);
                                 return (
                                     <div
-                                        className={`option ${description.classNames ?? ''}`}
+                                        className={`option rowStartAndCenter ${description.classNames ?? ''}`}
                                         onClick={createInnerSelectHandler(element)}
                                     >
                                         {CreateOptionContent(description)}

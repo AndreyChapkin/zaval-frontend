@@ -242,7 +242,6 @@ export class ActionProcessor {
                     break;
             }
             if (fulfilledAction) {
-                console.log('@@@ fulfilledAction', fulfilledAction);
                 return fulfilledAction;
             }
         }
@@ -320,8 +319,6 @@ export class ActionProcessor {
             }
             // if no parent, try to create in container
             const rootElement = this.manipulator.findNearestRichRootElement(selectedElementInfo.element);
-            console.log('@@@ rootElement', rootElement);
-            console.log('@@@ rootElement', rootElement);
             if (!rootElement) {
                 return {
                     anchorElement: this.manipulator.containerElement,
@@ -467,7 +464,6 @@ export class ActionProcessor {
             // define new element placement
             if (newElement) {
                 const placement = this.definePlacementPosition(createDraft);
-                console.log('@@@ placement', placement);
                 if (placement) {
                     return {
                         name: 'create',

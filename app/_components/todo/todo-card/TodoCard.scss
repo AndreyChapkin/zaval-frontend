@@ -1,63 +1,38 @@
-@import '/static/_styles/todo-variables.scss';
-@import '/static/_styles/common/composition/';
-@import '/static/_styles/common/facade/';
-@import '/static/_styles/common/size/';
-@import '/static/_styles/common/color/';
+@import '/app/_styles/todo/variables.scss';
+@import '/app/_styles/composition/mixins.scss';
+@import '/app/_styles/facade/mixins.scss';
+@import '/app/_styles/size/mixins.scss';
+@import '/app/_styles/color/variables.scss';
+
+$normal-size: 5px;
 
 .todoCard {
-    background-color: $second-color;
-    color: $base-contrast-color;
+    background-color: $main-light-2-color;
+    border: 1px solid $main-light-3-color;
+    color: $main-font-color;
     padding: $normal-size $normal-size;
     position: relative;
     overflow: hidden;
     min-height: 70px;
-    @include bordered(all, $second-light-color, 2px);
-
-    @include row-start-and-align-start($large-size);
     border-radius: $normal-size;
+    gap: 10px;
 
     .todoInteractionPanel {
         z-index: 3;
-        background-color: $base-light-color;
+        background-color: $main-light-1-color;
         border-radius: 1.5 * $normal-size;
-        padding: 0.8 * $normal-size;
-        @include column-center($normal-size);
-
-        .goToTodo,
-        .editMenu {
-            @include like-normal-button;
-        }
-    }
-
-    .todoStatusIndicator {
-        width: 3 * $normal-size;
-        height: 5 * $normal-size;
-        top: -1 * $normal-size;
-        left: -1 * $normal-size;
-
-        position: absolute;
-        z-index: 2;
-    }
-
-    .todoStatusIndicatorSecondary {
-        width: 8 * $normal-size;
-        height: 19 * $normal-size;
-        top: -11 * $normal-size;
-        left: -4.5 * $normal-size;
-        border-radius: 4px;
-        position: absolute;
-        z-index: 1;
+        padding: 4px;
+        gap: 5px;
     }
 
     .todoInfo {
         flex: 1;
         align-self: stretch;
-        @include column-start-and-stretch($large-size);
+        gap: 6px;
 
         .additionalInfo {
-            @include row-start-and-stretch($large-size);
             font-size: smaller;
-            color: $base-weak-contrast-color;
+            color: $main-font-color;
         }
     }
 }

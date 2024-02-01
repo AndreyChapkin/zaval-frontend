@@ -26,3 +26,4 @@ export const ADD_ARTICLE_ICON_URL = '/images/article/add-article-icon.svg';
 export const ADD_SERIES_ICON_URL = '/images/article/add-series-icon.svg';
 export const CODE_ICON_URL = '/images/article/code-icon.svg';
 export const MOVE_ICON_URL = '/images/common/move-icon.svg';
+export const CREATE_ICON_URL = '/images/common/create-icon.svg';

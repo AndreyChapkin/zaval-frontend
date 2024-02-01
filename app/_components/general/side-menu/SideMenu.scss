@@ -1,15 +1,12 @@
 @import '../../../_styles/color/variables.scss';
-@import '../../../_styles/size/mixins.scss';
-@import '../../../_styles/composition/mixins.scss';
-@import '../../../_styles/facade/mixins.scss';
 
 $normal-size: 5px;
 $small-size: 3px;
 
 .todoSideMenu {
     background-color: $main-light-1-color;
-    @include column-center($normal-size);
     padding: $normal-size $small-size;
+    gap: 5px;
 
     .todo-side-menu-item {
         cursor: pointer;
@@ -25,9 +22,5 @@ $small-size: 3px;
         height: 2px;
         width: 20px;
         background-color: $secondary-pale-1-color;
-    }
-
-    :global(.todo-side-menu-item img) {
-        @include icon-large-sized;
     }
 }

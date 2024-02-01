@@ -1,7 +1,6 @@
 @import '/app/_styles/composition/mixins.scss';
 @import '/app/_styles/facade/mixins.scss';
 @import '/app/_styles/color/variables.scss';
-@import '/app/_styles/size/mixins.scss';
 
 @font-face {
     font-family: Nunito;
@@ -27,10 +26,6 @@ $large-size: 12px;
         padding: $small-size;
         color: $main-font-color;
         gap: $normal-size;
-
-        img {
-            @include icon-normal-sized;
-        }
 
         .separator {
             height: 4px;
