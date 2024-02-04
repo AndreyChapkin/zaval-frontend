@@ -9,18 +9,27 @@ $normal-size: 8px;
 $wide-size: 10px;
 
 .todoStatusSelect {
-    @include row-stretch;
 
-    .optionStatus,
-    .currentStatus {
+    .optionStatus {
+        @include row;
+        gap: 10px;
         cursor: pointer;
-        background-color: $main-light-3-color;
+        background-color: $main-color;
         padding: $normal-size $wide-size $normal-size $wide-size;
-        @include row-start-and-align-center($small-size);
+
+        img {
+            width: 20px;
+            height: 20px;
+        }
+
+        &:hover {
+            background-color: $main-light-3-color;
+        }
     }
 
     .currentStatus {
         border-radius: $normal-size;
+        border: 2px solid $main-light-3-color;
     }
 
     .optionsPane {
@@ -28,14 +37,6 @@ $wide-size: 10px;
         border-radius: $normal-size;
         overflow: hidden;
         @include normal-shadow;
-    }
-
-    .optionStatus:hover {
-        background-color: $main-color;
-    }
-
-    .optionStatus:hover {
-        background-color: $main-dark-1-color;
     }
 }
 

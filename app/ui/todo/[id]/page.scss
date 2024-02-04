@@ -1,30 +1,41 @@
 @import "/app/_styles/composition/mixins.scss";
 @import "/app/_styles/size/mixins.scss";
+@import "/app/_styles/color/variables.scss";
+@import "/app/_styles/facade/mixins.scss";
 
 $normal-size: 5px;
 
 .todoItemPage {
-
     .parents {
+        flex-shrink: 0;
+        .primitiveCard {
+            max-width: 450px;
+            min-width: 300px;
+        }
     }
-
-    .mainAndChildren {
-    }
-
     .main {
         flex: 3;
-
-        .mainInfo {}
-
-        .additionalInfo {
-            font-size: small;
+        .mainGeneral {
+            flex: 1;
+            border-radius: 5px;
+            background-color: $main-light-2-color;
+            border: 1px solid $main-light-3-color;
+            padding: 6px 10px;
+            .additionalPanel {
+            }
+            .additionalInfo {
+                font-size: smaller;
+                color: darken($main-font-color, 20%);
+            }
         }
-
-        .richEditor {
+        .discriptionPanel {
+            flex: 5;
         }
     }
-
     .children {
         flex: 2;
+        .actionButton {
+            width: 150px;
+        }
     }
 }

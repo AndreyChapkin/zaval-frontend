@@ -1,0 +1,9 @@
+@import "/app/_styles/color/variables.scss";
+@import "/app/_styles/size/mixins.scss";
+
+.removeModal {
+    color: $main-font-color;
+    @include screen-sized(20, 20);
+    padding: 20px;
+    background-color: $main-light-1-color;
+}

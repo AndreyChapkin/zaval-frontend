@@ -1,9 +1,4 @@
-import type { DetailedTodoDto, TodoLightDto, TodoStatus } from './todo';
-
-export interface TodoDetailedPageData {
-	detailedTodoDto: DetailedTodoDto;
-	todoHistoryRecords: string[];
-}
+import type { TodoLightDto, TodoStatus } from './todo-types';
 
 export interface TodoRootPageData {
 	rootLightTodos: TodoLightDto[];

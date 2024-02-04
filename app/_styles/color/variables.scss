@@ -2,21 +2,41 @@ $main-color: rgb(16, 22, 31);
 $main-light-1-color: lighten($main-color, 5%);
 $main-light-2-color: lighten($main-color, 10%);
 $main-light-3-color: lighten($main-color, 20%);
-$main-dark-1-color: darken($main-color, 10%);
+$main-light-4-color: lighten($main-color, 25%);
+$main-light-5-color: lighten($main-color, 50%);
+$main-dark-1-color: darken($main-color, 5%);
 $main-dark-2-color: darken($main-color, 20%);
+$main-dark-3-color: darken($main-color, 25%);
+$main-dark-4-color: darken($main-color, 30%);
+$main-dark-5-color: darken($main-color, 35%);
 $main-font-color: white;
 
-$secondary-color: #A2678A;
+$secondary-color: #8a674c;
 $secondary-pale-1-color: desaturate($secondary-color, 10%);
 $secondary-pale-dark-1-color: darken($secondary-pale-1-color, 20%);
 $secondary-dark-1-color: darken($secondary-color, 20%);
 $secondary-dark-2-color: darken($secondary-color, 25%);
+$secondary-dark-3-color: darken($secondary-color, 30%);
+$secondary-dark-4-color: darken($secondary-color, 35%);
+$secondary-dark-5-color: darken($secondary-color, 40%);
 $secondary-light-1-color: lighten($secondary-color, 5%);
+$secondary-light-2-color: lighten($secondary-color, 10%);
+$secondary-light-3-color: lighten($secondary-color, 15%);
+$secondary-light-4-color: lighten($secondary-color, 20%);
+$secondary-light-5-color: lighten($secondary-color, 25%);
 $secondary-font-color: white;
 
 $accent-color: #E19898;
 $accent-light-1-color: lighten($accent-color, 5%);
+$accent-light-2-color: lighten($accent-color, 10%);
+$accent-light-3-color: lighten($accent-color, 15%);
+$accent-light-4-color: lighten($accent-color, 20%);
+$accent-light-5-color: lighten($accent-color, 25%);
 $accent-pale-1-color: desaturate($accent-color, 20%);
+$accent-pale-2-color: desaturate($accent-color, 25%);
+$accent-pale-3-color: desaturate($accent-color, 30%);
+$accent-pale-4-color: desaturate($accent-color, 35%);
+$accent-pale-5-color: desaturate($accent-color, 40%);
 $accent-font-color: rgb(255, 255, 255);
 
 // // other colors

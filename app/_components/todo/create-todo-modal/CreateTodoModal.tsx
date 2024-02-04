@@ -1,13 +1,13 @@
-import { All_TODO_STATUSES, TodoLightDto, TodoStatus } from "@/app/_lib/types/todo";
+import { All_TODO_STATUSES, TodoLightDto, TodoStatus } from "@/app/_lib/types/todo-types";
 import { useState } from "react";
 import { ModalWindow } from "../../general/modal-window/ModalWindow";
 import { createTodo } from "@/app/_lib/calls/todo-calls";
-
-import './CreateTodo.scss';
 import { ActionButton } from "../../general/action-button/ActionButton";
 import { StandardInput } from "../../general/standard-input/StandardInput";
 import { GeneralSelect } from "../../general/general-select/GeneralSelect";
 import { chooseStatusColorClass, chooseStatusImgUrl, todoStatusToLabel } from "@/app/_lib/utils/todo-helpers";
+
+import './CreateTodoModal.scss';
 
 export interface CreateTodoProps {
     parentId?: number;

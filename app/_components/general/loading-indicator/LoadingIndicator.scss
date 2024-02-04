@@ -1,0 +1,19 @@
+@import "/app/_styles/color/variables.scss";
+
+.ball {
+    background-color: $secondary-color;
+    border-radius: 10px;
+    width: 20px;
+    height: 20px;
+    animation: swing 0.5s linear infinite alternate;
+}
+
+@keyframes swing {
+    from {
+        transform: translateX(-25px);
+    }
+
+    to {
+        transform: translateX(25px);
+    }
+}

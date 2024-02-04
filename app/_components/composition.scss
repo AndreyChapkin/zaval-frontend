@@ -4,6 +4,26 @@
 	width: 100%;
 }
 
+.flex1 {
+	flex: 1;
+}
+
+.gap1 {
+	gap: 5px;
+}
+
+.gap2 {
+	gap: 10px;
+}
+
+.gap3 {
+	gap: 15px;
+}
+
+.gap4 {
+	gap: 20px;
+}
+
 .row {
 	display: flex;
 	flex-direction: row;
@@ -37,6 +57,11 @@
 	align-items: center;
 }
 
+.rowStartAndEnd {
+    @extend .rowStart;
+	align-items: end;
+}
+
 .rowStartAndStretch {
     @extend .rowStart;
 	align-items: stretch;
@@ -50,6 +75,18 @@
 .rowJustifyAndCenter {
     @extend .rowJustify;
 	align-items: center;
+}
+
+
+.scrollableInRow {
+	flex: 1;
+	overflow-x: auto;
+	@include styled-scrollbar;
+}
+
+.scrollableInRowVertically {
+	overflow-y: auto;
+	@include styled-scrollbar;
 }
 
 .column {
@@ -69,6 +106,31 @@
 	align-items: stretch;
 }
 
+.columnStartAndCenter {
+    @extend .columnStart;
+	align-items: center;
+}
+
+.columnStartAndStart {
+    @extend .columnStart;
+	align-items: start;
+}
+
+.columnEnd {
+	@extend .column;
+	justify-content: flex-end;
+}
+
+.columnEndAndStretch {
+	@extend .columnEnd;
+	align-items: stretch;
+}
+
+.columnEndAndCenter {
+	@extend .columnEnd;
+	align-items: center;
+}
+
 .columnWrap {
     @extend .column;
 	flex-wrap: wrap;
@@ -79,12 +141,17 @@
 	justify-content: space-between;
 }
 
+.columnJustifyAndCenter {
+    @extend .columnJustify;
+	align-items: center
+}
+
 .columnStretch {
     @extend .column;
 	align-items: stretch;
 }
 
-.columnSpaceAndStretch {
+.columnJustifyAndStretch {
     @extend .column;
 	justify-content: space-between;
 	align-items: stretch;
@@ -92,6 +159,11 @@
 
 .columnCenter {
     @extend .column;
+	justify-content: center;
+}
+
+.columnCenterAndCenter {
+	@extend .columnCenter;
 	align-items: center;
 }
 
@@ -108,7 +180,6 @@
 }
 
 .scrollableInColumnHorizontally {
-    flex: 1;
 	overflow-x: auto;
 	@include styled-scrollbar;
 }

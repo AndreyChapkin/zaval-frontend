@@ -1,0 +1,33 @@
+@import '/app/_styles/todo/variables.scss';
+
+.todoStatusIndicator {
+    width: 10px;
+    min-height: 10px;
+    border-radius: 5px;
+}
+
+$secondaryStatusAdjustPercent: -0.1;
+
+.doneStatusColor {
+    background-color: adjust-color($done-status-color, $alpha: $secondaryStatusAdjustPercent);
+}
+
+.backlogStatusColor {
+    background-color: adjust-color($backlog-status-color, $alpha: $secondaryStatusAdjustPercent);
+}
+
+.willBeBackStatusColor {
+    background-color: adjust-color($will-be-back-status-color, $alpha: $secondaryStatusAdjustPercent);
+}
+
+.pingMeStatusColor {
+    background-color: adjust-color($ping-me-status-color, $alpha: $secondaryStatusAdjustPercent);
+}
+
+.nextToTakeStatusColor {
+    background-color: adjust-color($next-to-take-status-color, $alpha: $secondaryStatusAdjustPercent);
+}
+
+.inProgressStatusColor {
+    background-color: adjust-color($in-progress-status-color, $alpha: $secondaryStatusAdjustPercent);
+}

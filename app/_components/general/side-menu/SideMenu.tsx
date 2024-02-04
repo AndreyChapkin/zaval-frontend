@@ -4,7 +4,7 @@ import { ARTICLE_ICON_URL, CREATE_ICON_URL, ROOT_MENU_ICON_URL, SEARCH_ICON_URL 
 import { chooseStatusImgUrl, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
 import './SideMenu.scss';
 import { IconButton } from "../icon-button/IconButton";
-import CreateTodo from "../../todo/create-todo/CreateTodo";
+import CreateTodo from "../../todo/create-todo-modal/CreateTodoModal";
 import { useState } from "react";
 
 function SideMenu() {

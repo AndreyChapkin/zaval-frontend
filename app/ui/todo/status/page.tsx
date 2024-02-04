@@ -1,15 +1,16 @@
 'use client';
 
 import { getPrioritizedListOfTodosWithStatus } from "@/app/_lib/calls/todo-calls";
-import { All_TODO_STATUSES, TodoStatus } from "@/app/_lib/types/todo";
+import { All_TODO_STATUSES, TodoStatus } from "@/app/_lib/types/todo-types";
 import { useEffect, useState } from "react";
 
 import { IconButton } from "@/app/_components/general/icon-button/IconButton";
 import PrimitiveCard from "@/app/_components/todo/primitive-card/PrimitiveCard";
 import TodoCard from "@/app/_components/todo/todo-card/TodoCard";
-import { TodosListDto } from "@/app/_lib/types/pages-data";
+import { TodosListDto } from "@/app/_lib/types/pages-data-types";
 import { chooseStatusImgUrl, todoStatusFromUrlForm, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
 import './page.scss';
+import { ParentBreadcrumbs } from "@/app/_components/todo/parent-breadcrumbs/ParentBreadCrumbs";
 
 export default function TodoStatusPage() {
 
@@ -41,23 +42,17 @@ export default function TodoStatusPage() {
             {
                 leafTodos && parentBranchesMap ?
                     leafTodos.length > 0 ?
-                        <div className="todos column">
+                        <div className="todos column scrollableInColumn">
                             {
                                 leafTodos.map(todoAndParentBranchIdDto => (
                                     <div className="todoAndParents">
                                         <TodoCard
-                                            isNavigable={true}
                                             todo={todoAndParentBranchIdDto.leafTodo}
                                         />
                                         {
                                             todoAndParentBranchIdDto.parentBranchId != null
-                                            && <div className="parents">
-                                                {
-                                                    [...parentBranchesMap[todoAndParentBranchIdDto.parentBranchId]].reverse().map(parentTodoDto => (
-                                                        <PrimitiveCard item={parentTodoDto} />
-                                                    ))
-                                                }
-                                            </div>
+                                            &&
+                                            <ParentBreadcrumbs parentTodos={parentBranchesMap[todoAndParentBranchIdDto.parentBranchId].toReversed()} />
                                         }
                                     </div>
                                 ))

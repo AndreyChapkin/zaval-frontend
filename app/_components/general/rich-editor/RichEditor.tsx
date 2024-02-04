@@ -3,7 +3,7 @@ import React, { KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, use
 import { IconButton } from '../icon-button/IconButton';
 import RichEditorPrompt from './rich-editor-shortkeys/RichEditorPrompt';
 
-import { RichElement, RichType } from '@/app/_lib/types/rich-text';
+import { RichElement, RichType } from '@/app/_lib/types/rich-text-types';
 import { decreaseNumberOfCalls, readFromClipboard, writeToClipboard } from '@/app/_lib/utils/function-helpers';
 import './RichEditor.scss';
 import { useRichActionConveyor } from './lib/rich-action-conveyor';

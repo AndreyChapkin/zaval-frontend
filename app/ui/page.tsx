@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { TodoLightDto } from "../_lib/types/todo";
+import { TodoLightDto } from "../_lib/types/todo-types";
 import TodoCard from "../_components/todo/todo-card/TodoCard";
 import { getRootTodos, getTheMostDatedLightTodos } from "../_lib/calls/todo-calls";
 import { TodoMenu } from "../_components/todo/TodoMenu";

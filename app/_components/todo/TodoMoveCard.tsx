@@ -1,5 +1,5 @@
 import { CHOOSE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
-import { TodoLightDto } from "@/app/_lib/types/todo";
+import { TodoLightDto } from "@/app/_lib/types/todo-types";
 
 interface MoveTodoCardProps {
     todo: TodoLightDto;

@@ -1,4 +1,4 @@
-import { RichElement } from '@/app/_lib/types/rich-text';
+import { RichElement } from '@/app/_lib/types/rich-text-types';
 import { resolveRichFragment } from './rich-fragments/RichFragments';
 
 import "./rich-fragments/rich-elements.scss";

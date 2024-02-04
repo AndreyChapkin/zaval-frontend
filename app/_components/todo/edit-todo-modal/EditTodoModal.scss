@@ -1,0 +1,22 @@
+@import "/app/_styles/facade/mixins.scss";
+@import "/app/_styles/color/variables.scss";
+@import "/app/_styles/size/mixins.scss";
+
+.editTodo {
+    @include standard-container;
+    @include screen-sized(80, 80);
+    background-color: $main-light-1-color;
+    padding: 20px 20px;
+}
+
+.moveTodo {
+    @include standard-container;
+    background-color: $main-light-1-color;
+    padding: 10px;
+}
+
+.moveTodoCard {
+    @include standard-container;
+    background-color: $main-light-3-color;
+    min-height: auto;
+}

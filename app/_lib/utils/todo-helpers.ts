@@ -1,5 +1,5 @@
 import { BACKLOG_MENU_ICON_URL, DONE_MENU_ICON_URL, IN_PROGRESS_MENU_ICON_URL, NEXT_TO_TAKE_MENU_ICON_URL, PING_ME_MENU_ICON_URL, TODO_STATUS_IN_PROGRESS_ICON_URL, TODO_STATUS_NEED_ATTENTION_ICON_URL, TODO_STATUS_ON_HOLD_ICON_URL, WILL_BE_BACK_MENU_ICON_URL } from "../constants/image-url-constants";
-import { TodoStatus } from "../types/todo";
+import { TodoStatus } from "../types/todo-types";
 
 // helpers
 export function statusImageUrl(status: TodoStatus): string {

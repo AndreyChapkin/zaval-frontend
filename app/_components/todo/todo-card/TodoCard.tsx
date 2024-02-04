@@ -1,65 +1,53 @@
-import { EDIT_ICON_URL, TODO_COMPLEX_ICON_URL } from "@/app/_lib/constants/image-url-constants";
-import { TodoLightDto } from "@/app/_lib/types/todo";
+import { EDIT_ICON_URL, SEE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
+import { TodoLightDto } from "@/app/_lib/types/todo-types";
 import { presentDate } from "@/app/_lib/utils/presentation-helpers";
-import { chooseStatusColorClass } from "@/app/_lib/utils/todo-helpers";
 import Link from "next/link";
-import { MouseEventHandler, useState } from "react";
-import { TodoMovingPanel } from "../TodoMovingPanel";
+import { useState } from "react";
 import { IconButton } from "../../general/icon-button/IconButton";
 
+import { EditTodoModal } from "../edit-todo-modal/EditTodoModal";
+import TodoStatusIndicator from "../status-indicator/TodoStatusIndicator";
+import TodoPriority from "../todo-priority/TodoPriority";
 import "./TodoCard.scss";
 
 export interface TodoCardProps {
   todo: TodoLightDto;
-  isNavigable?: boolean;
-  selectHandler?: (todo: TodoLightDto) => void;
 }
 
-export default function TodoCard({ isNavigable = false, todo, selectHandler }: TodoCardProps) {
+export default function TodoCard({ todo }: TodoCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMoveMenuOpen, setIsMoveMenuOpen] = useState(false);
-
-  const statusClass = chooseStatusColorClass(todo.status);
-
-  const backgroundClickHandler = () => {
-    setIsMenuOpen(false);
-  };
-
-  const editClickHandler = () => {
-    setIsMenuOpen(true);
-  };
-
-  const moveHandler = () => {
-    setIsMoveMenuOpen(true);
-  };
-
-  const moveMenuCloseHandler = () => {
-    setIsMoveMenuOpen(false);
-  };
 
   return (
-    <div className="todoCard rowStartAndStart">
-      <div className="todoInteractionPanel column">
-        {isNavigable && (
-          <Link href={`/ui/todo/${todo.id}`}>
-            <IconButton size="small" iconUrl={TODO_COMPLEX_ICON_URL} />
-          </Link>
+    <>
+      <div className="todoCard rowStartAndStretch">
+        <Link className="column" href={`/ui/todo/${todo.id}`}>
+          <div className="navigation columnJustifyAndCenter flex1 gap1">
+            <TodoStatusIndicator status={todo.status} />
+            <img src={SEE_ICON_URL} />
+          </div>
+        </Link>
+        <div className="mainPanel flex1 column">
+          <div className="namePanel flex1 rowStartAndStretch gap3">
+            {todo.name}
+          </div>
+          <div className="secondaryPanel rowStartAndEnd gap1">
+            <IconButton
+              size="small"
+              iconUrl={EDIT_ICON_URL}
+              onClick={() => setIsMenuOpen(true)} />
+            <div className="additionalInfo rowStartAndEnd gap2">
+              <TodoPriority priority={todo.priority} />
+              <div className="todoInteractedOn">{presentDate(todo.interactedOn)}</div>
+            </div>
+          </div>
+        </div>
+        {isMenuOpen && (
+          <EditTodoModal
+            todo={todo}
+            onSave={() => location.reload()}
+            onClose={() => setIsMenuOpen(false)} />
         )}
-        <div className="editMenu">
-          <IconButton size="small" iconUrl={EDIT_ICON_URL} onClick={editClickHandler} />
-        </div>
       </div>
-      <div className="todoInfo columnStart">
-        <div className="todoName">{todo.name}</div>
-        <div className="additionalInfo">
-          <div className="todoPriority">{todo.priority}</div>
-          <div className="todoInteractedOn">{presentDate(todo.interactedOn)}</div>
-        </div>
-      </div>
-      {isMenuOpen}
-      {isMoveMenuOpen && (
-        <TodoMovingPanel movingTodoDto={todo} closeHandler={moveMenuCloseHandler} />
-      )}
-    </div>
+    </>
   );
 }

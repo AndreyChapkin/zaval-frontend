@@ -1,4 +1,4 @@
-import { RICH_TYPE_TO_DEFAULT_MAP, RichTitleElement, RichTitleType, RichType, TITLES_ARRAY, isRichParentElement } from "@/app/_lib/types/rich-text";
+import { RICH_TYPE_TO_DEFAULT_MAP, RichTitleElement, RichTitleType, RichType, TITLES_ARRAY, isRichParentElement } from "@/app/_lib/types/rich-text-types";
 import { useEffect, useState } from "react";
 import { RichDomManipulator, RichTranslators, createRichHTMLElement, defineElementRichType, parseRichHTMLElement } from "./rich-dom-manipulations";
 import { translateEventToEditorCommand } from "./rich-command-processors";

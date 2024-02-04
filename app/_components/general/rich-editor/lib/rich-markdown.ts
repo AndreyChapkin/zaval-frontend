@@ -1,4 +1,4 @@
-import { RichElement, RichElementParent, RichListElement, RichListItemElement, RichSimpleElement, RichTitleElement } from "@/app/_lib/types/rich-text";
+import { RichElement, RichElementParent, RichListElement, RichListItemElement, RichSimpleElement, RichTitleElement } from "@/app/_lib/types/rich-text-types";
 
 const LIST_ITEM_LINE_PATTERN = /^\s*- /;
 

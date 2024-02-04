@@ -22,11 +22,11 @@
 }
 
 .smallSized {
-    @include icon-sized(15, 15);
+    @include icon-sized(20, 20);
 }
 
 .mediumSized {
-    @include icon-sized(24, 24);
+    @include icon-sized(20, 20);
 }
 
 .largeSized {

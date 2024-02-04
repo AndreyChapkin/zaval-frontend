@@ -1,5 +1,5 @@
 import { CODE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
-import { RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichUnitedBlockElement, RichUnknownElement } from "@/app/_lib/types/rich-text";
+import { RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichUnitedBlockElement, RichUnknownElement } from "@/app/_lib/types/rich-text-types";
 import { useState } from "react";
 
 export function resolveRichFragment(richElement: RichElement | string): React.ReactNode {

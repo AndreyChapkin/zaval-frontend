@@ -1,4 +1,3 @@
-@import '/app/_styles/todo/variables.scss';
 @import '/app/_styles/composition/mixins.scss';
 @import '/app/_styles/facade/mixins.scss';
 @import '/app/_styles/size/mixins.scss';
@@ -10,82 +9,51 @@ $normal-size: 5px;
     background-color: $main-light-2-color;
     border: 1px solid $main-light-3-color;
     color: $main-font-color;
-    padding: $normal-size $normal-size;
-    position: relative;
     overflow: hidden;
     min-height: 70px;
     border-radius: $normal-size;
-    gap: 10px;
 
-    .todoInteractionPanel {
-        z-index: 3;
-        background-color: $main-light-1-color;
-        border-radius: 1.5 * $normal-size;
-        padding: 4px;
-        gap: 5px;
+    &:hover {
+        background-color: $secondary-dark-1-color;
     }
 
-    .todoInfo {
-        flex: 1;
-        align-self: stretch;
-        gap: 6px;
+    .navigation {
+        padding: 8px 5px;
 
-        .additionalInfo {
-            font-size: smaller;
-            color: $main-font-color;
+        a {
+            display: block;
+        }
+
+        &:hover {
+            background-color: rgba($color: white, $alpha: 0.3);
+        }
+
+        img {
+            width: 15px;
+            height: 15px;
         }
     }
-}
 
-$secondaryStatusAdjustPercent: -0.7;
+    $top-padding: 5px;
+    $info-left-padding: 8px;
 
-.doneStatus {
-    background-color: $done-status-color;
-}
+    .namePanel {
+        padding-top: $top-padding;
+        padding-left: $info-left-padding;
+    }
 
-.doneStatusSecondary {
-    background-color: adjust-color($done-status-color, $alpha: $secondaryStatusAdjustPercent);
-}
+    .secondaryPanel {
+        padding-left: $info-left-padding;
+        padding-bottom: $top-padding;
 
-.backlogStatus {
-    background-color: $backlog-status-color;
-}
+        .iconButton {
+            position: relative;
+            top: 2px;
+        }
 
-.backlogStatusSecondary {
-    background-color: adjust-color($backlog-status-color, $alpha: $secondaryStatusAdjustPercent);
-}
-
-.willBeBackStatus {
-    background-color: $will-be-back-status-color;
-}
-
-.willBeBackStatusSecondary {
-    background-color: adjust-color($will-be-back-status-color,
-            $alpha: $secondaryStatusAdjustPercent );
-}
-
-.pingMeStatus {
-    background-color: $ping-me-status-color;
-}
-
-.pingMeStatusSecondary {
-    background-color: adjust-color($ping-me-status-color, $alpha: $secondaryStatusAdjustPercent);
-}
-
-.nextToTakeStatus {
-    background-color: $next-to-take-status-color;
-}
-
-.nextToTakeStatusSecondary {
-    background-color: adjust-color($next-to-take-status-color,
-            $alpha: $secondaryStatusAdjustPercent );
-}
-
-.inProgressStatus {
-    background-color: $in-progress-status-color;
-}
-
-.inProgressStatusSecondary {
-    background-color: adjust-color($in-progress-status-color,
-            $alpha: $secondaryStatusAdjustPercent );
+        .todoInteractedOn {
+            font-size: smaller;
+            color: darken($main-font-color, 30%);
+        }
+    }
 }

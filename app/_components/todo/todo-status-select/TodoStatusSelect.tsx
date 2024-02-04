@@ -1,4 +1,4 @@
-import { All_TODO_STATUSES, TodoStatus } from "@/app/_lib/types/todo";
+import { All_TODO_STATUSES, TodoStatus } from "@/app/_lib/types/todo-types";
 import { chooseStatusColorClass, chooseStatusImgUrl, todoStatusToLabel } from "@/app/_lib/utils/todo-helpers";
 import { MouseEventHandler, useCallback, useState } from "react";
 
@@ -6,18 +6,20 @@ import './TodoStatusSelect.scss';
 
 export interface TodoMenuProps {
     currentStatus?: TodoStatus;
-    selectHandler: (todoStatus: TodoStatus) => void;
+    onSelect: (todoStatus: TodoStatus) => void;
 }
 
-export function TodoStatusSelect({ currentStatus = 'BACKLOG', selectHandler }: TodoMenuProps) {
+export function TodoStatusSelect({ currentStatus = 'BACKLOG', onSelect: selectHandler }: TodoMenuProps) {
 
     const otherStatuses = All_TODO_STATUSES.filter((i) => i !== currentStatus);
     const [isOpen, setIsOpen] = useState(false);
     const [optionsY, setOptionsY] = useState(0);
+    const [optionsWidth, setOptionsWidth] = useState(0);
 
     const openHandler: MouseEventHandler = useCallback((e) => {
         const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
         setOptionsY(rect.bottom + window.scrollY);
+        setOptionsWidth(rect.width);
         setIsOpen(prev => !prev);
     }, []);
 
@@ -30,7 +32,7 @@ export function TodoStatusSelect({ currentStatus = 'BACKLOG', selectHandler }: T
         <div className="todoStatusSelect">
             <div
                 onClick={openHandler}
-                className={`currentStatus ${chooseStatusColorClass(currentStatus)}`}
+                className={`optionStatus currentStatus ${chooseStatusColorClass(currentStatus)}`}
             >
                 <img
                     src={chooseStatusImgUrl(currentStatus)}
@@ -41,7 +43,7 @@ export function TodoStatusSelect({ currentStatus = 'BACKLOG', selectHandler }: T
             {isOpen && (
                 <div
                     className="optionsPane"
-                    style={{ top: `${optionsY}px` }}
+                    style={{ top: `${optionsY}px`, width: `${optionsWidth}px` }}
                 >
                     {otherStatuses.map((status) => (
                         <div
