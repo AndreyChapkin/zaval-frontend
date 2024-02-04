@@ -18,6 +18,7 @@ import './page.scss';
 import TodoPriority from "@/app/_components/todo/todo-priority/TodoPriority";
 import { ParentBreadcrumbs } from "@/app/_components/todo/parent-breadcrumbs/ParentBreadCrumbs";
 import { RemoveModal } from "@/app/_components/general/remove-modal/RemoveModal";
+import CreateTodo from "@/app/_components/todo/create-todo-modal/CreateTodoModal";
 
 function TodoItemPage() {
 
@@ -31,6 +32,7 @@ function TodoItemPage() {
     const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
     const [isRemoveOpen, setIsRemoveOpen] = useState(false);
     const [todoLightDto, setTodoLightDto] = useState<TodoLightDto | null>();
+    const [isCreatChild, setIsCreateChild] = useState(false);
 
     const removeHandler = () => {
         const parentId = todoFamily?.parents[0]?.id;
@@ -92,7 +94,7 @@ function TodoItemPage() {
                                 </div>
                             </div>
                             <div className="children column gap1">
-                                <ActionButton label="Add children" />
+                                <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
                                 {
                                     todoFamily.children.length > 0
                                     &&
@@ -115,6 +117,13 @@ function TodoItemPage() {
             {
                 isRemoveOpen &&
                 <RemoveModal onAccept={removeHandler} onCancel={() => setIsRemoveOpen(false)} />
+            }
+            {
+                isCreatChild &&
+                <CreateTodo
+                    onSuccess={() => window.location.reload()}
+                    parentId={id}
+                    onCancel={() => setIsCreateChild(false)} />
             }
         </div>
     );

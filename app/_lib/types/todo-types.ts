@@ -26,6 +26,7 @@ export interface TodoHistoryDto {
 export interface TodoCreateDto {
     name: string;
     status: TodoStatus;
+    priority: number;
     parentId: number | null;
 }
 

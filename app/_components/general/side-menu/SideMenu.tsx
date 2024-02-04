@@ -13,7 +13,7 @@ function SideMenu() {
 
     return (
         <>
-            <div className="todoSideMenu columnCenter">
+            <div className="todoSideMenu columnStartAndCenter">
                 <div className="todoSideMenuItem">
                     <a href={`/ui/todo/status?status=${todoStatusToUrlForm('IN_PROGRESS')}`}>
                         <IconButton
@@ -24,12 +24,6 @@ function SideMenu() {
                     <IconButton
                         onClick={() => { setIsOpen(true) }}
                         iconUrl={CREATE_ICON_URL} />
-                </div>
-                <div className="todoSideMenuItem">
-                    <a href={`/todo/root`}>
-                        <IconButton
-                            iconUrl={ROOT_MENU_ICON_URL} />
-                    </a>
                 </div>
                 <div className="todoSideMenuItem">
                     <IconButton
@@ -45,7 +39,7 @@ function SideMenu() {
             </div>
             {
                 isOpen &&
-                <CreateTodo cancelHandler={() => { setIsOpen(false) }} successHandler={() => { setIsOpen(false) }} />
+                <CreateTodo onCancel={() => { setIsOpen(false) }} onSuccess={() => { setIsOpen(false) }} />
             }
         </>
     );

@@ -8,42 +8,45 @@ import { GeneralSelect } from "../../general/general-select/GeneralSelect";
 import { chooseStatusColorClass, chooseStatusImgUrl, todoStatusToLabel } from "@/app/_lib/utils/todo-helpers";
 
 import './CreateTodoModal.scss';
+import { TodoStatusSelect } from "../todo-status-select/TodoStatusSelect";
+import { EditPriority } from "../edit-todo-modal/EditTodoModal";
 
 export interface CreateTodoProps {
     parentId?: number;
-    cancelHandler: () => void;
-    successHandler: (todo: TodoLightDto) => void;
+    onCancel: () => void;
+    onSuccess: (todo: TodoLightDto) => void;
 }
 
-function CreateTodo({ parentId, cancelHandler, successHandler }: CreateTodoProps) {
+function CreateTodo({ parentId, onCancel: cancelHandler, onSuccess: successHandler }: CreateTodoProps) {
 
     const [name, setName] = useState('');
     const [status, setStatus] = useState<TodoStatus>('BACKLOG');
+    const [priority, setPriority] = useState(0);
+
+    const createHandler = async () => {
+        const createdTodo = await createTodo({
+            name,
+            status,
+            priority,
+            parentId: parentId ?? null
+        });
+        successHandler(createdTodo);
+    };
 
     return (
         <ModalWindow onClose={cancelHandler}>
-            <div className="createTodo columnStartAndStretch">
-                <div className="editPanel columnStartAndStretch">
-                    <GeneralSelect
-                        currentElement={status}
-                        allElements={All_TODO_STATUSES}
-                        selectHandler={setStatus}
-                        mapper={(status) => ({
-                            label: todoStatusToLabel(status),
-                            classNames: chooseStatusColorClass(status),
-                            imageUrl: chooseStatusImgUrl(status)
-                        })}
-                    />
+            <div className="createTodo columnCenterAndStretch gap4">
+                <div className="editPanel columnStartAndStretch gap2">
+                    <TodoStatusSelect currentStatus={status} onSelect={setStatus} />
                     <StandardInput value={name} onChange={setName} />
+                    <EditPriority
+                        priority={priority}
+                        onChange={setPriority} />
                 </div>
-                <div className="controlPanel rowCenter">
+                <div className="controlPanel rowCenter gap5">
                     <ActionButton
                         label="Create"
-                        onClick={() => createTodo({
-                            name,
-                            status,
-                            parentId: parentId ?? null
-                        }).then(successHandler)} />
+                        onClick={createHandler} />
                     <ActionButton
                         label="Cancel"
                         onClick={cancelHandler} />

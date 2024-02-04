@@ -24,6 +24,14 @@
 	gap: 20px;
 }
 
+.gap5 {
+	gap: 30px;
+}
+
+.gap6 {
+	gap: 40px;
+}
+
 .row {
 	display: flex;
 	flex-direction: row;
@@ -165,6 +173,11 @@
 .columnCenterAndCenter {
 	@extend .columnCenter;
 	align-items: center;
+}
+
+.columnCenterAndStretch {
+	@extend .columnCenter;
+	align-items: stretch;
 }
 
 .columnAroundAndCenter {

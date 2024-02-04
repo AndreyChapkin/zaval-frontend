@@ -8,39 +8,12 @@ $wide-size: 10px;
 
 .createTodo {
     background-color: $main-light-1-color;
-    @include screen-sized(40, 20);
+    @include screen-sized(40, 40);
     padding: 30px 20px;
-    gap: 10px;
 
     .editPanel {
-        gap: 10px;
     }
 
     .controlPanel {
-        gap: 10px;
     }
-}
-
-.doneStatusColor {
-    color: $done-status-color;
-}
-
-.backlogStatusColor {
-    color: $backlog-status-color;
-}
-
-.willBeBackStatusColor {
-    color: $will-be-back-status-color;
-}
-
-.pingMeStatusColor {
-    color: $ping-me-status-color;
-}
-
-.nextToTakeStatusColor {
-    color: $next-to-take-status-color;
-}
-
-.inProgressStatusColor {
-    color: $in-progress-status-color;
 }
