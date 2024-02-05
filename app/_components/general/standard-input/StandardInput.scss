@@ -3,8 +3,8 @@
 $normal-size: 5px;
 
 .standardInput {
-    background-color: $main-color;
-    border: 2px solid $main-light-3-color;
+    background-color: $main-dark-1-color;
+    border: 2px solid $main-light-2-color;
     padding: 8px;
     border-radius: $normal-size;
     outline: none;
@@ -12,6 +12,7 @@ $normal-size: 5px;
     color: $secondary-font-color;
 
     &:focus {
-        border: 2px solid $main-light-5-color;
+        border: 2px solid $main-light-3-color;
+        background-color: $main-dark-2-color;
     }
 }

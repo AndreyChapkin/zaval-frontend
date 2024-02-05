@@ -12,7 +12,8 @@ interface StandardInputProps {
 export const StandardInput: React.FC<StandardInputProps> = ({ value, autofocus, className = "", onChange }) => {
     
     const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        onChange(e.target.value);
+        const value = e.target.value || '';
+        onChange(value);
     }, [onChange]);
 
     return (

@@ -33,6 +33,7 @@ function TodoItemPage() {
     const [isRemoveOpen, setIsRemoveOpen] = useState(false);
     const [todoLightDto, setTodoLightDto] = useState<TodoLightDto | null>();
     const [isCreatChild, setIsCreateChild] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const removeHandler = () => {
         const parentId = todoFamily?.parents[0]?.id;
@@ -42,6 +43,7 @@ function TodoItemPage() {
 
     useEffect(() => {
         getTodoFamily(id).then(setTodoFamily);
+        setIsLoading(false);
     }, []);
 
     useEffect(() => {
@@ -106,7 +108,10 @@ function TodoItemPage() {
                         </div>
                     </>
                     :
-                    "Loading..."
+                    isLoading ?
+                        "Loading..."
+                        :
+                        "No such todo"
             }
             {isEditMenuOpen && todoLightDto && (
                 <EditTodoModal

@@ -6,19 +6,22 @@
 $normal-size: 5px;
 
 .todoCard {
-    background-color: $main-light-2-color;
-    border: 1px solid $main-light-3-color;
+    background-color: $main-color;
+    border: 1px solid $main-light-1-color;
     color: $main-font-color;
     overflow: hidden;
     min-height: 70px;
     border-radius: $normal-size;
 
     &:hover {
-        background-color: $secondary-dark-1-color;
+        background-color: $main-light-1-color;
     }
 
     .navigation {
+        $navigation-opacity: 0.6;
+        opacity: $navigation-opacity;
         padding: 8px 5px;
+        border-right: 1px solid rgba(white, $navigation-opacity);
 
         a {
             display: block;
@@ -37,23 +40,24 @@ $normal-size: 5px;
     $top-padding: 5px;
     $info-left-padding: 8px;
 
-    .namePanel {
-        padding-top: $top-padding;
-        padding-left: $info-left-padding;
+    .mainPanel {
+        padding: 2px 0px;
+        .namePanel {
+            padding-top: $top-padding;
+            padding-left: $info-left-padding;
+        }
+        .secondaryPanel {
+            padding-left: $info-left-padding;
+            padding-bottom: $top-padding;
+            .iconButton {
+                position: relative;
+                top: 2px;
+            }
+            .todoInteractedOn {
+                font-size: smaller;
+                color: darken($main-font-color, 30%);
+            }
+        }
     }
 
-    .secondaryPanel {
-        padding-left: $info-left-padding;
-        padding-bottom: $top-padding;
-
-        .iconButton {
-            position: relative;
-            top: 2px;
-        }
-
-        .todoInteractedOn {
-            font-size: smaller;
-            color: darken($main-font-color, 30%);
-        }
-    }
 }

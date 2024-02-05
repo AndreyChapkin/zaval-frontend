@@ -6,17 +6,16 @@ $normal-size: 5px;
 
 .todoStatusPage {
 
-    gap: 10px;
+    .statusedTodos {
+        flex: 1;
+    }
 
-    .statusSwitcher {
-        gap: 5px;
+    .recentTodos {
+        flex: 1;
     }
 
     .chosenStatus {
         background-color: rgba(white, 0.15);
     }
 
-    .todos {
-        gap: 10px;
-    }
 }

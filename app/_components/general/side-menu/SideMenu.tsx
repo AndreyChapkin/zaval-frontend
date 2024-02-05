@@ -1,15 +1,24 @@
 "use client";
 
-import { ARTICLE_ICON_URL, CREATE_ICON_URL, ROOT_MENU_ICON_URL, SEARCH_ICON_URL } from "@/app/_lib/constants/image-url-constants";
+import { ARTICLE_ICON_URL, CREATE_ICON_URL, SEARCH_ICON_URL } from "@/app/_lib/constants/image-url-constants";
 import { chooseStatusImgUrl, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
-import './SideMenu.scss';
-import { IconButton } from "../icon-button/IconButton";
+import { use, useEffect, useState } from "react";
 import CreateTodo from "../../todo/create-todo-modal/CreateTodoModal";
-import { useState } from "react";
+import { SearchTodoModal } from "../../todo/search-todo-modal/SearchTodoModal";
+import { IconButton } from "../icon-button/IconButton";
+import './SideMenu.scss';
+import { usePathname } from "next/navigation";
 
 function SideMenu() {
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const pathname = usePathname();
+
+    useEffect(() => {
+        setIsCreateOpen(false);
+        setIsSearchOpen(false);
+    }, [pathname]);
 
     return (
         <>
@@ -22,11 +31,12 @@ function SideMenu() {
                 </div>
                 <div className="todoSideMenuItem">
                     <IconButton
-                        onClick={() => { setIsOpen(true) }}
+                        onClick={() => { setIsCreateOpen(true) }}
                         iconUrl={CREATE_ICON_URL} />
                 </div>
                 <div className="todoSideMenuItem">
                     <IconButton
+                        onClick={() => { setIsSearchOpen(true) }}
                         iconUrl={SEARCH_ICON_URL} />
                 </div>
                 <div className="separator" />
@@ -38,8 +48,12 @@ function SideMenu() {
                 </div>
             </div>
             {
-                isOpen &&
-                <CreateTodo onCancel={() => { setIsOpen(false) }} onSuccess={() => { setIsOpen(false) }} />
+                isCreateOpen &&
+                <CreateTodo onCancel={() => { setIsCreateOpen(false) }} onSuccess={() => { setIsCreateOpen(false) }} />
+            }
+            {
+                isSearchOpen &&
+                <SearchTodoModal onClose={() => { setIsSearchOpen(false) }} />
             }
         </>
     );

@@ -19,10 +19,9 @@ export default function TodoCard({ todo }: TodoCardProps) {
 
   return (
     <>
-      <div className="todoCard rowStartAndStretch">
+      <div className="todoCard rowStartAndStretch gap1">
         <Link className="column" href={`/ui/todo/${todo.id}`}>
-          <div className="navigation columnJustifyAndCenter flex1 gap1">
-            <TodoStatusIndicator status={todo.status} />
+          <div className="navigation columnCenterAndCenter flex1 gap1">
             <img src={SEE_ICON_URL} />
           </div>
         </Link>
@@ -30,15 +29,16 @@ export default function TodoCard({ todo }: TodoCardProps) {
           <div className="namePanel flex1 rowStartAndStretch gap3">
             {todo.name}
           </div>
-          <div className="secondaryPanel rowStartAndEnd gap1">
+          <div className="secondaryPanel rowStartAndEnd gap3">
+            <div className="additionalInfo rowStartAndCenter gap2">
+              <TodoStatusIndicator status={todo.status} />
+              <div className="todoInteractedOn">{presentDate(todo.interactedOn)}</div>
+              <TodoPriority priority={todo.priority} />
+            </div>
             <IconButton
               size="small"
               iconUrl={EDIT_ICON_URL}
               onClick={() => setIsMenuOpen(true)} />
-            <div className="additionalInfo rowStartAndEnd gap2">
-              <TodoPriority priority={todo.priority} />
-              <div className="todoInteractedOn">{presentDate(todo.interactedOn)}</div>
-            </div>
           </div>
         </div>
         {isMenuOpen && (

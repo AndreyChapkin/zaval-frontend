@@ -14,7 +14,7 @@ $wide-size: 10px;
         @include row;
         gap: 10px;
         cursor: pointer;
-        background-color: $main-color;
+        background-color: $main-dark-1-color;
         padding: $normal-size $wide-size $normal-size $wide-size;
 
         img {
@@ -23,13 +23,13 @@ $wide-size: 10px;
         }
 
         &:hover {
-            background-color: $main-light-3-color;
+            background-color: $main-light-1-color;
         }
     }
 
     .currentStatus {
-        border-radius: $normal-size;
-        border: 2px solid $main-light-3-color;
+        border-radius: 5px;
+        border: 2px solid $main-light-2-color;
     }
 
     .optionsPane {

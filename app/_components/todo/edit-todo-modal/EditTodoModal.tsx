@@ -1,7 +1,7 @@
 import { findTodosWithNameFragment, moveTodo, updateTodo } from '@/app/_lib/calls/todo-calls';
 import { TodoLightDto } from '@/app/_lib/types/todo-types';
 import { decreaseNumberOfCalls } from '@/app/_lib/utils/function-helpers';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActionButton } from '../../general/action-button/ActionButton';
 import LoadingIndicator from '../../general/loading-indicator/LoadingIndicator';
 import { ModalWindow } from '../../general/modal-window/ModalWindow';
@@ -89,13 +89,13 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
         location.href = `/ui/todo/${parentTodo.id}`;
     };
 
-    const searchTodos = decreaseNumberOfCalls((value: string) => {
+    const searchTodos = useMemo(() => decreaseNumberOfCalls((value: string) => {
         setIsLoading(true);
         findTodosWithNameFragment(value).then((data) => {
             setIsLoading(false);
             setFoundTodos(data);
         });
-    }, 500);
+    }, 500), []);
 
     useEffect(() => {
         if (searchValue) {

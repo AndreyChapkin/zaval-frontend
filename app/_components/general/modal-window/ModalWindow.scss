@@ -1,4 +1,5 @@
 @import '/app/_styles/facade/mixins.scss';
+@import '/app/_styles/color/variables.scss';
 
 .modalWindowBackgroud {
     position: absolute;
@@ -18,4 +19,5 @@
 .modalWindowBody {
     border-radius: 5px;
     overflow: hidden;
+    background-color: $main-dark-1-color;
 }
