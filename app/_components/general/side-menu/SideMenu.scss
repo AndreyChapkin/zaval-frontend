@@ -4,7 +4,7 @@ $normal-size: 5px;
 $small-size: 3px;
 
 .todoSideMenu {
-    background-color: $main-color;
+    background-color: $main-dark-1-color;
     padding: $normal-size $small-size;
     gap: 5px;
 
@@ -21,6 +21,7 @@ $small-size: 3px;
     .separator {
         height: 2px;
         width: 20px;
+        border-radius: 2px;
         background-color: $secondary-pale-1-color;
     }
 }

@@ -5,6 +5,8 @@ $normal-size: 5px;
 $wide-size: 10px;
 
 .primitiveCard {
+    max-width: 450px;
+    min-width: 250px;
     padding-right: 10px;
     background-color: $main-dark-1-color;
     color: $secondary-font-color;

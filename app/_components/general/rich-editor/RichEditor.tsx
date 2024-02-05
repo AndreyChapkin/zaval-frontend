@@ -9,7 +9,7 @@ import './RichEditor.scss';
 import { useRichActionConveyor } from './lib/rich-action-conveyor';
 import { RichDeleteAction, RichReplaceAction, asCreateAction, asDeleteAction, asReplaceAction, isReservedShortcut, planRichAction } from './lib/rich-action-processors';
 import { EditorCommand, translateEventToEditorCommand } from './lib/rich-command-processors';
-import { createRichHTMLElement, removeEmptyRichElements, useRichDomManipulator } from './lib/rich-dom-manipulations';
+import { createRichHTMLElement, mergeAdjacentSimpleElements, removeEmptyRichElements, useRichDomManipulator } from './lib/rich-dom-manipulations';
 import { RichEditorFulfillment } from './rich-editor-fulfillment/RichEditorFulfillment';
 
 import "../rich-text/rich-fragments/rich-elements.scss";
@@ -47,6 +47,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 		let actualRichElements = manipulator?.extractAllRichElements();
 		if (actualRichElements) {
 			actualRichElements = removeEmptyRichElements(actualRichElements);
+			mergeAdjacentSimpleElements(actualRichElements);
 		}
 		onSave(JSON.stringify(actualRichElements))
 			.then(() => {

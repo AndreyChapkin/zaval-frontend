@@ -438,6 +438,27 @@ export const RichTranslators: Record<RichType, {
 	}
 };
 
+export function mergeAdjacentSimpleElements(elements: RichElement[]) {
+	for (let i = elements.length - 1; i >= 0; i--) {
+		const element = elements[i];
+		console.log('@@@ element', JSON.stringify(element));
+		if (isRichParentElement(element.type)) {
+			const parent = element as RichParentElement;
+			mergeAdjacentSimpleElements(parent.children);
+		} else {
+			if (i === 0) {
+				continue;
+			}
+			const prevElement = elements[i - 1];
+			console.log('@@@ prevElement', JSON.stringify(prevElement));
+			if (element.type === 'simple' && prevElement.type === 'simple') {
+				prevElement.text += element.text;
+				elements.splice(i, 1);
+			}
+		}		
+	}
+}
+
 export function removeEmptyRichElements(elements: RichElement[]): RichElement[] {
 	const nonEmptyElement = elements.filter(canBeAdded);
 	return nonEmptyElement;

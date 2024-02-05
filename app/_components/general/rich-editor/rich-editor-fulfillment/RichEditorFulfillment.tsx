@@ -4,6 +4,8 @@ import { ModalWindow } from '../../modal-window/ModalWindow';
 import { StandardInput } from '../../standard-input/StandardInput';
 import { FulfillmentInfo, FulfillmentLinkInfo, RichActionDraft } from '../lib/rich-action-processors';
 
+import './RichEditorFulfillment.scss';
+
 interface RichEditorFulfillmentProps {
     draftAction: RichActionDraft;
     onAccept: (info: FulfillmentInfo) => void;
@@ -31,7 +33,7 @@ const LinkFulfillment: React.FC<LinkFulfillmentProps> = ({ onAccept }) => {
     const [name, setName] = React.useState('');
     const [href, setHref] = React.useState('');
     return (
-        <div className="linkFulfillment column">
+        <div className="linkFulfillment columnCenterAndCenter gap2">
             <StandardInput autofocus value={name} onChange={setName} />
             <StandardInput value={href} onChange={setHref} />
             <div className='linkFulfillmentControl'>
