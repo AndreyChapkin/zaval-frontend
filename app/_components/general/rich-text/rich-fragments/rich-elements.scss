@@ -56,6 +56,7 @@ $title-font-size: 28px;
 .richParagraph {
     color: $main-font-color;
     font-family: Nunito;
+    white-space: pre-wrap;
     margin: 0px;
 }
 
@@ -66,10 +67,6 @@ $title-font-size: 28px;
 
 .richStrong {
     color: $secondary-light-1-color;
-}
-
-.richSimple {
-    white-space: pre-wrap;
 }
 
 .richLink {
@@ -84,7 +81,7 @@ $title-font-size: 28px;
 }
 
 .richListItem {
-    margin: 10px 0px;
+    margin-bottom: 10px;
 }
 
 .richListItemSign {
@@ -144,12 +141,5 @@ $title-font-size: 28px;
 
 .richSelectedElement {
     border: 2px solid cadetblue;
-    border-radius: 3px;
-}
-
-.richSimple.richSelectedElement {
-    border: none;
-    border-left: 3px solid cadetblue;
-    border-right: 3px solid cadetblue;
     border-radius: 3px;
 }

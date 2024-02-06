@@ -72,18 +72,6 @@ export async function moveTodo(moveTodoDto: MoveTodoDto): Promise<void> {
     await callPatch<void>(url, moveTodoDto);
 }
 
-export async function getTodoHistory(todoId: number): Promise<TodoHistoryDto> {
-    const url = `${baseTodoURL}/${todoId}/history`;
-    const response = await callGet<TodoHistoryDto>(url);
-    return response.data;
-}
-
-export async function updateTodoHistory(todoId: number, todoHistoryDto: TodoHistoryDto): Promise<TodoHistoryDto> {
-    const url = `${baseTodoURL}/${todoId}/history`;
-    const response = await callPatch<TodoHistoryDto>(url, todoHistoryDto);
-    return response.data;
-}
-
 export async function findTodosWithNameFragment(nameFragment: string): Promise<TodoLightDto[]> {
     const url = `${baseTodoURL}/with-name-fragment`;
     const response = await callGet<TodoLightDto[]>(url, {

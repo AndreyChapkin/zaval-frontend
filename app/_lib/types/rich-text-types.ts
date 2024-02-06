@@ -13,11 +13,6 @@ export interface RichTitleElement extends RichElementBase {
 	id: string;
 }
 
-export interface RichSimpleElement extends RichElementBase {
-	type: 'simple';
-	text: string;
-}
-
 export interface RichLinkElement extends RichElementBase {
 	type: 'link';
 	name: string;
@@ -29,20 +24,19 @@ export interface RichStrongElement extends RichElementBase {
 	text: string;
 }
 
-export interface RichListElement extends RichElementBase, RichParentElement {
+export interface RichListElement extends RichElementBase {
 	type: 'list';
-	children: RichListItemElement[];
+	listItems: RichListItemElement[];
 }
 
 export interface RichListItemElement extends RichElementBase, RichParentElement {
 	type: 'list-item';
 	children: RichElement[];
-
 }
 
-export interface RichParagraphElement extends RichElementBase, RichParentElement {
+export interface RichParagraphElement extends RichElementBase {
 	type: 'paragraph';
-	children: RichElement[];
+	textFragments: (RichElement | string)[];
 }
 
 export interface RichExpandableBlockElement extends RichElementBase, RichParentElement {
@@ -66,21 +60,22 @@ export interface RichUnknownElement {
 	text: string;
 }
 
-export type RichElementParent = RichParagraphElement | RichListElement
-	| RichListItemElement | RichExpandableBlockElement
-	| RichUnitedBlockElement | RichCodeBlockElement;
-
 export function isRichParentElement(elementType: RichType): boolean {
 	return [
-		'paragraph', 'list', 'list-item', 'expandable-block', 'united-block',
+		'list-item', 'expandable-block', 'united-block',
 	].indexOf(elementType) > -1;
 }
 
-export type RichElement = RichSimpleElement | RichLinkElement | RichStrongElement
-	| RichTitleElement | RichElementParent | RichUnknownElement;
+export type RichElement = RichLinkElement | RichStrongElement
+	| RichTitleElement | RichUnknownElement | RichCodeBlockElement
+	| RichParagraphElement | RichListElement | RichListItemElement
+	| RichExpandableBlockElement | RichUnitedBlockElement | RichCodeBlockElement;
+
+export type RichElementParent = Extract<RichElement,
+	RichListItemElement | RichExpandableBlockElement | RichUnitedBlockElement>;
 
 export const RICH_TYPES = [
-	'simple', 'title-1', 'title-2', 'title-3', 'title-4',
+	'title-1', 'title-2', 'title-3', 'title-4',
 	'paragraph', 'unknown', 'strong', 'link', 'list', 'list-item',
 	'expandable-block', 'united-block', 'code-block',
 ] as const;
@@ -94,7 +89,7 @@ export type RichTitleType = Extract<RichType, 'title-1' | 'title-2' | 'title-3' 
 export const TITLES_ARRAY: RichTitleType[] = ['title-1', 'title-2', 'title-3', 'title-4'] as const;
 
 export const RICH_CLASS_NAMES = [
-	'richSimple', 'richTitle1', 'richTitle2', 'richTitle3', 'richTitle4',
+	'richTitle1', 'richTitle2', 'richTitle3', 'richTitle4',
 	'richParagraph', 'richUnknown', 'richStrong', 'richLink',
 	'richList', 'richListItem',
 	'richExpandableBlock', 'richUnitedBlock', 'richCodeBlock',
@@ -102,7 +97,6 @@ export const RICH_CLASS_NAMES = [
 export type RichClassName = (typeof RICH_CLASS_NAMES)[number];
 
 export const RICH_TYPE_TO_CLASS_NAME_MAP: Record<RichType, RichClassName> = {
-	'simple': 'richSimple',
 	'title-1': 'richTitle1',
 	'title-2': 'richTitle2',
 	'title-3': 'richTitle3',
@@ -126,28 +120,25 @@ export const RICH_CLASS_NAME_TO_TYPE_MAP: Record<RichClassName, RichType> = Obje
 }, {} as Record<string, string>) as Record<RichClassName, RichType>;
 
 export const RICH_TYPE_TO_DEFAULT_MAP: Record<RichType, RichElement> = {
-	'simple': { type: 'simple', text: 'Placeholder' },
 	'title-1': { type: 'title-1', text: 'Placeholder', id: 'Placeholder' },
 	'title-2': { type: 'title-2', text: 'Placeholder', id: 'Placeholder' },
 	'title-3': { type: 'title-3', text: 'Placeholder', id: 'Placeholder' },
 	'title-4': { type: 'title-4', text: 'Placeholder', id: 'Placeholder' },
 	'paragraph': {
 		type: 'paragraph',
-		children: [
-			{ type: 'simple', text: 'Placeholder' },
-		]
+		textFragments: ['Placeholder']
 	},
 	'unknown': { type: 'unknown', text: 'Placeholder' },
 	'strong': { type: 'strong', text: 'Placeholder' },
 	'link': { type: 'link', name: 'Placeholder', href: 'Placeholder' },
 	'list': {
 		type: 'list',
-		children: [{
+		listItems: [{
 			type: 'list-item',
 			children: [
 				{
 					type: 'paragraph',
-					children: [{ type: 'simple', text: 'Placeholder' }]
+					textFragments: ['Placeholder']
 				}
 			]
 		}]
@@ -155,19 +146,28 @@ export const RICH_TYPE_TO_DEFAULT_MAP: Record<RichType, RichElement> = {
 	'list-item': {
 		type: 'list-item',
 		children: [
-			{ type: 'simple', text: 'Placeholder' },
+			{
+				type: 'paragraph',
+				textFragments: ['Placeholder']
+			}
 		]
 	},
 	'expandable-block': {
 		type: 'expandable-block', title: 'Placeholder',
 		children: [
-			{ type: 'simple', text: 'Placeholder' },
+			{
+				type: 'paragraph',
+				textFragments: ['Placeholder']
+			},
 		]
 	},
 	'united-block': {
 		type: 'united-block',
 		children: [
-			{ type: 'simple', text: 'Placeholder' },
+			{
+				type: 'paragraph',
+				textFragments: ['Placeholder']
+			},
 		]
 	},
 	'code-block': {

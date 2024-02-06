@@ -4,16 +4,21 @@ import { RichDomManipulator } from "./rich-dom-manipulations";
 
 export type ActionConveyorStatus = 'idle' | 'needFulfillment' | 'readyToProcess';
 
+export interface ActionHistoryRecord {
+	action: RichAction;
+	reverseAction: RichAction;
+}
+
 export interface ActionConveyor {
-	history: RichAction[];
-	actions: RichAction[];
+	history: ActionHistoryRecord[];
+	action: RichAction | null;
 	draft: RichActionDraft | null;
 }
 
-export function useRichActionConveyor(domManipulator: RichDomManipulator | null) {
+export function useRichActionConveyorHarness(domManipulator: RichDomManipulator | null) {
 	const actionConveyorRef = useRef<ActionConveyor>({
 		history: [],
-		actions: [],
+		action: null,
 		draft: null,
 	});
 	const actionConveyor = actionConveyorRef.current;
@@ -23,7 +28,7 @@ export function useRichActionConveyor(domManipulator: RichDomManipulator | null)
 	function moveStatus() {
 		if (actionConveyor.draft) {
 			setStatus('needFulfillment');
-		} else if (actionConveyor.actions.length > 0) {
+		} else if (actionConveyor.action) {
 			setStatus('readyToProcess');
 		} else {
 			setStatus('idle');
@@ -43,7 +48,7 @@ export function useRichActionConveyor(domManipulator: RichDomManipulator | null)
 		} else {
 			const completedAction = actionProcessor.fulfillDraftAction(draft);
 			if (completedAction) {
-				actionConveyor.actions.push(completedAction);
+				actionConveyor.action = completedAction;
 			}
 		}
 		moveStatus();
@@ -53,44 +58,52 @@ export function useRichActionConveyor(domManipulator: RichDomManipulator | null)
 		if (actionConveyor.draft) {
 			const completedAction = actionProcessor.fulfillDraftAction(actionConveyor.draft, fulfillmentInfo);
 			if (completedAction) {
-				actionConveyor.actions.push(completedAction);
+				actionConveyor.action = completedAction;
 			}
 			actionConveyor.draft = null;
 			moveStatus();
 		}
 	}
 
-	function submitActions(actions: RichAction[]) {
-		actionConveyor.actions.push(...actions);
+	function submitAction(action: RichAction) {
+		actionConveyor.draft = null;
+		actionConveyor.action = action;
 		moveStatus();
 	}
 
-	function processActions() {
-		if (actionConveyor.actions.length > 0) {
-			const actions = actionConveyor.actions;
-			// process actions
-			for (const action of actions) {
-				actionProcessor.applyRichAction(action);
-			}
+	function processAction() {
+		if (actionConveyor.action) {
+			// process action
+			const reverseAction = actionProcessor.applyRichAction(actionConveyor.action);
 			// write to history
-			actionConveyor.history.push(...actions);
+			actionConveyor.history.push({
+				action: actionConveyor.action,
+				reverseAction,
+			});
 			// Remember only last 10 actions
 			if (actionConveyor.history.length > 10) {
 				actionConveyor.history = actionConveyor.history.slice(-10);
 			}
-			// update actions
-			actionConveyor.actions = [];
+			// update action
+			actionConveyor.action = null;
 			moveStatus();
 		}
 	};
 
-	return  {
+	function getLastHistoryRecord(): ActionHistoryRecord | null {
+		return actionConveyor.history.length > 0 ?
+			actionConveyor.history[actionConveyor.history.length - 1]
+			: null;
+	}
+
+	return {
 		status,
-		info: actionConveyor,
+		conveyor: actionConveyor,
 		discardDraft,
 		submitDraft,
 		completeDraft,
-		submitActions,
-		processActions,
+		submitAction,
+		processAction,
+		getLastHistoryRecord,
 	};
 }

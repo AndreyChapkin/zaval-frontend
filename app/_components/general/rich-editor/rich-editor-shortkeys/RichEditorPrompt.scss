@@ -12,8 +12,7 @@ $large-size: 12px;
     @include standard-container;
     flex-wrap: wrap;
     border-radius: 0 0 $normal-size $normal-size;
-    padding: $wide-size;
-    background-color: $secondary-dark-2-color;
+    padding: 20px;
 
     .column {
         @include column($small-size);
@@ -27,7 +26,7 @@ $large-size: 12px;
         color: $main-font-color;
 
         b {
-            color: $accent-light-1-color;
+            color: $secondary-light-2-color;
         }
     }
 }

@@ -1,4 +1,4 @@
-import { RICH_CLASS_NAMES, RICH_CLASS_NAME_TO_TYPE_MAP, RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_SELECTED_ELEMENT_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichClassName, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichParentElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichTitleType, RichType, RichUnitedBlockElement, RichUnknownElement, isRichParentElement } from "@/app/_lib/types/rich-text-types";
+import { RICH_CLASS_NAMES, RICH_CLASS_NAME_TO_TYPE_MAP, RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_SELECTED_ELEMENT_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichClassName, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichParentElement, RichStrongElement, RichTitleElement, RichTitleType, RichType, RichUnitedBlockElement, RichUnknownElement, isRichParentElement } from "@/app/_lib/types/rich-text-types";
 import { useEffect, useState } from "react";
 import { htmlElem } from "./dom-builders";
 import { findNearestParentElement } from "./dom-manipulation";
@@ -160,11 +160,13 @@ export function defineElementRichType(element: HTMLElement): RichType | null {
 	return null;
 }
 
-export function createRichHTMLElement(
-	richElement: RichElement,
-): HTMLElement {
+export function createRichHTMLElement(richElement: RichElement): HTMLElement {
 	const translator = RichTranslators[richElement.type];
 	return translator.toHtml(richElement);
+}
+
+export function createTextNode(text: string): Text {
+	return SimpleTranslator.toHtml(text);
 }
 
 export function parseRichHTMLElement(
@@ -215,7 +217,16 @@ const titleTranslator = {
 	},
 };
 
-export const RichTranslators: Record<RichType, {
+export const SimpleTranslator = {
+	toHtml: (text: string): Text => {
+		return document.createTextNode(text);
+	},
+	fromHtml: (htmlElem: Text): string => {
+		return htmlElem.textContent ?? '';
+	}
+};
+
+export const RichTranslators: Record<Exclude<RichType, 'simple'>, {
 	toHtml: (richElem: any) => HTMLElement;
 	fromHtml: (htmlElem: HTMLElement) => RichElement;
 	contentHtml?: (parentElement: HTMLElement) => HTMLElement;
@@ -225,29 +236,24 @@ export const RichTranslators: Record<RichType, {
 			return htmlElem({
 				tag: 'p',
 				classes: RICH_TYPE_TO_CLASS_NAME_MAP['paragraph'],
-				children: elem.children.map(createRichHTMLElement),
+				children: elem.textFragments.map(child => {
+					if (typeof child === 'string') {
+						return child;
+					}
+					return createRichHTMLElement(child);
+				}),
 			});
 		},
 		fromHtml: (htmlElem: HTMLElement): RichParagraphElement => {
-			const children = Array.from(htmlElem.children) as HTMLElement[];
+			const children = Array.from(htmlElem.childNodes) as (HTMLElement | Text)[];
 			return {
 				type: 'paragraph',
-				children: children.map(parseRichHTMLElement),
-			};
-		},
-	},
-	'simple': {
-		toHtml: (elem: RichSimpleElement): HTMLElement => {
-			return htmlElem({
-				tag: 'span',
-				classes: RICH_TYPE_TO_CLASS_NAME_MAP['simple'],
-				children: elem.text,
-			});
-		},
-		fromHtml: (htmlElem: HTMLElement): RichSimpleElement => {
-			return {
-				type: 'simple',
-				text: htmlElem.innerText,
+				textFragments: children.map(child => {
+					if (child instanceof Text) {
+						return child.textContent ?? '';
+					}
+					return parseRichHTMLElement(child);
+				}),
 			};
 		},
 	},
@@ -294,7 +300,7 @@ export const RichTranslators: Record<RichType, {
 			return htmlElem({
 				tag: 'ul',
 				classes: RICH_TYPE_TO_CLASS_NAME_MAP['list'],
-				children: richElement.children.map(createRichHTMLElement),
+				children: richElement.listItems.map(createRichHTMLElement),
 			});
 		},
 		fromHtml: (htmlElem: HTMLElement): RichListElement => {
@@ -302,7 +308,7 @@ export const RichTranslators: Record<RichType, {
 			const listItemTranslator = RichTranslators['list-item'];
 			return {
 				type: 'list',
-				children: children.map(c => listItemTranslator.fromHtml(c) as RichListItemElement),
+				listItems: children.map(c => listItemTranslator.fromHtml(c) as RichListItemElement),
 			};
 		}
 	},
@@ -438,24 +444,35 @@ export const RichTranslators: Record<RichType, {
 	}
 };
 
-export function mergeAdjacentSimpleElements(elements: RichElement[]) {
-	for (let i = elements.length - 1; i >= 0; i--) {
-		const element = elements[i];
-		console.log('@@@ element', JSON.stringify(element));
-		if (isRichParentElement(element.type)) {
+export function mergeAdjacentTextElements(elements: RichElement[]) {
+	for (let element of elements) {
+		if (element.type === 'paragraph') {
+			const curTextFragments = element.textFragments;
+			const newTextFragments: (RichElement | string)[] = [];
+			for (let i = 0; i < curTextFragments.length; i++) {
+				if (i === curTextFragments.length - 1) {
+					newTextFragments.push(curTextFragments[i]);
+				} else {
+					const curFragment = curTextFragments[i];
+					const nextFragment = curTextFragments[i + 1];
+					if (typeof curFragment === 'string' && typeof nextFragment === 'string') {
+						newTextFragments.push(curFragment + nextFragment);
+						i++;
+					} else {
+						newTextFragments.push(curFragment);
+					}
+				}
+			}
+			element.textFragments = newTextFragments;
+		} else if (element.type === 'list') {
+			const listItems = element.listItems;
+			for (let listItem of listItems) {
+				mergeAdjacentTextElements(listItem.children);
+			}
+		} else if (isRichParentElement(element.type)) {
 			const parent = element as RichParentElement;
-			mergeAdjacentSimpleElements(parent.children);
-		} else {
-			if (i === 0) {
-				continue;
-			}
-			const prevElement = elements[i - 1];
-			console.log('@@@ prevElement', JSON.stringify(prevElement));
-			if (element.type === 'simple' && prevElement.type === 'simple') {
-				prevElement.text += element.text;
-				elements.splice(i, 1);
-			}
-		}		
+			mergeAdjacentTextElements(parent.children);
+		}
 	}
 }
 
@@ -464,26 +481,35 @@ export function removeEmptyRichElements(elements: RichElement[]): RichElement[] 
 	return nonEmptyElement;
 }
 
-function canBeAdded(richElement: RichElement): boolean {
-	if (isRichParentElement(richElement.type)) {
-		const parent = richElement as RichParentElement;
+function canBeAdded(element: RichElement | string): boolean {
+	if (typeof element === 'string') {
+		return element.length > 0;
+	}
+	if (element.type === 'paragraph') {
+		element.textFragments = element.textFragments.filter(canBeAdded);
+		return element.textFragments.length > 0;
+	}
+	if (element.type === 'list') {
+		element.listItems = element.listItems.filter(canBeAdded);
+		return element.listItems.length > 0;
+	}
+	if (isRichParentElement(element.type)) {
+		const parent = element as RichParentElement;
 		parent.children = parent.children.filter(canBeAdded);
 		return parent.children.length > 0;
 	}
-	switch (richElement.type) {
+	switch (element.type) {
 		case 'title-1':
 		case 'title-2':
 		case 'title-3':
 		case 'title-4':
-			return richElement.text.length > 0;
-		case 'simple':
-			return richElement.text.length > 0;
+			return element.text.length > 0;
 		case 'link':
-			return richElement.name.length > 0;
+			return element.name.length > 0;
 		case 'strong':
-			return richElement.text.length > 0;
+			return element.text.length > 0;
 		case 'unknown':
-			return richElement.text.length > 0;
+			return element.text.length > 0;
 	}
-	return true;
+	return false;
 }

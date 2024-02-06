@@ -15,6 +15,19 @@ export function findSelectedElement(): HTMLElement | null {
 	return null;
 }
 
+export function findSelectedTextNode(): Text | null {
+	let selection = window.getSelection();
+	if (selection) {
+		if (selection.anchorNode) {
+			let curNode = selection.anchorNode as Node | ParentNode | null;
+			if (curNode && curNode instanceof Text) {
+				return curNode as Text;
+			}
+		}
+	}
+	return null;
+}
+
 export function selectTextInNode(
 	element: Node,
 	startOffset: number | null = null,
@@ -31,7 +44,13 @@ export function selectTextInNode(
 	}
 }
 
-export function findSelectionInfo(): { textNode: Text, startOffset: number, endOffset: number } | null {
+export interface SelectionInfo {
+	textNode: Text;
+	startOffset: number;
+	endOffset: number;
+}
+
+export function findSelectionInfo(): SelectionInfo | null {
 	let selection = window.getSelection();
     const range = selection?.getRangeAt(0);
 	if (selection && range) {

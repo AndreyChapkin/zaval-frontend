@@ -1,5 +1,5 @@
 import { CODE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
-import { RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichSimpleElement, RichStrongElement, RichTitleElement, RichUnitedBlockElement, RichUnknownElement } from "@/app/_lib/types/rich-text-types";
+import { RICH_CODE_BLOCK_CONTENT_CLASS, RICH_CODE_BLOCK_ICON_CLASS, RICH_EXPANDABLE_BLOCK_CONTENT_CLASS, RICH_EXPANDABLE_BLOCK_TITLE_CLASS, RICH_LIST_ITEM_CONTENT_CLASS, RICH_LIST_ITEM_SIGN_CLASS, RICH_TYPE_TO_CLASS_NAME_MAP, RichCodeBlockElement, RichElement, RichExpandableBlockElement, RichLinkElement, RichListElement, RichListItemElement, RichParagraphElement, RichStrongElement, RichTitleElement, RichUnitedBlockElement, RichUnknownElement } from "@/app/_lib/types/rich-text-types";
 import { useState } from "react";
 
 export function resolveRichFragment(richElement: RichElement | string): React.ReactNode {
@@ -9,8 +9,6 @@ export function resolveRichFragment(richElement: RichElement | string): React.Re
         switch (richElement.type) {
             case 'paragraph':
                 return <RichParagraph richElement={richElement} />;
-            case 'simple':
-                return <RichSimple richElement={richElement} />;
             case 'link':
                 return <RichLink richElement={richElement} />;
             case 'strong':
@@ -42,14 +40,8 @@ export interface RichElementProps<T extends RichElement> {
 
 export const RichParagraph: React.FC<RichElementProps<RichParagraphElement>> = ({ richElement }) => (
     <p className={RICH_TYPE_TO_CLASS_NAME_MAP['paragraph']}>
-        {richElement.children.map(resolveRichFragment)}
+        {richElement.textFragments.map(resolveRichFragment)}
     </p>
-);
-
-export const RichSimple: React.FC<RichElementProps<RichSimpleElement>> = ({ richElement }) => (
-    <span className={RICH_TYPE_TO_CLASS_NAME_MAP['simple']}>
-        {richElement.text}
-    </span>
 );
 
 export const RichLink: React.FC<RichElementProps<RichLinkElement>> = ({ richElement }) => (
@@ -79,7 +71,7 @@ export const RichTitle: React.FC<RichElementProps<RichTitleElement>> = ({ richEl
 
 export const RichList: React.FC<RichElementProps<RichListElement>> = ({ richElement }) => (
     <ul className={RICH_TYPE_TO_CLASS_NAME_MAP['list']}>
-        {richElement.children.map(resolveRichFragment)}
+        {richElement.listItems.map(resolveRichFragment)}
     </ul>
 );
 

@@ -3,16 +3,17 @@ import React, { KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, use
 import { IconButton } from '../icon-button/IconButton';
 import RichEditorPrompt from './rich-editor-shortkeys/RichEditorPrompt';
 
-import { RichElement, RichType } from '@/app/_lib/types/rich-text-types';
+import { RichElement } from '@/app/_lib/types/rich-text-types';
 import { decreaseNumberOfCalls, readFromClipboard, writeToClipboard } from '@/app/_lib/utils/function-helpers';
 import './RichEditor.scss';
-import { useRichActionConveyor } from './lib/rich-action-conveyor';
-import { RichDeleteAction, RichReplaceAction, asCreateAction, asDeleteAction, asReplaceAction, isReservedShortcut, planRichAction } from './lib/rich-action-processors';
+import { useRichActionConveyorHarness } from './lib/rich-action-conveyor';
+import { RichCreateAction, RichDeleteAction, RichReplaceAction, asCreateAction, asDeleteAction, asReplaceAction, getNodeFromTouchedNodeInfo, isReservedShortcut, planRichAction } from './lib/rich-action-processors';
 import { EditorCommand, translateEventToEditorCommand } from './lib/rich-command-processors';
-import { createRichHTMLElement, mergeAdjacentSimpleElements, removeEmptyRichElements, useRichDomManipulator } from './lib/rich-dom-manipulations';
+import { createRichHTMLElement, createTextNode, mergeAdjacentTextElements, removeEmptyRichElements, useRichDomManipulator } from './lib/rich-dom-manipulations';
 import { RichEditorFulfillment } from './rich-editor-fulfillment/RichEditorFulfillment';
 
 import "../rich-text/rich-fragments/rich-elements.scss";
+import { SelectionInfo, findSelectionInfo, selectTextInNode } from './lib/dom-selections';
 
 interface RichEditorProps {
 	richContent: string;
@@ -29,14 +30,56 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 	const [isPromptShown, setIsPromptShown] = useState(false);
 	const richContentContainerRef = useRef<HTMLDivElement>(null);
 	const manipulator = useRichDomManipulator(richContentContainerRef);
-	const actionConveyor = useRichActionConveyor(manipulator);
+	const conveyorHarness = useRichActionConveyorHarness(manipulator);
+	const selectionInfoRef = useRef<SelectionInfo | null>(null);
+	const showFulfillment = conveyorHarness.status === 'needFulfillment';
+
+	// before render changes
+	if (showFulfillment) {
+		selectionInfoRef.current = findSelectionInfo();
+	}
+
+	useEffect(() => {
+		if (conveyorHarness.status === 'idle') {
+			if (selectionInfoRef.current) {
+				const lastHistoryRecord = conveyorHarness.getLastHistoryRecord();
+				if (lastHistoryRecord && lastHistoryRecord.action.name === 'create') {
+					const newElements = lastHistoryRecord.action.payload.newElements;
+					const lastNewNode = getNodeFromTouchedNodeInfo(newElements[newElements.length - 1]);
+					selectTextInNode(lastNewNode);
+				}
+			}
+		}
+	}, [conveyorHarness.status]);
 
 	// Handle conveyor status
 	useEffect(() => {
-		if (actionConveyor.status === 'readyToProcess') {
-			actionConveyor.processActions();
+		if (conveyorHarness.status === 'readyToProcess') {
+			// check if trying to create a link element
+			const createAction = conveyorHarness.conveyor.action?.name === 'create' ?
+				conveyorHarness.conveyor.action as RichCreateAction
+				: null;
+			const ifCreateLinkAction = !!createAction?.payload?.newElements?.find(element => element.type === 'link');
+			// wrap link element with text elements
+			if (ifCreateLinkAction) {
+				const createLinkAction = createAction as RichCreateAction;
+				const linkElementIndex = createLinkAction.payload.newElements.findIndex(element => element.type === 'link')!!;
+				const linkElement = createLinkAction.payload.newElements[linkElementIndex];
+				createLinkAction.payload.newElements.splice(linkElementIndex, 1,
+					{
+						type: 'text',
+						text: createTextNode(' '),
+					},
+					linkElement,
+					{
+						type: 'text',
+						text: createTextNode(' '),
+					},
+				);
+			}
+			conveyorHarness.processAction();
 		}
-	}, [actionConveyor.status]);
+	}, [conveyorHarness.status]);
 
 	const reserve = useMemo(() => decreaseNumberOfCalls(() => {
 		const richHtml = richContentContainerRef.current!!.innerHTML;
@@ -47,7 +90,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 		let actualRichElements = manipulator?.extractAllRichElements();
 		if (actualRichElements) {
 			actualRichElements = removeEmptyRichElements(actualRichElements);
-			mergeAdjacentSimpleElements(actualRichElements);
+			mergeAdjacentTextElements(actualRichElements);
 		}
 		onSave(JSON.stringify(actualRichElements))
 			.then(() => {
@@ -94,7 +137,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 		// Process content manipulation actions
 		const actionDraft = planRichAction(event);
 		if (actionDraft) {
-			actionConveyor.submitDraft(actionDraft);
+			conveyorHarness.submitDraft(actionDraft);
 			return;
 		}
 	};
@@ -110,17 +153,17 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 			case 'paste':
 				const createAction = await manageRichPaste();
 				createAction
-					&& actionConveyor.submitActions([createAction]);
+					&& conveyorHarness.submitAction(createAction);
 				break;
 			case 'replace':
 				const replaceAction = await manageRichReplace();
 				replaceAction
-					&& actionConveyor.submitActions([replaceAction]);
+					&& conveyorHarness.submitAction(replaceAction);
 				break;
 			case 'delete':
 				const removeAction = manageRichRemoval();
 				removeAction
-					&& actionConveyor.submitActions([removeAction]);
+					&& conveyorHarness.submitAction(removeAction);
 				break;
 			case 'undoDelete':
 				manageRichUndoRemoval();
@@ -160,7 +203,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 			const clipboardElements = await readFromClipboard('text/html') as HTMLElement[];
 			if (clipboardElements) {
 				return asCreateAction(clipboardElements, {
-					anchorElement: selectedElement,
+					element: selectedElement,
 					position: 'after',
 				});
 			}
@@ -213,12 +256,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				richElements = [
 					{
 						type: 'paragraph',
-						children: [
-							{
-								type: 'simple',
-								text: 'Placeholder',
-							}
-						],
+						textFragments: ['Placeholder'],
 					},
 				];
 			}
@@ -254,13 +292,13 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				<RichEditorPrompt onClose={() => setIsPromptShown(false)} />
 			}
 			{
-				actionConveyor.status === 'needFulfillment' &&
+				showFulfillment &&
 				<RichEditorFulfillment
-					draftAction={actionConveyor.info.draft!!}
+					draftAction={conveyorHarness.conveyor.draft!!}
 					onAccept={info => {
-						actionConveyor.completeDraft(info);
+						conveyorHarness.completeDraft(info);
 					}}
-					onCancel={() => actionConveyor.discardDraft()} />
+					onCancel={() => conveyorHarness.discardDraft()} />
 			}
 		</div >
 	);

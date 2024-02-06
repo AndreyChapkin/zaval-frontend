@@ -1,7 +1,8 @@
-import { RICH_TYPE_TO_DEFAULT_MAP, RichTitleElement, RichTitleType, RichType, TITLES_ARRAY, isRichParentElement } from "@/app/_lib/types/rich-text-types";
+import { RICH_TYPE_TO_DEFAULT_MAP, RichTitleElement, RichTitleType, RichType, TITLES_ARRAY, isRichParentElement, isRichType } from "@/app/_lib/types/rich-text-types";
 import { useEffect, useState } from "react";
-import { RichDomManipulator, RichTranslators, createRichHTMLElement, defineElementRichType, parseRichHTMLElement } from "./rich-dom-manipulations";
+import { RichDomManipulator, RichTranslators, createRichHTMLElement, createTextNode, defineElementRichType, parseRichHTMLElement } from "./rich-dom-manipulations";
 import { translateEventToEditorCommand } from "./rich-command-processors";
+import { findSelectedTextNode } from "./dom-selections";
 
 const KEY_TO_EDITION_ACTION_MAP: Record<string, RichActionDraft> = {
     'Alt+Digit1': {
@@ -10,7 +11,7 @@ const KEY_TO_EDITION_ACTION_MAP: Record<string, RichActionDraft> = {
     },
     'Alt+Digit2': {
         actionName: 'create',
-        richType: 'text',
+        richType: 'paragraph',
     },
     'Alt+Digit3': {
         actionName: 'create',
@@ -60,32 +61,83 @@ const KEY_TO_EDITION_ACTION_MAP: Record<string, RichActionDraft> = {
     },
 };
 
-export interface AnchorInfo {
-    elements?: HTMLElement[];
-    parent?: HTMLElement;
-    previous?: HTMLElement;
-    next?: HTMLElement;
-}
-
 export type RichActionTypes = 'create' | 'delete' | 'update' | 'move' | 'replace';
+
+export type TouchedNodeInfo = {
+    type: RichType;
+    element: HTMLElement;
+} | {
+    type: 'container',
+} | {
+    type: 'text',
+    text: Text;
+};
+
+export function getNodeFromTouchedNodeInfo(info: TouchedNodeInfo): HTMLElement | Text | null {
+    if (info.type === 'text') {
+        return info.text;
+    }
+    if (info.type === 'container') {
+        return null;
+    }
+    return info.element;
+}
 
 export interface RichCreateAction {
     name: 'create';
     payload: {
-        newElements: HTMLElement[];
+        newElements: TouchedNodeInfo[];
         placement: {
-            anchorElement: HTMLElement;
+            anchorElement: TouchedNodeInfo;
             position: 'before' | 'after' | 'begin' | 'end';
         };
     };
 }
 
-export function asCreateAction(newElements: HTMLElement[], placement: RichCreateAction['payload']['placement']): RichCreateAction {
+export function asCreateAction(newElements: HTMLElement[], placement: { element: HTMLElement; position: 'before' | 'after' | 'begin' | 'end'; }): RichCreateAction {
+    const createNewElements: TouchedNodeInfo[] = newElements.map((element) => {
+        const richType = defineElementRichType(element);
+        if (richType) {
+            return {
+                type: richType,
+                element,
+            };
+        }
+        return {
+            type: 'text',
+            text: createTextNode(element.textContent ?? ''),
+        };
+    });
+    let finalPlacement: RichCreateAction['payload']['placement'] = {
+        anchorElement: {
+            type: 'container',
+        },
+        position: placement.position,
+    };
+    const anchorRichType = defineElementRichType(placement.element);
+    if (anchorRichType) {
+        finalPlacement = {
+            anchorElement: {
+                type: anchorRichType,
+                element: placement.element,
+            },
+            position: placement.position,
+        };
+    }
+    if (placement.element instanceof Text) {
+        finalPlacement = {
+            anchorElement: {
+                type: 'text',
+                text: placement.element,
+            },
+            position: placement.position,
+        };
+    }
     return {
         name: 'create',
         payload: {
-            newElements,
-            placement,
+            newElements: createNewElements,
+            placement: finalPlacement,
         }
     };
 }
@@ -93,7 +145,7 @@ export function asCreateAction(newElements: HTMLElement[], placement: RichCreate
 export interface RichDeleteAction {
     name: 'delete';
     payload: {
-        element: HTMLElement;
+        elements: (HTMLElement | Text)[];
     };
 }
 
@@ -101,7 +153,7 @@ export function asDeleteAction(element: HTMLElement): RichDeleteAction {
     return {
         name: 'delete',
         payload: {
-            element,
+            elements: [element],
         }
     };
 }
@@ -125,7 +177,7 @@ export interface RichMoveAction {
 export interface RichReplaceAction {
     name: 'replace';
     payload: {
-        element: HTMLElement;
+        elements: HTMLElement[];
         newElements: HTMLElement[];
     };
 }
@@ -134,7 +186,7 @@ export function asReplaceAction(element: HTMLElement, newElements: HTMLElement[]
     return {
         name: 'replace',
         payload: {
-            element,
+            elements: [element],
             newElements,
         }
     };
@@ -142,7 +194,7 @@ export function asReplaceAction(element: HTMLElement, newElements: HTMLElement[]
 
 export interface RichCreateDraft {
     actionName: 'create';
-    richType: RichType | 'text';
+    richType: RichType;
     place?: {
         type: RichType;
         position: 'before' | 'after' | 'begin' | 'end';
@@ -248,8 +300,8 @@ export class ActionProcessor {
         return null;
     }
 
-    // return anchor elements
-    applyRichAction(action: RichAction): AnchorInfo {
+    // return reverse action
+    applyRichAction(action: RichAction): RichAction {
         switch (action.name) {
             case 'create':
                 return this.applyCreateRichAction(action);
@@ -271,7 +323,9 @@ export class ActionProcessor {
         const selectedElementInfo = this.manipulator.selectedElementInfo;
         if (!selectedElementInfo) {
             return {
-                anchorElement: this.manipulator.containerElement,
+                anchorElement: {
+                    type: 'container',
+                },
                 position: 'end'
             };
         }
@@ -280,12 +334,17 @@ export class ActionProcessor {
             const rootElement = this.manipulator.findNearestRichRootElement(selectedElementInfo.element);
             if (!rootElement) {
                 return {
-                    anchorElement: this.manipulator.containerElement,
+                    anchorElement: {
+                        type: 'container',
+                    },
                     position: 'end'
                 };
             }
             return {
-                anchorElement: rootElement,
+                anchorElement: {
+                    type: defineElementRichType(rootElement)!!,
+                    element: rootElement,
+                },
                 position: 'after'
             };
         }
@@ -295,113 +354,211 @@ export class ActionProcessor {
             const listItemElement = this.manipulator.findNearestElementWithType('list-item', selectedElementInfo.element);
             if (listItemElement) {
                 return {
-                    anchorElement: listItemElement,
+                    anchorElement: {
+                        type: 'list-item',
+                        element: listItemElement
+                    },
                     position: 'after',
                 };
             }
             return null;
         }
-        // any parent element
-        if (isRichParentElement(createDraft.richType as any)) {
-            let appropriateParentInfo = this.manipulator.findNearestRichParentElement(selectedElementInfo.element, ['paragraph', 'list']);
-            let nearestParentInfo = this.manipulator.findNearestRichParentElement(selectedElementInfo.element);
-            if (appropriateParentInfo) {
-                if (nearestParentInfo && nearestParentInfo.element !== appropriateParentInfo.element) {
+        // link or strong elements
+        if (createDraft.richType === 'link' || createDraft.richType === 'strong') {
+            // create only inside paragraph
+            if (selectedElementInfo.richType === 'paragraph') {
+                const selectedTextNode = findSelectedTextNode();
+                if (selectedTextNode) {
                     return {
-                        anchorElement: nearestParentInfo.element,
+                        anchorElement: {
+                            type: 'text',
+                            text: selectedTextNode
+                        },
                         position: 'after'
                     };
                 }
                 return {
-                    anchorElement: appropriateParentInfo.element,
+                    anchorElement: {
+                        type: 'paragraph',
+                        element: selectedElementInfo.element
+                    },
                     position: 'end'
                 };
             }
-            // if no parent, try to create in container
-            const rootElement = this.manipulator.findNearestRichRootElement(selectedElementInfo.element);
-            if (!rootElement) {
-                return {
-                    anchorElement: this.manipulator.containerElement,
-                    position: 'end'
-                };
-            }
+            return null;
+        }
+        // if selected element is parent
+        if (isRichParentElement(selectedElementInfo.richType)) {
             return {
-                anchorElement: rootElement,
-                position: 'after'
+                anchorElement: {
+                    type: selectedElementInfo.richType,
+                    element: selectedElementInfo.element
+                },
+                position: 'end'
             };
-        } else {
-            // any non parent element
-            if (selectedElementInfo) {
-                return {
-                    anchorElement: selectedElementInfo.element,
-                    position: 'after'
-                };
-            }
         }
-        return null;
-    }
-
-    private applyCreateRichAction(richCreateAction: RichCreateAction): AnchorInfo {
-        const newElements = richCreateAction.payload.newElements;
-        // place new elements
-        if (richCreateAction.payload.placement) {
-            const { anchorElement, position } = richCreateAction.payload.placement;
-            const anchorType = defineElementRichType(anchorElement);
-            if (anchorType) {
-                if (position === 'begin') {
-                    if (RichTranslators[anchorType].contentHtml) {
-                        RichTranslators[anchorType].contentHtml!!(anchorElement).prepend(...newElements);
-                    } else {
-                        anchorElement.prepend(...newElements);
-                    }                    
-                } else if (position === 'end') {
-                    if (RichTranslators[anchorType].contentHtml) {
-                        RichTranslators[anchorType].contentHtml!!(anchorElement).append(...newElements);
-                    } else {
-                        anchorElement.append(...newElements);
-                    }
-                } else if (position === 'before') {
-                    anchorElement.before(...newElements);
-                } else if (position === 'after') {
-                    anchorElement.after(...newElements);
-                }
-            }
-        }
+        // any other cases
         return {
-            elements: newElements,
+            anchorElement: {
+                type: selectedElementInfo.richType,
+                element: selectedElementInfo.element
+            },
+            position: 'after'
         };
     }
 
-    private applyDeleteRichAction(richDeleteAction: RichDeleteAction): AnchorInfo {
-        const previous = richDeleteAction.payload.element.previousElementSibling;
-        const next = richDeleteAction.payload.element.nextElementSibling;
-        const parentInfo = this.manipulator?.findNearestRichParentElement(richDeleteAction.payload.element);
-        const parent = parentInfo?.type === 'container' ? null : parentInfo?.element;
-        richDeleteAction.payload.element.remove();
+    private applyCreateRichAction(richCreateAction: RichCreateAction): RichDeleteAction {
+        const newElementInfos = richCreateAction.payload.newElements;
+        const newElements = newElementInfos.map((el) => {
+            if (el.type === 'container') {
+                return this.manipulator!!.containerElement;
+            }
+            if (el.type === 'text') {
+                return el.text;
+            }
+            return el.element;
+        });
+        // place new elements
+        if (richCreateAction.payload.placement) {
+            const { anchorElement: anchorElementInfo, position } = richCreateAction.payload.placement;
+            const anchorNode = anchorElementInfo.type === 'container' ?
+                this.manipulator!!.containerElement
+                : anchorElementInfo.type === 'text' ?
+                    anchorElementInfo.text
+                    : anchorElementInfo.element;
+            const type = anchorElementInfo.type;
+            const richTranslator = type === 'container' || type === 'text' ?
+                null
+                : RichTranslators[type];
+            if (position === 'begin') {
+                const anchorElement = anchorNode as HTMLElement;
+                if (richTranslator?.contentHtml) {
+                    richTranslator.contentHtml(anchorElement).prepend(...newElements);
+                } else {
+                    anchorElement.prepend(...newElements);
+                }
+            } else if (position === 'end') {
+                const anchorElement = anchorNode as HTMLElement;
+                if (richTranslator?.contentHtml) {
+                    richTranslator.contentHtml(anchorElement).append(...newElements);
+                } else {
+                    anchorElement.append(...newElements);
+                }
+            } else if (position === 'before') {
+                anchorNode.before(...newElements);
+            } else if (position === 'after') {
+                anchorNode.after(...newElements);
+            }
+        }
         return {
-            parent: parent ?? undefined,
-            previous: (previous as HTMLElement) ?? undefined,
-            next: (next as HTMLElement) ?? undefined,
+            name: 'delete',
+            payload: {
+                elements: newElements,
+            },
+        };
+    }
+
+    // all elements are siblings
+    private applyDeleteRichAction(richDeleteAction: RichDeleteAction): RichCreateAction {
+        const deleteElements = richDeleteAction.payload.elements;
+        const firstElement = deleteElements[0];
+        const lastElement = deleteElements[deleteElements.length - 1];
+        const previous = firstElement.previousSibling;
+        const next = lastElement.nextSibling;
+        const parentInfo = this.manipulator?.findNearestRichParentElement(firstElement);
+        const parent = parentInfo?.type === 'container' ? null : parentInfo?.element as HTMLElement | null;
+        for (let element of deleteElements) {
+            element.remove();
+        }
+        const reverseCreateElements: TouchedNodeInfo[] = deleteElements.map((element) => {
+            return element instanceof Text ?
+                {
+                    type: 'text',
+                    text: element,
+                }
+                : {
+                    type: defineElementRichType(element)!!,
+                    element,
+                };
+        });
+        const reversePlacement: RichCreateAction['payload']['placement'] =
+            previous ?
+                previous instanceof Text ?
+                    {
+                        anchorElement: {
+                            type: 'text',
+                            text: previous,
+                        },
+                        position: 'after',
+                    }
+                    : {
+                        anchorElement: {
+                            type: defineElementRichType(previous as HTMLElement)!!,
+                            element: previous as HTMLElement,
+                        },
+                        position: 'after',
+                    }
+                : next ?
+                    next instanceof Text ?
+                        {
+                            anchorElement: {
+                                type: 'text',
+                                text: next,
+                            },
+                            position: 'before',
+                        }
+                        : {
+                            anchorElement: {
+                                type: defineElementRichType(next as HTMLElement)!!,
+                                element: next as HTMLElement,
+                            },
+                            position: 'before',
+                        }
+                    : parent ? {
+                        anchorElement: {
+                            type: defineElementRichType(parent as HTMLElement)!!,
+                            element: parent as HTMLElement,
+                        },
+                        position: 'end',
+                    } : {
+                        anchorElement: {
+                            type: 'container',
+                        },
+                        position: 'end',
+                    };
+        return {
+            name: 'create',
+            payload: {
+                newElements: reverseCreateElements,
+                placement: reversePlacement,
+            }
         }
     }
 
-    private applyUpdateRichAction(richUpdateAction: RichUpdateAction): AnchorInfo {
+    private applyUpdateRichAction(richUpdateAction: RichUpdateAction): RichUpdateAction {
         const element = richUpdateAction.payload.element;
         const attributes = richUpdateAction.payload.attributes;
+        const prevAttributes: Record<string, string> = {};
         if (attributes) {
             Object.keys(attributes).forEach((attributeName) => {
                 // TODO: add attributes filtering
+                prevAttributes[attributeName] = element.getAttribute(attributeName) ?? '';
                 element.setAttribute(attributeName, attributes[attributeName]);
             });
         }
         return {
-            elements: [element],
+            name: 'update',
+            payload: {
+                element,
+                attributes: prevAttributes,
+            },
         };
     }
 
-    private applyMoveRichAction(richMoveAction: RichMoveAction): AnchorInfo {
+    private applyMoveRichAction(richMoveAction: RichMoveAction): RichMoveAction {
         const element = richMoveAction.payload.element;
         const direction = richMoveAction.payload.direction;
+        const reverseDirection: 'up' | 'down' = direction === 'up' ? 'down' : 'up';
         if (direction === 'up') {
             const previousElement = element.previousElementSibling;
             if (previousElement) {
@@ -414,37 +571,36 @@ export class ActionProcessor {
             }
         }
         return {
-            elements: [element],
+            name: 'move',
+            payload: {
+                element,
+                direction: reverseDirection
+            },
         };
     }
 
-    private applyReplaceRichAction(richReplaceAction: RichReplaceAction): AnchorInfo {
-        const element = richReplaceAction.payload.element;
+    private applyReplaceRichAction(richReplaceAction: RichReplaceAction): RichReplaceAction {
+        const elements = richReplaceAction.payload.elements;
         const newElements = richReplaceAction.payload.newElements;
-        element.replaceWith(...newElements);
+        for (let i = 0; i < elements.length; i++) {
+            if (i === 0) {
+                continue;
+            }
+            elements[i].remove();
+        }
+        elements[0].replaceWith(...newElements);
         return {
-            elements: newElements,
+            name: 'replace',
+            payload: {
+                elements: newElements,
+                newElements: elements
+            }
         };
     }
 
     private fulfillCreateRichAction(draftAction: RichActionDraft, infoToFulfill?: FulfillmentInfo): RichCreateAction | null {
         if (this.manipulator) {
             let createDraft = draftAction as RichCreateDraft;
-            const selectedElementInfo = this.manipulator.selectedElementInfo;
-            // adapt text creation draft according to selected context
-            if (createDraft.richType === 'text') {
-                let isInsideParagraph = false;
-                if (selectedElementInfo) {
-                    const selectedContextInfo = this.manipulator.findNearestRichParentElement(selectedElementInfo.element);
-                    if (selectedContextInfo?.type === 'paragraph') {
-                        isInsideParagraph = true;
-                    }
-                }
-                createDraft = {
-                    ...createDraft,
-                    richType: isInsideParagraph ? 'simple' : 'paragraph',
-                };
-            }
             // common processing
             let newElement: HTMLElement | null = null;
             // fulfill action if needed
@@ -468,7 +624,12 @@ export class ActionProcessor {
                     return {
                         name: 'create',
                         payload: {
-                            newElements: [newElement],
+                            newElements: [
+                                {
+                                    type: createDraft.richType as RichType,
+                                    element: newElement
+                                },
+                            ],
                             placement
                         }
                     };
@@ -484,7 +645,7 @@ export class ActionProcessor {
             return {
                 name: 'delete',
                 payload: {
-                    element: selectedElement
+                    elements: [selectedElement],
                 }
             };
         }
@@ -562,7 +723,7 @@ export class ActionProcessor {
                         return {
                             name: 'replace',
                             payload: {
-                                element: selectedElement,
+                                elements: [selectedElement],
                                 newElements: [newElement],
                             }
                         };

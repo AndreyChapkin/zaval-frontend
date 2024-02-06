@@ -5,18 +5,18 @@
 .editTodo {
     @include standard-container;
     @include screen-sized(80, 80);
-    background-color: $main-light-1-color;
+    // background-color: $main-dark-1-color;
     padding: 20px 20px;
 }
 
 .moveTodo {
     @include standard-container;
-    background-color: $main-light-1-color;
+    background-color: $main-dark-3-color;
     padding: 10px;
 }
 
 .moveTodoCard {
     @include standard-container;
-    background-color: $main-light-3-color;
+    background-color: $main-color;
     min-height: auto;
 }
