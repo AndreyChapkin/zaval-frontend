@@ -86,13 +86,11 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 						const newElements = lastHistoryRecord.action.payload.newElements;
 						const lastNewNode = getNodeFromTouchedNodeInfo(newElements[newElements.length - 1]);
 						if (lastNewNode) {
-							console.log("@@@ create lastNewNode", lastNewNode)
 							selectTextInNode(lastNewNode);
 						}
 					} else if (lastHistoryRecord.action.name === 'replace') {
 						const newElements = lastHistoryRecord.action.payload.newElements;
 						if (newElements) {
-							console.log("@@@ replace newElements", newElements)
 							selectTextInNode(newElements[newElements.length - 1], null, null, 'start');
 						}
 					}
