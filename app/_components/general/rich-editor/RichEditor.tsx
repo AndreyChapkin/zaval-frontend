@@ -3,7 +3,7 @@ import React, { KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, use
 import { IconButton } from '../icon-button/IconButton';
 import RichEditorPrompt from './rich-editor-shortkeys/RichEditorPrompt';
 
-import { RichElement } from '@/app/_lib/types/rich-text-types';
+import { RichElement, RichType } from '@/app/_lib/types/rich-text-types';
 import { decreaseNumberOfCalls, readFromClipboard, writeToClipboard } from '@/app/_lib/utils/function-helpers';
 import './RichEditor.scss';
 import { useRichActionConveyorHarness } from './lib/rich-action-conveyor';
@@ -13,7 +13,7 @@ import { createRichHTMLElement, createTextNode, mergeAdjacentTextElements, remov
 import { RichEditorFulfillment } from './rich-editor-fulfillment/RichEditorFulfillment';
 
 import "../rich-text/rich-fragments/rich-elements.scss";
-import { SelectionInfo, findSelectionInfo, selectTextInNode } from './lib/dom-selections';
+import { SelectionInfo, findSelectionInfo, selectTextInNode, splitSelectedTextWithCursor, splitTextWithSelectionInfo } from './lib/dom-selections';
 
 interface RichEditorProps {
 	richContent: string;
@@ -39,21 +39,6 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 		selectionInfoRef.current = findSelectionInfo();
 	}
 
-	useEffect(() => {
-		if (conveyorHarness.status === 'idle') {
-			if (selectionInfoRef.current) {
-				const lastHistoryRecord = conveyorHarness.getLastHistoryRecord();
-				if (lastHistoryRecord && lastHistoryRecord.action.name === 'create') {
-					const newElements = lastHistoryRecord.action.payload.newElements;
-					const lastNewNode = getNodeFromTouchedNodeInfo(newElements[newElements.length - 1]);
-					if (lastNewNode) {
-						selectTextInNode(lastNewNode);
-					}					
-				}
-			}
-		}
-	}, [conveyorHarness.status]);
-
 	// Handle conveyor status
 	useEffect(() => {
 		if (conveyorHarness.status === 'readyToProcess') {
@@ -62,24 +47,58 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				conveyorHarness.conveyor.action as RichCreateAction
 				: null;
 			const ifCreateLinkAction = !!createAction?.payload?.newElements?.find(element => element.type === 'link');
-			// wrap link element with text elements
+			// split current selected text node
 			if (ifCreateLinkAction) {
 				const createLinkAction = createAction as RichCreateAction;
-				const linkElementIndex = createLinkAction.payload.newElements.findIndex(element => element.type === 'link')!!;
-				const linkElement = createLinkAction.payload.newElements[linkElementIndex];
-				createLinkAction.payload.newElements.splice(linkElementIndex, 1,
-					{
-						type: 'text',
-						text: createTextNode(' '),
-					},
-					linkElement,
-					{
-						type: 'text',
-						text: createTextNode(' '),
-					},
-				);
+				const linkElement = createLinkAction.payload.newElements[0];
+				if (linkElement.type === 'link' && selectionInfoRef.current) {
+					const splitInfo = splitTextWithSelectionInfo(selectionInfoRef.current);
+					if (splitInfo && (splitInfo.firstText || splitInfo.secondText)) {
+						const newElements: ChildNode[] = [];
+						if (splitInfo.firstText) {
+							newElements.push(splitInfo.firstText);
+						}
+						newElements.push(createTextNode(' '));
+						newElements.push(linkElement.element);
+						newElements.push(createTextNode(' '));
+						if (splitInfo.secondText) {
+							newElements.push(splitInfo.secondText);
+						}
+						const replaceAction: RichReplaceAction = asReplaceAction(
+							[splitInfo.selectedText],
+							newElements,
+						);
+						conveyorHarness.submitAction(replaceAction);
+					}
+				}
 			}
 			conveyorHarness.processAction();
+		}
+	}, [conveyorHarness.status]);
+
+	useEffect(() => {
+		// select text in new created node
+		if (conveyorHarness.status === 'idle') {
+			if (selectionInfoRef.current) {
+				const lastHistoryRecord = conveyorHarness.getLastHistoryRecord();
+				if (lastHistoryRecord) {
+					if (lastHistoryRecord.action.name === 'create') {
+						const newElements = lastHistoryRecord.action.payload.newElements;
+						const lastNewNode = getNodeFromTouchedNodeInfo(newElements[newElements.length - 1]);
+						if (lastNewNode) {
+							console.log("@@@ create lastNewNode", lastNewNode)
+							selectTextInNode(lastNewNode);
+						}
+					} else if (lastHistoryRecord.action.name === 'replace') {
+						const newElements = lastHistoryRecord.action.payload.newElements;
+						if (newElements) {
+							console.log("@@@ replace newElements", newElements)
+							selectTextInNode(newElements[newElements.length - 1], null, null, 'start');
+						}
+					}
+					
+				}
+			}
 		}
 	}, [conveyorHarness.status]);
 
@@ -218,7 +237,7 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 			const selectedElement = manipulator.selectedElementInfo.element;
 			const clipboardElements = await readFromClipboard('text/html') as HTMLElement[];
 			if (clipboardElements) {
-				return asReplaceAction(selectedElement, clipboardElements);
+				return asReplaceAction([selectedElement], clipboardElements);
 			}
 		}
 		return null;

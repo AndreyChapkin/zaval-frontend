@@ -80,7 +80,7 @@ function TodoItemPage() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="controlPanel columnJustifyAndCenter gap5">
+                                    <div className="controlPanel columnJustifyAndCenter">
                                         <IconButton iconUrl={REMOVE_ICON_URL} onClick={() => setIsRemoveOpen(true)} />
                                         <IconButton iconUrl={EDIT_ICON_URL} onClick={() => setIsEditMenuOpen(true)} />
                                     </div>

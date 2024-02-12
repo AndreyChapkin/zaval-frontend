@@ -177,16 +177,16 @@ export interface RichMoveAction {
 export interface RichReplaceAction {
     name: 'replace';
     payload: {
-        elements: HTMLElement[];
-        newElements: HTMLElement[];
+        elements: ChildNode[];
+        newElements: ChildNode[];
     };
 }
 
-export function asReplaceAction(element: HTMLElement, newElements: HTMLElement[]): RichReplaceAction {
+export function asReplaceAction(elements: ChildNode[], newElements: ChildNode[]): RichReplaceAction {
     return {
         name: 'replace',
         payload: {
-            elements: [element],
+            elements,
             newElements,
         }
     };

@@ -31,14 +31,29 @@ export function findSelectedTextNode(): Text | null {
 export function selectTextInNode(
 	element: Node,
 	startOffset: number | null = null,
-	endOffset: number | null = null
+	endOffset: number | null = null,
+	position: 'start' | 'end' | null = null,
 ) {
-	const elementText = element instanceof Text ? element : element.firstChild;
+	const elementText = element instanceof Text ?
+		element
+		: element.firstChild instanceof Text ?
+			element.firstChild
+			: null;
 	if (elementText) {
 		const range = new Range();
-		range.setStart(elementText, startOffset == null ? 0 : startOffset);
 		const textLength = elementText.textContent?.length ?? 0;
-		range.setEnd(elementText, endOffset == null ? textLength : endOffset);
+		if (position) {
+			if (position === 'start') {
+				range.setStart(elementText, 0);
+				range.setEnd(elementText, 0);
+			} else {
+				range.setStart(elementText, textLength);
+				range.setEnd(elementText, textLength);
+			}
+		} else {
+			range.setStart(elementText, startOffset == null ? 0 : startOffset);
+			range.setEnd(elementText, endOffset == null ? textLength : endOffset);
+		}
 		window.getSelection()?.removeAllRanges();
 		window.getSelection()?.addRange(range);
 	}
@@ -52,18 +67,55 @@ export interface SelectionInfo {
 
 export function findSelectionInfo(): SelectionInfo | null {
 	let selection = window.getSelection();
-    const range = selection?.getRangeAt(0);
+	const range = selection?.getRangeAt(0);
 	if (selection && range) {
 		if (selection.anchorNode) {
 			let curNode = selection.anchorNode as Node | ParentNode | null;
 			if (curNode && curNode instanceof Text) {
 				return {
-                    textNode: curNode,
-                    startOffset: range.startOffset,
-                    endOffset: range.endOffset,
-                }
+					textNode: curNode,
+					startOffset: range.startOffset,
+					endOffset: range.endOffset,
+				}
 			}
 		}
+	}
+	return null;
+}
+
+export function splitTextWithSelectionInfo(selectionInfo: SelectionInfo): {
+	selectedText: Text;
+	firstText: Text | null;
+	secondText: Text | null;
+} {
+	const textNode = selectionInfo.textNode;
+	const fullText = textNode.textContent ?? '';
+	const firstTextPart = fullText.substring(0, selectionInfo.startOffset);
+	const secondTextPart = fullText.substring(selectionInfo.endOffset);
+	return {
+		selectedText: textNode,
+		firstText: firstTextPart ? document.createTextNode(firstTextPart) : null,
+		secondText: secondTextPart ? document.createTextNode(secondTextPart) : null,
+	};
+}
+
+export function splitSelectedTextWithCursor(): {
+	selectedText: Text;
+	firstText: Text | null;
+	secondText: Text | null;
+} | null {
+	const textNode = findSelectedTextNode();
+	const selection = window.getSelection();
+	const range = selection?.getRangeAt(0);
+	if (textNode && selection && range) {
+		const fullText = textNode.textContent ?? '';
+		const firstTextPart = fullText.substring(0, range.startOffset);
+		const secondTextPart = fullText.substring(range.endOffset);
+		return {
+			selectedText: textNode,
+			firstText: firstTextPart ? document.createTextNode(firstTextPart) : null,
+			secondText: secondTextPart ? document.createTextNode(secondTextPart) : null,
+		};
 	}
 	return null;
 }
