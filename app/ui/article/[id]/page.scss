@@ -12,11 +12,18 @@
             font-weight: bold;
             color: $accent-light-1-color;
         }
+
+        .richText {
+            // background-color: $main-dark-1-color;
+            border-radius: 4px;
+            padding: 12px;
+        }
     }
     .tableOfContents {
         @include standard-container;
-        background-color: $main-dark-1-color;
-        padding: 10px 15px;
+        background-color: $main-dark-4-color;
+        padding: 8px;
+        border-left: 2px solid $main-dark-1-color;
         
         a {
             text-decoration: none;
