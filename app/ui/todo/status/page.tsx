@@ -1,3 +1,5 @@
+'use client';
+
 import { getPrioritizedListOfTodosWithStatus, getTheMostDatedLightTodos } from "@/app/_lib/calls/todo-calls";
 import { All_TODO_STATUSES, TodoLightDto, TodoStatus, TodosListDto } from "@/app/_lib/types/todo-types";
 import { useEffect, useState } from "react";

@@ -1,3 +1,5 @@
+'use client';
+
 import { EditArticlePanel } from '@/app/_components/article/edit-article-panel/EditArticlePanel';
 import { IconButton } from '@/app/_components/general/icon-button/IconButton';
 import LoadingIndicator from '@/app/_components/general/loading-indicator/LoadingIndicator';
