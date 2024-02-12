@@ -39,7 +39,7 @@ function TodoItemPage() {
                 : todoFamily?.children.filter(child => child.status !== "DONE")
         ) ?? [];
         // descending order
-        return rawChildren.toSorted((a, b) => new Date(b.interactedOn).getTime() - new Date(a.interactedOn).getTime());
+        return rawChildren.toSorted((a, b) => b.priority - a.priority);
     }, [todoFamily, areDoneChildrenShown]);
 
     const removeHandler = () => {
@@ -65,22 +65,24 @@ function TodoItemPage() {
                 todoFamily ?
                     <>
                         <ParentBreadcrumbs parentTodos={todoFamily.parents} />
-                        <div className="mainAndChildren row gap2 flex1">
+                        <div className="mainAndChildren row gap4 flex1">
                             <div className="main column gap1">
-                                <div className="mainGeneral column gap1">
-                                    <div className="namePanel scrollableInColumn">
-                                        {todoFamily.name}
+                                <div className="mainGeneral row gap3">
+                                    <div className="informationPanel flex1 column gap1">
+                                        <div className="namePanel scrollableInColumn">
+                                            {todoFamily.name}
+                                        </div>
+                                        <div className="additionalPanel rowJustify">
+                                            <div className="additionalInfo rowStartAndCenter gap2">
+                                                <TodoStatusIndicator status={todoFamily.status} />
+                                                <span>{presentDate(todoFamily.interactedOn)}</span>
+                                                <TodoPriority priority={todoFamily.priority} />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="additionalPanel rowJustify">
-                                        <div className="additionalInfo rowStartAndCenter gap2">
-                                            <TodoStatusIndicator status={todoFamily.status} />
-                                            <span>{presentDate(todoFamily.interactedOn)}</span>
-                                            <TodoPriority priority={todoFamily.priority} />
-                                        </div>
-                                        <div className="controlPanel rowStartAndStart gap4">
-                                            <IconButton iconUrl={EDIT_ICON_URL} onClick={() => setIsEditMenuOpen(true)} />
-                                            <IconButton iconUrl={REMOVE_ICON_URL} onClick={() => setIsRemoveOpen(true)} />
-                                        </div>
+                                    <div className="controlPanel columnJustifyAndCenter gap5">
+                                        <IconButton iconUrl={REMOVE_ICON_URL} onClick={() => setIsRemoveOpen(true)} />
+                                        <IconButton iconUrl={EDIT_ICON_URL} onClick={() => setIsEditMenuOpen(true)} />
                                     </div>
                                 </div>
                                 <div className="discriptionPanel rowStartAndStretch">
@@ -96,8 +98,8 @@ function TodoItemPage() {
                                                 onCancel={() => setIsEditDescription(false)} />
                                             :
                                             <>
-                                                <IconButton iconUrl={EDIT_ICON_URL} onClick={() => setIsEditDescription(true)} />
                                                 <RichText richContent={todoFamily.description} />
+                                                <IconButton iconUrl={EDIT_ICON_URL} onClick={() => setIsEditDescription(true)} />
                                             </>
                                     }
                                 </div>
@@ -117,7 +119,6 @@ function TodoItemPage() {
                                         ))
                                     }
                                 </div>
-
                             </div>
                         </div>
                     </>
