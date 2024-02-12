@@ -102,7 +102,7 @@ function TodoItemPage() {
                                     }
                                 </div>
                             </div>
-                            <div className="children column gap1">
+                            <div className="children column gap4">
                                 <div className="controlPanel row gap2">
                                     <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
                                     <ActionButton
@@ -110,11 +110,14 @@ function TodoItemPage() {
                                         label={areDoneChildrenShown ? "Hide done" : "Show done"}
                                         onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
                                 </div>
-                                {
-                                    todoChildren.map((child) => (
-                                        <PrimitiveCard item={child} key={child.id} />
-                                    ))
-                                }
+                                <div className="columnStartAndStretch gap2">
+                                    {
+                                        todoChildren.map((child) => (
+                                            <PrimitiveCard item={child} key={child.id} />
+                                        ))
+                                    }
+                                </div>
+
                             </div>
                         </div>
                     </>
