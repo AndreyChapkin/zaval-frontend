@@ -31,6 +31,16 @@ function TodoItemPage() {
     const [todoLightDto, setTodoLightDto] = useState<TodoLightDto | null>();
     const [isCreatChild, setIsCreateChild] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [areDoneChildrenShown, setAreDoneChildrenShown] = useState(false);
+    const todoChildren = useMemo(() => {
+        const rawChildren = (
+            areDoneChildrenShown ?
+                todoFamily?.children
+                : todoFamily?.children.filter(child => child.status !== "DONE")
+        ) ?? [];
+        // descending order
+        return rawChildren.toSorted((a, b) => new Date(b.interactedOn).getTime() - new Date(a.interactedOn).getTime());
+    }, [todoFamily, areDoneChildrenShown]);
 
     const removeHandler = () => {
         const parentId = todoFamily?.parents[0]?.id;
@@ -93,11 +103,15 @@ function TodoItemPage() {
                                 </div>
                             </div>
                             <div className="children column gap1">
-                                <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
+                                <div className="controlPanel row gap2">
+                                    <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
+                                    <ActionButton
+                                        type="standard"
+                                        label={areDoneChildrenShown ? "Hide done" : "Show done"}
+                                        onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
+                                </div>
                                 {
-                                    todoFamily.children.length > 0
-                                    &&
-                                    todoFamily.children.map((child) => (
+                                    todoChildren.map((child) => (
                                         <PrimitiveCard item={child} key={child.id} />
                                     ))
                                 }
