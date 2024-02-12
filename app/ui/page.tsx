@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { TodoLightDto } from "../_lib/types/todo-types";
 import TodoCard from "../_components/todo/todo-card/TodoCard";
 import { getRootTodos, getTheMostDatedLightTodos } from "../_lib/calls/todo-calls";
-import { TodoMenu } from "../_components/todo/TodoMenu";
+import CreateTodo from "../_components/todo/create-todo-modal/CreateTodoModal";
 
 export default function WelcomePage() {
 
@@ -41,8 +41,8 @@ export default function WelcomePage() {
         <div className="block">
           <div className="block-title">Root:</div>
           <div className="block-body">
-            {rootTodos && rootTodos.map((rootTodo, index) => (
-              <TodoCard todo={rootTodo} />
+            {rootTodos && rootTodos.map((rootTodo) => (
+              <TodoCard key={rootTodo.id} todo={rootTodo} />
             ))}
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function WelcomePage() {
         </div>
       </div>
       {createInRootMenuIsOpen && (
-        <TodoMenu closeHandler={() => setCreateInRootMenuIsOpen(false)} todoDto={null} />
+        <CreateTodo onCancel={() => setCreateInRootMenuIsOpen(false)} onSuccess={() => location.reload()} />
       )}
     </div>
   );

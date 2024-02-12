@@ -1,0 +1,11 @@
+@import "app/_styles/color/variables.scss";
+
+$normal-size: 5px;
+
+.standardLabelWrapper {
+    color: $main-font-color;
+
+    label {
+        font-size: smaller;
+    }
+}

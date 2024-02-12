@@ -1,6 +1,6 @@
 "use client";
 
-import { ARTICLE_ICON_URL, CREATE_ICON_URL, SEARCH_ICON_URL } from "@/app/_lib/constants/image-url-constants";
+import { ADD_ARTICLE_ICON_URL, ARTICLE_ICON_URL, CREATE_ICON_URL, SEARCH_ICON_URL } from "@/app/_lib/constants/image-url-constants";
 import { chooseStatusImgUrl, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
 import { use, useEffect, useState } from "react";
 import CreateTodo from "../../todo/create-todo-modal/CreateTodoModal";
@@ -8,17 +8,24 @@ import { SearchTodoModal } from "../../todo/search-todo-modal/SearchTodoModal";
 import { IconButton } from "../icon-button/IconButton";
 import './SideMenu.scss';
 import { usePathname } from "next/navigation";
+import CreateArticleModal from "../../article/create-article-modal/CreateArticleModal";
 
 function SideMenu() {
 
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isCreateTodoOpen, setIsCreateTodoOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isCreateArticleOpen, setIsCreateArticleOpen] = useState(false);
     const pathname = usePathname();
 
     useEffect(() => {
-        setIsCreateOpen(false);
+        setIsCreateTodoOpen(false);
         setIsSearchOpen(false);
+        setIsCreateArticleOpen(false);
     }, [pathname]);
+
+    const createArticleHandler = (article: ArticleLightDto) => {
+        window.location.href = `/ui/article/${article.id}`;
+    };
 
     return (
         <>
@@ -31,7 +38,7 @@ function SideMenu() {
                 </div>
                 <div className="todoSideMenuItem">
                     <IconButton
-                        onClick={() => { setIsCreateOpen(true) }}
+                        onClick={() => { setIsCreateTodoOpen(true) }}
                         iconUrl={CREATE_ICON_URL} />
                 </div>
                 <div className="todoSideMenuItem">
@@ -41,19 +48,28 @@ function SideMenu() {
                 </div>
                 <div className="separator" />
                 <div className="todoSideMenuItem">
-                    <a href="/article">
+                    <a href="/ui/article/search">
                         <IconButton
                             iconUrl={ARTICLE_ICON_URL} />
                     </a>
                 </div>
+                <div className="todoSideMenuItem">
+                    <IconButton
+                        iconUrl={ADD_ARTICLE_ICON_URL}
+                        onClick={() => setIsCreateArticleOpen(true)} />
+                </div>
             </div>
             {
-                isCreateOpen &&
-                <CreateTodo onCancel={() => { setIsCreateOpen(false) }} onSuccess={() => { setIsCreateOpen(false) }} />
+                isCreateTodoOpen &&
+                <CreateTodo onCancel={() => { setIsCreateTodoOpen(false) }} onSuccess={() => { setIsCreateTodoOpen(false) }} />
             }
             {
                 isSearchOpen &&
                 <SearchTodoModal onClose={() => { setIsSearchOpen(false) }} />
+            }
+            {
+                isCreateArticleOpen &&
+                <CreateArticleModal onCancel={() => { setIsCreateArticleOpen(false) }} onSuccess={createArticleHandler} />
             }
         </>
     );

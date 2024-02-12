@@ -1,21 +1,19 @@
-'use client';
-
 import { getPrioritizedListOfTodosWithStatus, getTheMostDatedLightTodos } from "@/app/_lib/calls/todo-calls";
-import { All_TODO_STATUSES, TodoLightDto, TodoStatus } from "@/app/_lib/types/todo-types";
+import { All_TODO_STATUSES, TodoLightDto, TodoStatus, TodosListDto } from "@/app/_lib/types/todo-types";
 import { useEffect, useState } from "react";
 
 import { IconButton } from "@/app/_components/general/icon-button/IconButton";
-import PrimitiveCard from "@/app/_components/todo/primitive-card/PrimitiveCard";
+import { ParentBreadcrumbs } from "@/app/_components/todo/parent-breadcrumbs/ParentBreadCrumbs";
 import TodoCard from "@/app/_components/todo/todo-card/TodoCard";
-import { TodosListDto } from "@/app/_lib/types/pages-data-types";
 import { chooseStatusImgUrl, todoStatusFromUrlForm, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
 import './page.scss';
-import { ParentBreadcrumbs } from "@/app/_components/todo/parent-breadcrumbs/ParentBreadCrumbs";
+import { useSearchParams } from "next/navigation";
 
 export default function TodoStatusPage() {
 
-    const params = new URLSearchParams(window.location.search);
-    const chosenStatus = (params.get('status') ?? "in-progress") as TodoStatus;
+    const p = useSearchParams();
+    // const params = window !== undefined ? new URLSearchParams(window.location.search) : {} as any;
+    const chosenStatus = (p.get('status') ?? "in-progress") as TodoStatus;
     const [todosListWithStatusDto, setTodosListWithStatusDto] = useState<TodosListDto | null>(null);
     const [recentTodos, setRecentTodos] = useState<TodoLightDto[]>([]);
     const { leafTodos, parentBranchesMap } = todosListWithStatusDto || {};
@@ -27,13 +25,13 @@ export default function TodoStatusPage() {
 
     return (
         <div className="page todoStatusPage row gap3">
-            <div className="statusedTodos column gap2">
+            <div className="statusedTodos column gap2 flex2">
                 <div className="statusSwitcher row gap2">
                     {
                         All_TODO_STATUSES.map(status => {
                             const urlStatus = todoStatusToUrlForm(status);
                             return (
-                                <a href={`/ui/todo/status?status=${urlStatus}`}>
+                                <a key={status} href={`/ui/todo/status?status=${urlStatus}`}>
                                     <IconButton
                                         className={`${chosenStatus === urlStatus ? 'chosenStatus' : ''}`}
                                         iconUrl={chooseStatusImgUrl(status)} />
@@ -48,7 +46,7 @@ export default function TodoStatusPage() {
                             <div className="todos column scrollableInColumn gap2">
                                 {
                                     leafTodos.map(todoAndParentBranchIdDto => (
-                                        <div className="todoAndParents">
+                                        <div key={todoAndParentBranchIdDto.leafTodo.id} className="todoAndParents">
                                             <TodoCard
                                                 todo={todoAndParentBranchIdDto.leafTodo}
                                             />
@@ -71,14 +69,14 @@ export default function TodoStatusPage() {
                         </div>
                 }
             </div>
-            <div className="recentTodos column gap2">
+            <div className="recentTodos flex1 column gap2">
                 <div className="title">
                     Recent
                 </div>
                 <div className="recentTodosList scrollableInColumn column gap2">
                     {
                         recentTodos && recentTodos.map(todo => (
-                            <TodoCard todo={todo} />
+                            <TodoCard key={todo.id} todo={todo} />
                         ))
                     }
                 </div>

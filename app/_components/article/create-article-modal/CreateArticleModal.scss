@@ -1,0 +1,6 @@
+@import "/app/_styles/size/mixins.scss";
+
+.createArticleModal {
+    @include screen-sized(60, 40);
+    padding: 20px;
+}

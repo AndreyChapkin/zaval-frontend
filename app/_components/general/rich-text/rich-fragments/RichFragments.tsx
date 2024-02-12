@@ -59,13 +59,13 @@ export const RichStrong: React.FC<RichElementProps<RichStrongElement>> = ({ rich
 export const RichTitle: React.FC<RichElementProps<RichTitleElement>> = ({ richElement }) => {
     switch (richElement.type) {
         case 'title-1':
-            return <h1 className={RICH_TYPE_TO_CLASS_NAME_MAP[richElement.type]}>{richElement.text}</h1>;
+            return <h1 className={RICH_TYPE_TO_CLASS_NAME_MAP[richElement.type]} id={richElement.id}>{richElement.text}</h1>;
         case 'title-2':
-            return <h2 className={RICH_TYPE_TO_CLASS_NAME_MAP[richElement.type]}>{richElement.text}</h2>;
+            return <h2 className={RICH_TYPE_TO_CLASS_NAME_MAP[richElement.type]} id={richElement.id}>{richElement.text}</h2>;
         case 'title-3':
-            return <h3 className={RICH_TYPE_TO_CLASS_NAME_MAP[richElement.type]}>{richElement.text}</h3>;
+            return <h3 className={RICH_TYPE_TO_CLASS_NAME_MAP[richElement.type]} id={richElement.id}>{richElement.text}</h3>;
         case 'title-4':
-            return <h4 className={RICH_TYPE_TO_CLASS_NAME_MAP[richElement.type]}>{richElement.text}</h4>;
+            return <h4 className={RICH_TYPE_TO_CLASS_NAME_MAP[richElement.type]} id={richElement.id}>{richElement.text}</h4>;
     }
 };
 

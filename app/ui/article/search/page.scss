@@ -1,0 +1,12 @@
+@import '/app/_styles/composition/mixins.scss';
+@import '/app/_styles/facade/mixins.scss';
+@import '/app/_styles/size/mixins.scss';
+@import '/app/_styles/color/variables.scss';
+
+.articleSearchPage {
+    .recent {
+        background-color: $main-dark-2-color;
+        padding: 6px 10px;
+        border-radius: 5px;
+    }
+}

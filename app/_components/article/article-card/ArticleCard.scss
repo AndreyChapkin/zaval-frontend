@@ -1,0 +1,46 @@
+@import '/app/_styles/composition/mixins.scss';
+@import '/app/_styles/facade/mixins.scss';
+@import '/app/_styles/size/mixins.scss';
+@import '/app/_styles/color/variables.scss';
+
+.articleCard {
+    background-color: $secondary-dark-4-color;
+    border: 1px solid $secondary-color;
+    color: $main-font-color;
+    overflow: hidden;
+    min-height: 70px;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: $secondary-dark-3-color;
+    }
+
+    .navigation {
+        $navigation-opacity: 0.6;
+        opacity: $navigation-opacity;
+        padding: 8px 5px;
+        border-right: 1px solid rgba(white, $navigation-opacity);
+
+        &:hover {
+            background-color: rgba($color: white, $alpha: 0.3);
+        }
+
+        img {
+            width: 15px;
+            height: 15px;
+        }
+    }
+
+    .mainPanel {
+        padding: 8px;
+
+        .articleTitle {
+
+        }
+
+        .interactedOn {
+            font-size: smaller;
+            color: darken($main-font-color, 30%);
+        }
+    }
+}

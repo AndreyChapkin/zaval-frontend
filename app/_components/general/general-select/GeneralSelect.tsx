@@ -4,6 +4,7 @@ import './GeneralSelect.scss';
 import { IconButton } from "../icon-button/IconButton";
 
 export type OptionDescription = {
+    id: string;
     label: string;
     classNames?: string;
     imageUrl?: string;
@@ -81,6 +82,7 @@ export function GeneralSelect<T>({ currentElement, allElements: elements, mapper
                                 const description = mapper(element);
                                 return (
                                     <div
+                                        key={description.id}
                                         className={`option rowStartAndCenter ${description.classNames ?? ''}`}
                                         onClick={createInnerSelectHandler(element)}
                                     >

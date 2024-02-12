@@ -5,29 +5,26 @@ import PrimitiveCard from "@/app/_components/todo/primitive-card/PrimitiveCard";
 import { deleteTodo, getLightTodo, getTodoFamily, updateTodo } from "@/app/_lib/calls/todo-calls";
 import { TodoFamilyDto, TodoLightDto } from "@/app/_lib/types/todo-types";
 import { presentDate } from "@/app/_lib/utils/presentation-helpers";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { IconButton } from "@/app/_components/general/icon-button/IconButton";
+import { RemoveModal } from "@/app/_components/general/remove-modal/RemoveModal";
 import { RichEditor } from "@/app/_components/general/rich-editor/RichEditor";
 import { RichText } from "@/app/_components/general/rich-text/RichText";
+import CreateTodo from "@/app/_components/todo/create-todo-modal/CreateTodoModal";
 import { EditTodoModal } from "@/app/_components/todo/edit-todo-modal/EditTodoModal";
+import { ParentBreadcrumbs } from "@/app/_components/todo/parent-breadcrumbs/ParentBreadCrumbs";
 import TodoStatusIndicator from "@/app/_components/todo/status-indicator/TodoStatusIndicator";
+import TodoPriority from "@/app/_components/todo/todo-priority/TodoPriority";
 import { EDIT_ICON_URL, REMOVE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
 import './page.scss';
-import TodoPriority from "@/app/_components/todo/todo-priority/TodoPriority";
-import { ParentBreadcrumbs } from "@/app/_components/todo/parent-breadcrumbs/ParentBreadCrumbs";
-import { RemoveModal } from "@/app/_components/general/remove-modal/RemoveModal";
-import CreateTodo from "@/app/_components/todo/create-todo-modal/CreateTodoModal";
 
 function TodoItemPage() {
 
     const params = useParams<{ id: string }>();
     const id = Number(params.id);
-    const [todoFamily, setTodoFamily] = useState<TodoFamilyDto | null>();
-    const descriptionElements = useMemo(() => {
-        return todoFamily?.description ? JSON.parse(todoFamily.description) : [];
-    }, [todoFamily]);
+    const [todoFamily, setTodoFamily] = useState<TodoFamilyDto | null>(null);
     const [isEditDescription, setIsEditDescription] = useState(false);
     const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
     const [isRemoveOpen, setIsRemoveOpen] = useState(false);
@@ -90,7 +87,7 @@ function TodoItemPage() {
                                             :
                                             <>
                                                 <IconButton iconUrl={EDIT_ICON_URL} onClick={() => setIsEditDescription(true)} />
-                                                <RichText richElements={descriptionElements} />
+                                                <RichText richContent={todoFamily.description} />
                                             </>
                                     }
                                 </div>

@@ -18,6 +18,16 @@ export interface TodoFamilyDto {
     children: TodoLightDto[];
 }
 
+export interface TodoLeafWithBranchIdDto {
+    leafTodo: TodoLightDto;
+    parentBranchId: number | null;
+}
+
+export interface TodosListDto {
+    leafTodos: TodoLeafWithBranchIdDto[];
+    parentBranchesMap: Record<number, TodoLightDto[]>;
+}
+
 export interface TodoHistoryDto {
     todoId: number;
     records: string[];

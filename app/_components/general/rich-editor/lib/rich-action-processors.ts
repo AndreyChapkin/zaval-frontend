@@ -601,7 +601,6 @@ export class ActionProcessor {
     private fulfillCreateRichAction(draftAction: RichActionDraft, infoToFulfill?: FulfillmentInfo): RichCreateAction | null {
         if (this.manipulator) {
             let createDraft = draftAction as RichCreateDraft;
-            // common processing
             let newElement: HTMLElement | null = null;
             // fulfill action if needed
             if (infoToFulfill) {
@@ -615,7 +614,12 @@ export class ActionProcessor {
                         break;
                 }
             } else {
-                newElement = createRichHTMLElement(RICH_TYPE_TO_DEFAULT_MAP[createDraft.richType as RichType]);
+                const defaultRichElement = RICH_TYPE_TO_DEFAULT_MAP[createDraft.richType];
+                // if create title add id
+                if (TITLES_ARRAY.indexOf(defaultRichElement.type as any) > -1) {
+                    (defaultRichElement as RichTitleElement).id = crypto.randomUUID();
+                }
+                newElement = createRichHTMLElement(defaultRichElement);
             }
             // define new element placement
             if (newElement) {

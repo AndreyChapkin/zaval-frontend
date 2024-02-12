@@ -1,0 +1,38 @@
+@import "/app/_styles/composition/mixins.scss";
+@import "/app/_styles/size/mixins.scss";
+@import "/app/_styles/color/variables.scss";
+@import "/app/_styles/facade/mixins.scss";
+
+.articlePage {
+    .mainPanel {
+        padding: 0px 10px;
+        
+        .articleTitle {
+            font-size: 20px;
+            font-weight: bold;
+            color: $accent-light-1-color;
+        }
+    }
+    .tableOfContents {
+        @include standard-container;
+        background-color: $main-dark-1-color;
+        padding: 10px 15px;
+        
+        a {
+            text-decoration: none;
+            color: $accent-light-1-color;
+        }
+
+        $record-left-padding-delta: 15px;
+
+        .secondLevel {
+            padding-left: $record-left-padding-delta;
+        }
+        .thirdLevel {
+            padding-left: 2 * $record-left-padding-delta;
+        }
+        .fourthLevel {
+            padding-left: 3 * $record-left-padding-delta;
+        }
+    }
+}

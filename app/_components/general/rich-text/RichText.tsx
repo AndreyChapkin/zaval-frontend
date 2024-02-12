@@ -1,16 +1,22 @@
-import { RichElement } from '@/app/_lib/types/rich-text-types';
 import { resolveRichFragment } from './rich-fragments/RichFragments';
 
+import { forwardRef, useMemo } from 'react';
 import "./rich-fragments/rich-elements.scss";
 import "./RichText.scss";
-import { forwardRef } from 'react';
+import { RichElement } from '@/app/_lib/types/rich-text-types';
 
 interface RichTextProps {
-    richElements: RichElement[];
-    isEditionMode?: boolean;
+    richContent: string | RichElement[];
 }
 
-export const RichText = forwardRef<HTMLDivElement, RichTextProps>(({ richElements }, ref) => {
+export const RichText = forwardRef<HTMLDivElement, RichTextProps>(({ richContent }, ref) => {
+
+    const richElements: RichElement[] = useMemo(() => {
+        return typeof richContent === 'string' ?
+            richContent.length > 0 ? JSON.parse(richContent) : []
+            : richContent;
+    }, [richContent]);
+
     return (
         <div className='richText columnStartAndStretch scrollableInColumn'>
             {
@@ -21,3 +27,5 @@ export const RichText = forwardRef<HTMLDivElement, RichTextProps>(({ richElement
         </div>
     );
 });
+
+RichText.displayName = 'RichText';

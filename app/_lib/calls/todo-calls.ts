@@ -1,6 +1,5 @@
 import { baseURL } from "../constants/url-constants";
-import { TodosListDto } from "../types/pages-data-types";
-import { TodoCreateDto, TodoLightDto, MoveTodoDto, TodoHistoryDto, TodoStatus, UpdateTodoDto, TodoFamilyDto } from "../types/todo-types";
+import { TodoCreateDto, TodoLightDto, MoveTodoDto, TodoHistoryDto, TodoStatus, UpdateTodoDto, TodoFamilyDto, TodosListDto } from "../types/todo-types";
 import { callDelete, callGet, callPatch, callPost } from "./base-calls";
 
 const baseTodoURL = baseURL + "/todo";

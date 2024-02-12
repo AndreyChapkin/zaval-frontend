@@ -3,16 +3,20 @@
 $normal-size: 5px;
 
 .standardInput {
-    background-color: $main-dark-1-color;
-    border: 2px solid $main-light-2-color;
-    padding: 8px;
-    border-radius: $normal-size;
-    outline: none;
-    font-size: medium;
-    color: $secondary-font-color;
+    color: $main-font-color;
 
-    &:focus {
-        border: 2px solid $main-light-3-color;
-        background-color: $main-dark-2-color;
-    }
+    input {
+        background-color: $main-dark-1-color;
+        border: 2px solid $main-light-2-color;
+        padding: 8px;
+        border-radius: $normal-size;
+        outline: none;
+        font-size: medium;
+        color: $main-font-color;
+
+        &:focus {
+            border: 2px solid $main-light-3-color;
+            background-color: $main-dark-2-color;
+        }
+    }    
 }

@@ -7,11 +7,12 @@ $normal-size: 5px;
 .todoStatusPage {
 
     .statusedTodos {
-        flex: 1;
     }
 
     .recentTodos {
-        flex: 1;
+        background-color: $main-dark-2-color;
+        padding: 6px 10px;
+        border-radius: 5px;
     }
 
     .chosenStatus {

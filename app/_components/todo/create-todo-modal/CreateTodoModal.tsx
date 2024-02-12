@@ -1,15 +1,14 @@
-import { All_TODO_STATUSES, TodoLightDto, TodoStatus } from "@/app/_lib/types/todo-types";
-import { useState } from "react";
-import { ModalWindow } from "../../general/modal-window/ModalWindow";
 import { createTodo } from "@/app/_lib/calls/todo-calls";
+import { TodoLightDto, TodoStatus } from "@/app/_lib/types/todo-types";
+import { useState } from "react";
 import { ActionButton } from "../../general/action-button/ActionButton";
+import { ModalWindow } from "../../general/modal-window/ModalWindow";
 import { StandardInput } from "../../general/standard-input/StandardInput";
-import { GeneralSelect } from "../../general/general-select/GeneralSelect";
-import { chooseStatusColorClass, chooseStatusImgUrl, todoStatusToLabel } from "@/app/_lib/utils/todo-helpers";
 
-import './CreateTodoModal.scss';
-import { TodoStatusSelect } from "../todo-status-select/TodoStatusSelect";
+import { StandardLabel } from "../../general/standard-label/StandardLabel";
 import { EditPriority } from "../edit-todo-modal/EditTodoModal";
+import { TodoStatusSelect } from "../todo-status-select/TodoStatusSelect";
+import './CreateTodoModal.scss';
 
 export interface CreateTodoProps {
     parentId?: number;
@@ -35,10 +34,12 @@ function CreateTodo({ parentId, onCancel: cancelHandler, onSuccess: successHandl
 
     return (
         <ModalWindow onClose={cancelHandler}>
-            <div className="createTodo columnCenterAndStretch gap4">
-                <div className="editPanel columnStartAndStretch gap2">
-                    <TodoStatusSelect currentStatus={status} onSelect={setStatus} />
-                    <StandardInput value={name} onChange={setName} />
+            <div className="createTodoModal columnCenterAndStretch gap6">
+                <div className="editPanel columnStartAndStretch gap3">
+                    <StandardLabel label="Status">
+                        <TodoStatusSelect currentStatus={status} onSelect={setStatus} />
+                    </StandardLabel>
+                    <StandardInput label="Name" value={name} onChange={setName} />
                     <EditPriority
                         priority={priority}
                         onChange={setPriority} />

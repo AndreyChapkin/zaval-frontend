@@ -12,6 +12,7 @@ import { IconButton } from '../../general/icon-button/IconButton';
 import { CHOOSE_ICON_URL } from '@/app/_lib/constants/image-url-constants';
 
 import './EditTodoModal.scss';
+import { StandardLabel } from '../../general/standard-label/StandardLabel';
 
 export type EditTodoModalProps = {
     todo: TodoLightDto;
@@ -120,6 +121,7 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
                         {
                             foundTodos.map((todo) => (
                                 <MoveTodoCard
+                                    key={todo.id}
                                     todo={todo}
                                     onSelect={selectHandler}
                                 />
@@ -150,20 +152,23 @@ export const EditPriority: React.FC<EditPriorityProps> = ({ priority, onChange }
     };
 
     return (
-        <div className='editPriority rowStartAndCenter gap2'>
-            <StandardInput
-                value={String(priority)}
-                onChange={(value) => setNewPriorityStr(value)} />
-            <ActionButton
-                label="+"
-                type='standard'
-                onClick={() => setNewPriority(priority, 200)} />
-            <ActionButton
-                label="-"
-                type='standard'
-                onClick={() => setNewPriority(priority, -100)} />
-            <TodoPriority priority={priority} />
-        </div>
+        <StandardLabel label='Priority'>
+            <div className='editPriority rowStartAndCenter gap2'>
+                <StandardInput
+                    value={String(priority)}
+                    onChange={(value) => setNewPriorityStr(value)} />
+                <ActionButton
+                    label="+"
+                    type='standard'
+                    onClick={() => setNewPriority(priority, 200)} />
+                <ActionButton
+                    label="-"
+                    type='standard'
+                    onClick={() => setNewPriority(priority, -100)} />
+
+                <TodoPriority priority={priority} />
+            </div>
+        </StandardLabel>
     );
 };
 

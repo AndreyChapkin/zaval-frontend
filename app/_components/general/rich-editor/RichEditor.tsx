@@ -46,7 +46,9 @@ export const RichEditor: React.FC<RichEditorProps> = ({ className, richContent, 
 				if (lastHistoryRecord && lastHistoryRecord.action.name === 'create') {
 					const newElements = lastHistoryRecord.action.payload.newElements;
 					const lastNewNode = getNodeFromTouchedNodeInfo(newElements[newElements.length - 1]);
-					selectTextInNode(lastNewNode);
+					if (lastNewNode) {
+						selectTextInNode(lastNewNode);
+					}					
 				}
 			}
 		}
