@@ -16,6 +16,11 @@ $wide-size: 10px;
     border-radius: 8px;
     height: auto;
 
+    .navigation {
+        $navigation-opacity: 0.6;
+        opacity: $navigation-opacity;
+    }
+
     .todoName {
         white-space: nowrap;
         text-overflow: ellipsis;

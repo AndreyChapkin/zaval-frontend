@@ -21,6 +21,10 @@
     }
 }
 
+.xSmallSized {
+    @include icon-sized(15, 15);
+}
+
 .smallSized {
     @include icon-sized(20, 20);
 }

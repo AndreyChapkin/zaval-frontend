@@ -15,7 +15,7 @@ const PrimitiveCard: React.FC<PrimitiveCardProps> = ({ item, externalClass = '' 
     return (
         <div className={`primitiveCard ${externalClass} rowStartAndCenter gap1`}>
             <a href={`/ui/todo/${item.id}`}>
-                <IconButton size='small' iconUrl={SEE_ICON_URL} />
+                <IconButton className='navigation' size='xSmall' iconUrl={SEE_ICON_URL} />
             </a>
             <TodoStatusIndicator status={item.status} />
             <div className="todoName flex1">

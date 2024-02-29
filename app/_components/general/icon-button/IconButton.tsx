@@ -5,7 +5,7 @@ import './IconButton.scss';
 interface IconButtonProps {
     iconUrl: string;
     className?: string;
-    size?: "small" | "medium" | "large";
+    size?: "xSmall" | "small" | "medium" | "large";
     onClick?: () => void;
 }
 
@@ -18,6 +18,9 @@ export const IconButton: React.FC<IconButtonProps> = ({
 
     let sizeClass = 'mediumSized';
     switch (size) {
+        case "xSmall":
+            sizeClass = 'xSmallSized';
+            break;
         case "small":
             sizeClass = 'smallSized';
             break;
