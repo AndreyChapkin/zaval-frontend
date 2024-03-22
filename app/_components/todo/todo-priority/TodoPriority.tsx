@@ -10,10 +10,10 @@ const TodoPriority: React.FC<TodoPriorityProps> = ({ priority }) => {
 
     let priorityValue: 'low' | 'medium' | 'high';
     let priorityClass: string;
-    if (priority < 100) {
+    if (priority < 800) {
         priorityValue = 'low';
         priorityClass = 'lowPriority';
-    } else if (priority < 500) {
+    } else if (priority < 2400) {
         priorityValue = 'medium';
         priorityClass = 'mediumPriority';
     } else {
