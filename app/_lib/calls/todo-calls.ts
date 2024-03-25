@@ -78,3 +78,8 @@ export async function findTodosWithNameFragment(nameFragment: string): Promise<T
     });
     return response.data;
 }
+
+export async function openObsidianNoteForTodo(todoId: number, params: { uiPageUrl: string }): Promise<void> {
+    const url = `${baseTodoURL}/${todoId}/obsidian-note`;
+    await callPost<void>(url, params);
+}

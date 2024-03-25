@@ -1,0 +1,267 @@
+@import "/app/_styles/facade/mixins.scss";
+
+.bgRed {
+	background-color: rgb(141, 81, 91);
+}
+
+.fullWidth {
+	width: 100%;
+}
+
+.flex1 {
+	flex: 1;
+}
+
+.flex2 {
+	flex: 2;
+}
+
+.flex3 {
+	flex: 3;
+}
+
+.flex4 {
+	flex: 4;
+}
+
+.flex5 {
+	flex: 5;
+}
+
+.flex6 {
+	flex: 6;
+}
+
+.shrink0 {
+	flex-shrink: 0;
+}
+
+.gap1 {
+	gap: 5px;
+}
+
+.gap2 {
+	gap: 10px;
+}
+
+.gap3 {
+	gap: 15px;
+}
+
+.gap4 {
+	gap: 20px;
+}
+
+.gap5 {
+	gap: 30px;
+}
+
+.gap6 {
+	gap: 40px;
+}
+
+.justifyCenter {
+	justify-content: center;
+}
+
+.justifyStart {
+	justify-content: flex-start;
+}
+
+.justifyEnd {
+	justify-content: flex-end;
+}
+
+.justifyBetween {
+	justify-content: space-between;
+}
+
+.justifyAround {
+	justify-content: space-around;
+}
+
+.alignCenter {
+	align-items: center;
+}
+
+.alignStart {
+	align-items: flex-start;
+}
+
+.alignEnd {
+	align-items: flex-end;
+}
+
+.alignStretch {
+	align-items: stretch;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+    min-height: 0px;
+    min-width: 0px;
+}
+
+.rowCenter {
+    @extend .row;
+	justify-content: center;
+}
+
+.rowCenterAndCenter {
+	@extend .row;
+	align-items: center;
+	justify-content: center;
+}
+
+.rowStart {
+	@extend .row;
+	justify-items: flex-start;
+}
+
+.rowStartAndStart {
+	@extend .rowStart;
+	align-items: start;
+}
+
+.rowStartAndCenter {
+    @extend .rowStart;
+	align-items: center;
+}
+
+.rowStartAndEnd {
+    @extend .rowStart;
+	align-items: end;
+}
+
+.rowStartAndStretch {
+    @extend .rowStart;
+	align-items: stretch;
+}
+
+.rowJustify {
+    @extend .row;
+	justify-content: space-between;
+}
+
+.rowJustifyAndCenter {
+    @extend .rowJustify;
+	align-items: center;
+}
+
+.scrollableInLine {
+	overflow: auto;
+	flex: 1;
+	@include styled-scrollbar;
+}
+
+.scrollableInRow {
+	flex: 1;
+	overflow-x: auto;
+	@include styled-scrollbar;
+}
+
+.scrollableInRowVertically {
+	overflow-y: auto;
+	@include styled-scrollbar;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+    min-height: 0px;
+    min-width: 0px;
+}
+
+.columnStart {
+    @extend .column;
+	justify-content: flex-start;
+}
+
+.columnStartAndStretch {
+    @extend .columnStart;
+	align-items: stretch;
+}
+
+.columnStartAndCenter {
+    @extend .columnStart;
+	align-items: center;
+}
+
+.columnStartAndStart {
+    @extend .columnStart;
+	align-items: start;
+}
+
+.columnEnd {
+	@extend .column;
+	justify-content: flex-end;
+}
+
+.columnEndAndStretch {
+	@extend .columnEnd;
+	align-items: stretch;
+}
+
+.columnEndAndCenter {
+	@extend .columnEnd;
+	align-items: center;
+}
+
+.columnWrap {
+    @extend .column;
+	flex-wrap: wrap;
+}
+
+.columnJustify {
+    @extend .column;
+	justify-content: space-between;
+}
+
+.columnJustifyAndCenter {
+    @extend .columnJustify;
+	align-items: center
+}
+
+.columnStretch {
+    @extend .column;
+	align-items: stretch;
+}
+
+.columnJustifyAndStretch {
+    @extend .column;
+	justify-content: space-between;
+	align-items: stretch;
+}
+
+.columnCenter {
+    @extend .column;
+	justify-content: center;
+}
+
+.columnCenterAndCenter {
+	@extend .columnCenter;
+	align-items: center;
+}
+
+.columnCenterAndStretch {
+	@extend .columnCenter;
+	align-items: stretch;
+}
+
+.columnAroundAndCenter {
+    @extend .column;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.scrollableInColumn {
+	flex: 1;
+	overflow-y: auto;
+	@include styled-scrollbar;
+}
+
+.scrollableInColumnHorizontally {
+	overflow-x: auto;
+	@include styled-scrollbar;
+}

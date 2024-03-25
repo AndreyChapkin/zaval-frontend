@@ -2,37 +2,22 @@
 @import "/app/_styles/size/mixins.scss";
 @import "/app/_styles/color/variables.scss";
 @import "/app/_styles/facade/mixins.scss";
-
-$normal-size: 5px;
+@import "/app/_styles/color/variables.scss";
 
 .todoItemPage {
     .parentBreadcrumbs {
         flex-shrink: 0;
     }
-    .main {
-        flex: 3;
-        .mainGeneral {
-            flex: 1;
-            border-radius: 5px;
-            background-color: $main-color;
-            border: 1px solid $main-light-2-color;
-            padding: 6px 10px;
-            .additionalPanel {
-            }
-            .additionalInfo {
-                font-size: smaller;
-                color: darken($main-font-color, 20%);
-            }
-        }
-        .discriptionPanel {
-            flex: 5;
-        }
+
+    .additionalInfo {
+        font-size: smaller;
     }
-    .children {
-        flex: 2;
-        padding-top: 25px;
-        .actionButton {
-            width: 150px;
-        }
+
+    .separator {
+        margin: 10px 0px;
+        min-width: 10px;
+        min-height: 10px;
+        background-color: $main-light-1-color;
+        border-radius: 5px;
     }
 }

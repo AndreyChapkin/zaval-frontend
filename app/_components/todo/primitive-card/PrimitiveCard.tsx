@@ -4,6 +4,8 @@ import React from 'react';
 import { IconButton } from '../../general/icon-button/IconButton';
 import TodoStatusIndicator from '../status-indicator/TodoStatusIndicator';
 import './PrimitiveCard.scss';
+import FlexLine from '../../general/flex-line/FlexLine';
+import { PaperContainer } from '../../general/paper-container/PaperContainer';
 
 interface PrimitiveCardProps {
     item: TodoLightDto;
@@ -13,15 +15,17 @@ interface PrimitiveCardProps {
 const PrimitiveCard: React.FC<PrimitiveCardProps> = ({ item, externalClass = '' }) => {
 
     return (
-        <div className={`primitiveCard ${externalClass} rowStartAndCenter gap1`}>
-            <a href={`/ui/todo/${item.id}`}>
-                <IconButton className='navigation' size='xSmall' iconUrl={SEE_ICON_URL} />
-            </a>
-            <TodoStatusIndicator status={item.status} />
-            <div className="todoName flex1">
-                {item.name}
-            </div>
-        </div>
+        <PaperContainer lightType='dark-2' className={`primitiveCard ${externalClass} p-1 pr-3`}>
+            <FlexLine direction='row' alignItems='center'>
+                <a href={`/ui/todo/${item.id}`}>
+                    <IconButton className='navigation' size='xSmall' iconUrl={SEE_ICON_URL} />
+                </a>
+                <TodoStatusIndicator status={item.status} />
+                <div className="todoName flex1">
+                    {item.name}
+                </div>
+            </FlexLine>
+        </PaperContainer>
     );
 };
 
