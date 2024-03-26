@@ -38,7 +38,7 @@ export function ModalWindow({ onClose, width = 50, height = 50, className = "", 
             className="modalWindowBackgroud"
             onMouseDown={onCloseWrapper}
         >
-            <FCol hasScrollable className={`modalWindowBody ${className} ${widthClass} ${heightClass}`}>
+            <FCol alignItems='stretch' hasScrollable className={`modalWindowBody ${className} ${widthClass} ${heightClass}`}>
                 {children}
             </FCol>
         </div>

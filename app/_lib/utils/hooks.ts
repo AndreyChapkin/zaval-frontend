@@ -1,6 +1,6 @@
 import React from "react";
 
-export function useMediaQuery(): boolean {
+export function useMobileQuery(): boolean {
     const [isMobile, setIsMobile] = React.useState(window.innerWidth < 800);
 
     React.useEffect(() => {

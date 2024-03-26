@@ -19,9 +19,12 @@ import TodoStatusIndicator from "@/app/_components/todo/status-indicator/TodoSta
 import TodoPriority from "@/app/_components/todo/todo-priority/TodoPriority";
 import { EDIT_ICON_URL, OBSIDIAN_ICON_URL, REMOVE_ICON_URL } from "@/app/_lib/constants/image-url-constants";
 import './page.scss';
-import { useMediaQuery, useWindowMessage, useParentSender } from "@/app/_lib/utils/hooks";
+import { useMobileQuery, useWindowMessage, useParentSender } from "@/app/_lib/utils/hooks";
 import FlexLine from "@/app/_components/general/flex-line/FlexLine";
 import { PaperContainer } from "@/app/_components/general/paper-container/PaperContainer";
+import { ModalWindow } from "@/app/_components/general/modal-window/ModalWindow";
+import FRow from "@/app/_components/general/flex-line/FRow";
+import FCol from "@/app/_components/general/flex-line/FCol";
 
 function TodoItemPage() {
 
@@ -39,14 +42,16 @@ function TodoItemPage() {
         const rawChildren = (
             areDoneChildrenShown ?
                 todoFamily?.children
-                : todoFamily?.children.filter(child => child.status !== "DONE")
+                : todoFamily?.children?.filter(child => child.status !== "DONE")
         ) ?? [];
         // descending order
         return rawChildren.toSorted((a, b) => b.priority - a.priority);
     }, [todoFamily, areDoneChildrenShown]);
 
+    const [areChildrenShown, setAreChildrenShown] = useState(false);
+
     // use media query to change layout
-    const isMobile = useMediaQuery();
+    const isMobile = useMobileQuery();
 
     // send extension window current open todo url
     const sender = useParentSender<{ todoPageUrl: string }>('todoPageOpened');
@@ -128,22 +133,52 @@ function TodoItemPage() {
                                     }
                                 </FlexLine>
                             </FlexLine>
-                            <FlexLine direction="column" alignItems="stretch" className="children flex1">
-                                <FlexLine direction="row" className="controlPanel">
-                                    <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
-                                    <ActionButton
-                                        type="standard"
-                                        label={areDoneChildrenShown ? "Hide done" : "Show done"}
-                                        onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
-                                </FlexLine>
-                                <FlexLine direction="column" alignItems="stretch" className="scrollableInLine">
-                                    {
-                                        todoChildren.map((child) => (
-                                            <PrimitiveCard item={child} key={child.id} />
-                                        ))
-                                    }
-                                </FlexLine>
-                            </FlexLine>
+                            {
+                                isMobile ?
+                                    <>
+                                        {
+                                            areChildrenShown &&
+                                            <ModalWindow className="p-2" width={60} height={80} onClose={() => setAreChildrenShown(false)}>
+                                                <FCol alignItems="stretch" className="children flex1" spacing={2}>
+                                                    <FRow className="controlPanel">
+                                                        <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
+                                                        <ActionButton
+                                                            type="standard"
+                                                            label={areDoneChildrenShown ? "Hide done" : "Show done"}
+                                                            onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
+                                                    </FRow>
+                                                    <FlexLine direction="column" alignItems="stretch" className="scrollableInLine">
+                                                        {
+                                                            todoChildren.map((child) => (
+                                                                <PrimitiveCard item={child} key={child.id} />
+                                                            ))
+                                                        }
+                                                    </FlexLine>
+                                                </FCol>
+                                            </ModalWindow>
+                                        }
+                                        <FRow>
+                                            <ActionButton label="Show children" onClick={() => setAreChildrenShown(true)} />
+                                        </FRow>
+                                    </>
+                                    :
+                                    <FlexLine direction="column" alignItems="stretch" className="children flex1">
+                                        <FlexLine direction="row" className="controlPanel">
+                                            <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
+                                            <ActionButton
+                                                type="standard"
+                                                label={areDoneChildrenShown ? "Hide done" : "Show done"}
+                                                onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
+                                        </FlexLine>
+                                        <FlexLine direction="column" alignItems="stretch" className="scrollableInLine">
+                                            {
+                                                todoChildren.map((child) => (
+                                                    <PrimitiveCard item={child} key={child.id} />
+                                                ))
+                                            }
+                                        </FlexLine>
+                                    </FlexLine>
+                            }
                         </FlexLine>
                     </>
                     :

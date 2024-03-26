@@ -11,6 +11,7 @@ import { chooseStatusImgUrl, todoStatusFromUrlForm, todoStatusToUrlForm } from "
 import './page.scss';
 import { useSearchParams } from "next/navigation";
 import RecentTodosCard from "@/app/_components/todo/recent-todos-card/RecentTodosCard";
+import { useMobileQuery } from "@/app/_lib/utils/hooks";
 
 export default function TodoStatusPage() {
 
@@ -20,6 +21,8 @@ export default function TodoStatusPage() {
     const [todosListWithStatusDto, setTodosListWithStatusDto] = useState<TodosListDto | null>(null);
     const [recentTodos, setRecentTodos] = useState<TodoLightDto[]>([]);
     const { leafTodos, parentBranchesMap } = todosListWithStatusDto || {};
+
+    const isMobile = useMobileQuery();
 
     useEffect(() => {
         getPrioritizedListOfTodosWithStatus(todoStatusFromUrlForm(chosenStatus)).then(setTodosListWithStatusDto);
@@ -72,12 +75,15 @@ export default function TodoStatusPage() {
                         </div>
                 }
             </div>
-            <div className="recentTodos flex1 column gap2">
-                <div className="title">
-                    Recent
+            {
+                !isMobile &&
+                <div className="recentTodos flex1 column gap2">
+                    <div className="title">
+                        Recent
+                    </div>
+                    <RecentTodosCard todos={recentTodos} className="scrollableInLine" />
                 </div>
-                <RecentTodosCard todos={recentTodos} className="scrollableInLine" />
-            </div>
+            }
         </div >
 
     );

@@ -12,7 +12,7 @@ interface StandardLabelProps {
 export const StandardLabel: React.FC<StandardLabelProps> = ({ label, labelPosition = 'top', className = "", children }) => {
 
     return (
-        <div className={`standardLabelWrapper ${className} ${labelPosition === 'left' ? 'rowStartAndEnd' : 'columnStartAndStretch'} gap2`}>
+        <div className={`standardLabelWrapper ${className} ${labelPosition === 'left' ? 'rowStartAndCenter' : 'columnStartAndStretch'} gap2`}>
             <label>{label}</label>
             {
                 children

@@ -13,6 +13,8 @@ import { CHOOSE_ICON_URL } from '@/app/_lib/constants/image-url-constants';
 
 import './EditTodoModal.scss';
 import { StandardLabel } from '../../general/standard-label/StandardLabel';
+import FCol from '../../general/flex-line/FCol';
+import { FPaper } from '../../general/paper-container/FPaper';
 
 export type EditTodoModalProps = {
     todo: TodoLightDto;
@@ -38,9 +40,9 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onSave, onCl
     };
 
     return (
-        <ModalWindow onClose={onClose}>
-            <div className="editTodo column gap2">
-                <div className='editPanel column gap3'>
+        <ModalWindow width={80} height={80} onClose={onClose}>
+            <FCol alignItems='stretch' className='p-4 flex1'>
+                <FCol spacing={3} alignItems='stretch'>
                     <TodoStatusSelect
                         currentStatus={editStatus}
                         onSelect={(status) => setEditStatus(status)}
@@ -52,13 +54,13 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onSave, onCl
                     <EditPriority
                         priority={editPriority}
                         onChange={(value) => setEditPriority(value)} />
-                </div>
-                <div className='controlPanel row gap1'>
+                </FCol>
+                <div className='controlPanel row gap1 my-2'>
                     <ActionButton label="Save" onClick={onSaveWrapper} />
                     <ActionButton label='Cancel' onClick={onClose} />
                 </div>
                 <MoveTodo todo={todo} className='flex1' />
-            </div>
+            </FCol>
         </ModalWindow>
     );
 };
@@ -105,7 +107,7 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
     }, [searchValue]);
 
     return (
-        <div className={`moveTodo ${className} column gap2`}>
+        <FPaper direction='column' alignItems='stretch' lightType='dark-3' className={`moveTodo ${className} p-3`}>
             <div className="controlPanel row gap2">
                 <ActionButton label="To root" onClick={toRootHandler} />
                 <StandardInput
@@ -117,7 +119,7 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
                 isLoading ?
                     <LoadingIndicator />
                     :
-                    <div className="foundTodo column scrollableInColumn gap1">
+                    <FCol className="foundTodo scrollableInLine" spacing={6}>
                         {
                             foundTodos.map((todo) => (
                                 <MoveTodoCard
@@ -127,9 +129,9 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
                                 />
                             ))
                         }
-                    </div>
+                    </FCol>
             }
-        </div>
+        </FPaper>
     );
 };
 
@@ -152,7 +154,7 @@ export const EditPriority: React.FC<EditPriorityProps> = ({ priority, onChange }
     };
 
     return (
-        <StandardLabel label='Priority'>
+        <StandardLabel label='Priority' labelPosition='left'>
             <div className='editPriority rowStartAndCenter gap2'>
                 <StandardInput
                     value={String(priority)}
