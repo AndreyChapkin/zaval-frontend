@@ -29,3 +29,4 @@ export const MOVE_ICON_URL = '/images/common/move-icon.svg';
 export const CREATE_ICON_URL = '/images/common/create-icon.svg';
 export const SEE_ICON_URL = '/images/common/see-icon.svg';
 export const OBSIDIAN_ICON_URL = '/images/common/obsidian-icon.svg';
+export const RECENT_ICON_URL = '/images/common/recent-icon.svg';

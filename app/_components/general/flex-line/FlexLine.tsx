@@ -1,6 +1,6 @@
 "use client";
 
-interface FlexLineProps {
+export interface FlexLineProps {
     direction: "row" | "column";
     alignItems?: "center" | "start" | "end" | "stretch";
     justifyContent?: "center" | "start" | "end" | "between" | "around";

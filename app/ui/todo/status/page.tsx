@@ -10,6 +10,7 @@ import TodoCard from "@/app/_components/todo/todo-card/TodoCard";
 import { chooseStatusImgUrl, todoStatusFromUrlForm, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
 import './page.scss';
 import { useSearchParams } from "next/navigation";
+import RecentTodosCard from "@/app/_components/todo/recent-todos-card/RecentTodosCard";
 
 export default function TodoStatusPage() {
 
@@ -75,13 +76,7 @@ export default function TodoStatusPage() {
                 <div className="title">
                     Recent
                 </div>
-                <div className="recentTodosList scrollableInColumn column gap2">
-                    {
-                        recentTodos && recentTodos.map(todo => (
-                            <TodoCard key={todo.id} todo={todo} />
-                        ))
-                    }
-                </div>
+                <RecentTodosCard todos={recentTodos} className="scrollableInLine" />
             </div>
         </div >
 

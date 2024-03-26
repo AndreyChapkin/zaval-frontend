@@ -10,7 +10,7 @@ $normal-size: 5px;
     border: 1px solid $main-light-1-color;
     color: $main-font-color;
     overflow: hidden;
-    min-height: 70px;
+    min-height: 70px !important;
     border-radius: $normal-size;
 
     &:hover {
