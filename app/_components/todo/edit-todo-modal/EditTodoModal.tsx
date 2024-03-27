@@ -15,6 +15,7 @@ import FCol from '../../general/flex-line/FCol';
 import FLine from '../../general/flex-line/FLine';
 import './EditTodoModal.scss';
 import { FPaper } from '../../general/paper-container/FPaper';
+import FRow from '../../general/flex-line/FRow';
 
 export type EditTodoModalProps = {
     todo: TodoLightDto;
@@ -112,7 +113,7 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
     }, [searchValue]);
 
     return (
-        <FLine direction='column' className='p-2' alignItems='stretch' squeezeY>
+        <FLine direction='column' className='p-2' alignItems='stretch' squeezableY>
             <FLine direction='row' className="controlPanel" alignItems='center' spacing={3}>
                 <ActionButton label="To root" onClick={toRootHandler} />
                 <StandardInput
@@ -159,7 +160,7 @@ export const EditPriority: React.FC<EditPriorityProps> = ({ priority, onChange }
     };
 
     return (
-        <FLine direction='row' alignItems='center' className='editPriority'>
+        <FRow alignItems='center' className='editPriority' spacing={2}>
             <label className='mr-2'>Priority</label>
             <StandardInput
                 value={String(priority)}
@@ -173,7 +174,7 @@ export const EditPriority: React.FC<EditPriorityProps> = ({ priority, onChange }
                 type='standard'
                 onClick={() => setNewPriority(priority, -100)} />
             <TodoPriority priority={priority} />
-        </FLine>
+        </FRow>
     );
 };
 

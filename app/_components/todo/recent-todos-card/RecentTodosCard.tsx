@@ -3,17 +3,16 @@
 import { getTheMostDatedLightTodos } from '@/app/_lib/calls/todo-calls';
 import { TodoLightDto } from '@/app/_lib/types/todo-types';
 import React, { useEffect, useState } from 'react';
-import FlexLine from '../../general/flex-line/FlexLine';
 import LoadingIndicator from '../../general/loading-indicator/LoadingIndicator';
-import TodoCard from '../todo-card/TodoCard';
 import { FPaper } from '../../general/paper-container/FPaper';
+import TodoCard from '../todo-card/TodoCard';
 
 type Props = {
     todos?: TodoLightDto[];
     className?: string;
 };
 
-const RecentTodosCard: React.FC<Props> = ({ todos }) => {
+const RecentTodosCard: React.FC<Props> = ({ todos, className }) => {
 
     const [recentTodos, setRecentTodos] = useState<TodoLightDto[]>(todos ?? []);
     const [isLoading, setIsLoading] = useState(!todos);
@@ -36,10 +35,11 @@ const RecentTodosCard: React.FC<Props> = ({ todos }) => {
 
     return (
         <FPaper
-            lightType='dark-2'
+            lightType='dark-3'
             direction='column'
-            className="recentTodosList scrollableInLine p-3"
+            className={`recentTodosList ${className} p-3`}
             spacing={2}
+            scrollableY
             alignItems='stretch'>
             {
                 isLoading ?

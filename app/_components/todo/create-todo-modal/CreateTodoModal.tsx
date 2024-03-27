@@ -8,7 +8,8 @@ import { StandardInput } from "../../general/standard-input/StandardInput";
 import { StandardLabel } from "../../general/standard-label/StandardLabel";
 import { EditPriority } from "../edit-todo-modal/EditTodoModal";
 import { TodoStatusSelect } from "../todo-status-select/TodoStatusSelect";
-import './CreateTodoModal.scss';
+import FCol from "../../general/flex-line/FCol";
+import FRow from "../../general/flex-line/FRow";
 
 export interface CreateTodoProps {
     parentId?: number;
@@ -33,26 +34,32 @@ function CreateTodo({ parentId, onCancel: cancelHandler, onSuccess: successHandl
     };
 
     return (
-        <ModalWindow onClose={cancelHandler}>
-            <div className="createTodoModal columnCenterAndStretch gap6">
-                <div className="editPanel columnStartAndStretch gap3">
-                    <StandardLabel label="Status">
-                        <TodoStatusSelect currentStatus={status} onSelect={setStatus} />
-                    </StandardLabel>
-                    <StandardInput label="Name" value={name} onChange={setName} />
-                    <EditPriority
-                        priority={priority}
-                        onChange={setPriority} />
-                </div>
-                <div className="controlPanel rowCenter gap5">
+        <ModalWindow
+            height={60}
+            width={60}
+            alignItems="stretch"
+            justifyContent="center"
+            direction="column"
+            className="p-6"
+            onClose={cancelHandler}
+        >
+            <FCol fitChildrenX spacing={3} scrollableY>
+                <StandardLabel label="Status">
+                    <TodoStatusSelect currentStatus={status} onSelect={setStatus} />
+                </StandardLabel>
+                <StandardInput label="Name" value={name} onChange={setName} />
+                <EditPriority
+                    priority={priority}
+                    onChange={setPriority} />
+                <FRow className="mt-5" justifyContent="start" spacing={5}>
                     <ActionButton
                         label="Create"
                         onClick={createHandler} />
                     <ActionButton
                         label="Cancel"
                         onClick={cancelHandler} />
-                </div>
-            </div>
+                </FRow>
+            </FCol>
         </ModalWindow>
     );
 }

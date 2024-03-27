@@ -25,7 +25,6 @@
 
 .fScrollableY {
     overflow-y: auto;
-    min-height: 0px;
     @include styled-scrollbar;
 }
 

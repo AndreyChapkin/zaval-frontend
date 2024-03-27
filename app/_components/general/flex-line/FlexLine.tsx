@@ -10,6 +10,7 @@ export interface FlexLineProps {
     children: React.ReactNode;
 }
 
+// Deprecated
 function FlexLine({ children, className, ...props }: FlexLineProps) {
 
     const { direction, alignItems, justifyContent, hasScrollable, spacing } = props;

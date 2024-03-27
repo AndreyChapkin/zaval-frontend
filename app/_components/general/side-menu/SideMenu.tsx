@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import CreateArticleModal from "../../article/create-article-modal/CreateArticleModal";
 import { ModalWindow } from "../modal-window/ModalWindow";
 import RecentTodosCard from "../../todo/recent-todos-card/RecentTodosCard";
+import FCol from "../flex-line/FCol";
 
 function SideMenu() {
 
@@ -33,7 +34,7 @@ function SideMenu() {
 
     return (
         <>
-            <div className="todoSideMenu columnStartAndCenter">
+            <FCol className="todoSideMenu" justifyContent="start" alignItems="center">
                 <div className="todoSideMenuItem">
                     <a href={`/ui/todo/status?status=${todoStatusToUrlForm('IN_PROGRESS')}`}>
                         <IconButton
@@ -67,7 +68,7 @@ function SideMenu() {
                         iconUrl={ADD_ARTICLE_ICON_URL}
                         onClick={() => setIsCreateArticleOpen(true)} />
                 </div>
-            </div>
+            </FCol>
             {
                 isCreateTodoOpen &&
                 <CreateTodo onCancel={() => { setIsCreateTodoOpen(false) }} onSuccess={() => { setIsCreateTodoOpen(false) }} />
@@ -82,8 +83,14 @@ function SideMenu() {
             }
             {
                 isRecentOpen &&
-                <ModalWindow width={80} height={80} onClose={() => setIsRecentOpen(false)}>
-                    <RecentTodosCard />
+                <ModalWindow
+                    direction="column"
+                    alignItems="stretch"
+                    width={80}
+                    height={80}
+                    onClose={() => setIsRecentOpen(false)}
+                >
+                    <RecentTodosCard className="p-2" />
                 </ModalWindow>
             }
         </>

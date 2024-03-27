@@ -12,6 +12,8 @@ import './page.scss';
 import { useSearchParams } from "next/navigation";
 import RecentTodosCard from "@/app/_components/todo/recent-todos-card/RecentTodosCard";
 import { useMobileQuery } from "@/app/_lib/utils/hooks";
+import FCol from "@/app/_components/general/flex-line/FCol";
+import FRow from "@/app/_components/general/flex-line/FRow";
 
 export default function TodoStatusPage() {
 
@@ -30,9 +32,9 @@ export default function TodoStatusPage() {
     }, []);
 
     return (
-        <div className="page todoStatusPage row gap3">
-            <div className="statusedTodos column gap2 flex2">
-                <div className="statusSwitcher row gap2">
+        <FRow className="pageContainer todoStatusPage" squeezableX fitChildrenY spacing={4}>
+            <FCol className="statusedTodos flex2" squeezableX fitChildrenX>
+                <FRow className="statusSwitcher">
                     {
                         All_TODO_STATUSES.map(status => {
                             const urlStatus = todoStatusToUrlForm(status);
@@ -45,14 +47,14 @@ export default function TodoStatusPage() {
                             );
                         })
                     }
-                </div>
+                </FRow>
                 {
                     leafTodos && parentBranchesMap ?
                         leafTodos.length > 0 ?
-                            <div className="todos column scrollableInColumn gap2">
+                            <FCol className="todos" squeezableX scrollableY fitChildrenX spacing={3}>
                                 {
                                     leafTodos.map(todoAndParentBranchIdDto => (
-                                        <div key={todoAndParentBranchIdDto.leafTodo.id} className="todoAndParents">
+                                        <FCol fitChildrenX>
                                             <TodoCard
                                                 todo={todoAndParentBranchIdDto.leafTodo}
                                             />
@@ -61,10 +63,10 @@ export default function TodoStatusPage() {
                                                 &&
                                                 <ParentBreadcrumbs parentTodos={parentBranchesMap[todoAndParentBranchIdDto.parentBranchId].toReversed()} />
                                             }
-                                        </div>
+                                        </FCol>
                                     ))
                                 }
-                            </div>
+                            </FCol>
                             :
                             <div className="noTodos">
                                 No todos
@@ -74,17 +76,17 @@ export default function TodoStatusPage() {
                             Loading...
                         </div>
                 }
-            </div>
+            </FCol>
             {
                 !isMobile &&
-                <div className="recentTodos flex1 column gap2">
+                <FCol className="recentTodos flex1" squeezableY>
                     <div className="title">
                         Recent
                     </div>
-                    <RecentTodosCard todos={recentTodos} className="scrollableInLine" />
-                </div>
+                    <RecentTodosCard todos={recentTodos} />
+                </FCol>
             }
-        </div >
+        </FRow>
 
     );
 }

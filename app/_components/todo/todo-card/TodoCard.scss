@@ -6,11 +6,8 @@
 $normal-size: 5px;
 
 .todoCard {
-    background-color: $main-color;
-    border: 1px solid $main-light-1-color;
     color: $main-font-color;
     overflow: hidden;
-    min-height: 70px !important;
     border-radius: $normal-size;
 
     &:hover {

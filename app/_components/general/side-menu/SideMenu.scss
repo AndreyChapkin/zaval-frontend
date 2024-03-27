@@ -7,6 +7,7 @@ $small-size: 3px;
     background-color: $main-dark-2-color;
     padding: $normal-size $small-size;
     gap: 5px;
+    width: 24px;
 
     .todo-side-menu-item {
         cursor: pointer;

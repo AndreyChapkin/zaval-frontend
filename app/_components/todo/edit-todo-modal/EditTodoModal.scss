@@ -1,3 +1,7 @@
 @import "/app/_styles/facade/mixins.scss";
 @import "/app/_styles/color/variables.scss";
 @import "/app/_styles/size/mixins.scss";
+
+.editPriority {
+    color: $main-font-color;
+}

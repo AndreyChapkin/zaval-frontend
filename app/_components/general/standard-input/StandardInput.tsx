@@ -20,13 +20,12 @@ export const StandardInput: React.FC<StandardInputProps> = ({ label, labelPositi
     }, [onChange]);
 
     const standardInput = (
-        <div className="standardInput column">
-            <input
-                autoFocus={autofocus}
-                type="text"
-                value={value}
-                onChange={handleInputChange} />
-        </div>
+        <input
+            className='standardInput'
+            autoFocus={autofocus}
+            type="text"
+            value={value}
+            onChange={handleInputChange} />
     );
 
     return (

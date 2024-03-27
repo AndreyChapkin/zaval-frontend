@@ -1,12 +1,16 @@
 "use client";
 
-import FlexLine, { FlexLineProps } from "./FlexLine";
+import FLine, { FLineProps } from "./FLine";
 
-type FRowProps = Omit<FlexLineProps, "direction">;
+type FRowProps = Omit<FLineProps, "direction"> & {
+    fitChildrenY?: boolean;
+};
 
-function FRow(props: FRowProps) {
+function FRow({ fitChildrenY, ...rest }: FRowProps) {
 
-    return <FlexLine direction="row" {...props} />;
+    const effectiveAlignItems = fitChildrenY ? 'stretch' : rest.alignItems;
+
+    return <FLine direction="row" alignItems={effectiveAlignItems} {...rest} />;
 }
 
 export default FRow;

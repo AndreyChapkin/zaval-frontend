@@ -1,12 +1,16 @@
 "use client";
 
-import FlexLine, { FlexLineProps } from "./FlexLine";
+import FLine, { FLineProps } from "./FLine";
 
-type FColProps = Omit<FlexLineProps, "direction">;
+type FColProps = Omit<FLineProps, "direction"> & {
+    fitChildrenX?: boolean;
+};
 
-function FCol(props: FColProps) {
+function FCol({fitChildrenX, ...rest}: FColProps) {
 
-    return <FlexLine direction="column" {...props} />;
+    const effectiveAlignItems = fitChildrenX ? 'stretch' : rest.alignItems;
+
+    return <FLine direction="column" alignItems={effectiveAlignItems} {...rest} />;
 }
 
 export default FCol;
