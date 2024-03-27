@@ -1,8 +1,8 @@
 import { MouseEventHandler, useCallback, useEffect } from 'react';
-import FLine, { FLineProps } from '../flex-line/FLine';
+import { FPaper, FPaperProps } from '../paper-container/FPaper';
 import './ModalWindow.scss';
 
-export interface ModalWindowProps extends FLineProps {
+export interface ModalWindowProps extends FPaperProps {
     onClose?: () => void;
     className?: string;
     children: React.ReactNode;
@@ -10,7 +10,9 @@ export interface ModalWindowProps extends FLineProps {
     height?: 20 | 40 | 50 | 60 | 80;
 }
 
-export function ModalWindow({ onClose, width = 50, height = 50, className = "", children, ...rest }: ModalWindowProps) {
+export function ModalWindow({ onClose, width = 50, height = 50, className = "", children, lightType, ...rest }: ModalWindowProps) {
+
+    const resultLightType: FPaperProps["lightType"] = lightType || 'dark-3';
 
     const onCloseWrapper: MouseEventHandler = useCallback((e) => {
         if (e.button === 0 && e.target === e.currentTarget) {
@@ -38,9 +40,9 @@ export function ModalWindow({ onClose, width = 50, height = 50, className = "", 
             className="modalWindowBackgroud"
             onMouseDown={onCloseWrapper}
         >
-            <FLine className={`modalWindowBody ${className} ${widthClass} ${heightClass}`} {...rest}>
+            <FPaper lightType={resultLightType} className={`modalWindowBody ${className} ${widthClass} ${heightClass}`} {...rest}>
                 {children}
-            </FLine>
+            </FPaper>
         </div>
     );
 }

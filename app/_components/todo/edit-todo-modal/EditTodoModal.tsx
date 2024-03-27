@@ -14,6 +14,7 @@ import { TodoStatusSelect } from '../todo-status-select/TodoStatusSelect';
 import FCol from '../../general/flex-line/FCol';
 import FLine from '../../general/flex-line/FLine';
 import './EditTodoModal.scss';
+import { FPaper } from '../../general/paper-container/FPaper';
 
 export type EditTodoModalProps = {
     todo: TodoLightDto;
@@ -39,8 +40,15 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onSave, onCl
     };
 
     return (
-        <ModalWindow width={80} height={80} direction='column' alignItems='stretch' className='p-4' onClose={onClose}>
-            <FLine direction='column' spacing={3} alignItems='stretch'>
+        <ModalWindow
+            width={80}
+            height={80}
+            direction='column'
+            alignItems='stretch'
+            onClose={onClose}
+            spacing={0}
+        >
+            <FPaper lightType='dark-1' direction='column' spacing={3} alignItems='stretch' className='p-2'>
                 <TodoStatusSelect
                     currentStatus={editStatus}
                     onSelect={(status) => setEditStatus(status)}
@@ -52,12 +60,12 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onSave, onCl
                 <EditPriority
                     priority={editPriority}
                     onChange={(value) => setEditPriority(value)} />
-            </FLine>
-            <FLine scrollableX direction='row' className='controlPanel shrink0'>
-                <ActionButton label="Save" onClick={onSaveWrapper} />
-                <ActionButton label='Cancel' onClick={onClose} />
-            </FLine>
-            <MoveTodo todo={todo} className='flex1' />
+                <FLine scrollableX direction='row' className='controlPanel shrink0'>
+                    <ActionButton label="Save" onClick={onSaveWrapper} />
+                    <ActionButton label='Cancel' onClick={onClose} />
+                </FLine>
+            </FPaper>
+            <MoveTodo todo={todo} />
         </ModalWindow>
     );
 };
@@ -104,7 +112,7 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
     }, [searchValue]);
 
     return (
-        <>
+        <FLine direction='column' className='p-2' alignItems='stretch' squeezeY>
             <FLine direction='row' className="controlPanel" alignItems='center' spacing={3}>
                 <ActionButton label="To root" onClick={toRootHandler} />
                 <StandardInput
@@ -116,7 +124,7 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
                 isLoading ?
                     <LoadingIndicator />
                     :
-                    <FLine scrollableY direction='column' className="foundTodo shrink1" spacing={2}>
+                    <FLine scrollableY direction='column' className="foundTodo" spacing={2}>
                         {
                             foundTodos.map((todo) => (
                                 <MoveTodoCard
@@ -128,7 +136,7 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
                         }
                     </FLine>
             }
-        </>
+        </FLine>
     );
 };
 
@@ -174,11 +182,11 @@ export const MoveTodoCard: React.FC<{ todo: TodoLightDto, onSelect: (todo: TodoL
     onSelect
 }) => {
     return (
-        <FLine direction='row' className="moveTodoCard" spacing={2} alignItems='center'>
+        <FPaper direction='row' className="moveTodoCard p-1" spacing={2} alignItems='center'>
             <div className="todoName">
                 {todo.name}
             </div>
             <IconButton iconUrl={CHOOSE_ICON_URL} onClick={() => onSelect(todo)} />
-        </FLine>
+        </FPaper>
     );
 };

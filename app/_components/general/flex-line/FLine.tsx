@@ -7,7 +7,9 @@ export interface FLineProps {
     alignItems?: "center" | "start" | "end" | "stretch";
     justifyContent?: "center" | "start" | "end" | "between" | "around";
     scrollableX?: boolean;
+    squeezeX?: boolean;
     scrollableY?: boolean;
+    squeezeY?: boolean;
     className?: string;
     spacing?: number;
     children: React.ReactNode;
@@ -15,7 +17,7 @@ export interface FLineProps {
 
 function FLine({ children, className, ...props }: FLineProps) {
 
-    const { direction, alignItems, justifyContent, scrollableX, scrollableY, spacing } = props;
+    const { direction, alignItems, justifyContent, scrollableX, squeezeX, scrollableY, squeezeY, spacing } = props;
     const directionClassname = direction === 'column' ? "fColumn" : "fRow";
     let justifyContentClassname = 'fJustifyStart';
     switch (justifyContent) {
@@ -73,7 +75,9 @@ function FLine({ children, className, ...props }: FLineProps) {
     }
     const scrollableXClassname = scrollableX ? "fScrollableX" : "";
     const scrollableYClassname = scrollableY ? "fScrollableY" : "";
-    const resultClassnames = `fLine ${className ? className : ""} ${directionClassname} ${justifyContentClassname} ${alignItemsClassname} ${spacingClassname} ${scrollableXClassname} ${scrollableYClassname}`;
+    const squeezeXClassname = squeezeX ? "fSqueezableX" : "";
+    const squeezeYClassname = squeezeY ? "fSqueezableY" : "";
+    const resultClassnames = `fLine ${className ? className : ""} ${directionClassname} ${justifyContentClassname} ${alignItemsClassname} ${spacingClassname} ${scrollableXClassname} ${scrollableYClassname} ${squeezeXClassname} ${squeezeYClassname}`;
 
     return (
         <div className={resultClassnames}>

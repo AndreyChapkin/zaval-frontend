@@ -15,8 +15,17 @@
     @include styled-scrollbar;
 }
 
+.fSqueezableX {
+    min-width: 0px;
+}
+
+.fSqueezableY {
+    min-height: 0px;
+}
+
 .fScrollableY {
     overflow-y: auto;
+    min-height: 0px;
     @include styled-scrollbar;
 }
 
