@@ -1,8 +1,8 @@
 import { MouseEventHandler, useCallback, useEffect } from 'react';
+import FLine, { FLineProps } from '../flex-line/FLine';
 import './ModalWindow.scss';
-import FCol from '../flex-line/FCol';
 
-export interface ModalWindowProps {
+export interface ModalWindowProps extends FLineProps {
     onClose?: () => void;
     className?: string;
     children: React.ReactNode;
@@ -10,7 +10,7 @@ export interface ModalWindowProps {
     height?: 20 | 40 | 50 | 60 | 80;
 }
 
-export function ModalWindow({ onClose, width = 50, height = 50, className = "", children }: ModalWindowProps) {
+export function ModalWindow({ onClose, width = 50, height = 50, className = "", children, ...rest }: ModalWindowProps) {
 
     const onCloseWrapper: MouseEventHandler = useCallback((e) => {
         if (e.button === 0 && e.target === e.currentTarget) {
@@ -38,9 +38,9 @@ export function ModalWindow({ onClose, width = 50, height = 50, className = "", 
             className="modalWindowBackgroud"
             onMouseDown={onCloseWrapper}
         >
-            <FCol alignItems='stretch' hasScrollable className={`modalWindowBody ${className} ${widthClass} ${heightClass}`}>
+            <FLine className={`modalWindowBody ${className} ${widthClass} ${heightClass}`} {...rest}>
                 {children}
-            </FCol>
+            </FLine>
         </div>
     );
 }

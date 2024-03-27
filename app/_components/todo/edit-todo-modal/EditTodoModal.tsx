@@ -1,20 +1,19 @@
 import { findTodosWithNameFragment, moveTodo, updateTodo } from '@/app/_lib/calls/todo-calls';
+import { CHOOSE_ICON_URL } from '@/app/_lib/constants/image-url-constants';
 import { TodoLightDto } from '@/app/_lib/types/todo-types';
 import { decreaseNumberOfCalls } from '@/app/_lib/utils/function-helpers';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActionButton } from '../../general/action-button/ActionButton';
+import { IconButton } from '../../general/icon-button/IconButton';
 import LoadingIndicator from '../../general/loading-indicator/LoadingIndicator';
 import { ModalWindow } from '../../general/modal-window/ModalWindow';
-import { TodoStatusSelect } from '../todo-status-select/TodoStatusSelect';
 import { StandardInput } from '../../general/standard-input/StandardInput';
 import TodoPriority from '../todo-priority/TodoPriority';
-import { IconButton } from '../../general/icon-button/IconButton';
-import { CHOOSE_ICON_URL } from '@/app/_lib/constants/image-url-constants';
+import { TodoStatusSelect } from '../todo-status-select/TodoStatusSelect';
 
-import './EditTodoModal.scss';
-import { StandardLabel } from '../../general/standard-label/StandardLabel';
 import FCol from '../../general/flex-line/FCol';
-import { FPaper } from '../../general/paper-container/FPaper';
+import FLine from '../../general/flex-line/FLine';
+import './EditTodoModal.scss';
 
 export type EditTodoModalProps = {
     todo: TodoLightDto;
@@ -40,27 +39,25 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onSave, onCl
     };
 
     return (
-        <ModalWindow width={80} height={80} onClose={onClose}>
-            <FCol alignItems='stretch' className='p-4 flex1'>
-                <FCol spacing={3} alignItems='stretch'>
-                    <TodoStatusSelect
-                        currentStatus={editStatus}
-                        onSelect={(status) => setEditStatus(status)}
-                    />
-                    <StandardInput
-                        className='editName'
-                        value={editName}
-                        onChange={(value) => setEditName(value)} />
-                    <EditPriority
-                        priority={editPriority}
-                        onChange={(value) => setEditPriority(value)} />
-                </FCol>
-                <div className='controlPanel row gap1 my-2'>
-                    <ActionButton label="Save" onClick={onSaveWrapper} />
-                    <ActionButton label='Cancel' onClick={onClose} />
-                </div>
-                <MoveTodo todo={todo} className='flex1' />
-            </FCol>
+        <ModalWindow width={80} height={80} direction='column' alignItems='stretch' className='p-4' onClose={onClose}>
+            <FLine direction='column' spacing={3} alignItems='stretch'>
+                <TodoStatusSelect
+                    currentStatus={editStatus}
+                    onSelect={(status) => setEditStatus(status)}
+                />
+                <StandardInput
+                    className='editName'
+                    value={editName}
+                    onChange={(value) => setEditName(value)} />
+                <EditPriority
+                    priority={editPriority}
+                    onChange={(value) => setEditPriority(value)} />
+            </FLine>
+            <FLine scrollableX direction='row' className='controlPanel shrink0'>
+                <ActionButton label="Save" onClick={onSaveWrapper} />
+                <ActionButton label='Cancel' onClick={onClose} />
+            </FLine>
+            <MoveTodo todo={todo} className='flex1' />
         </ModalWindow>
     );
 };
@@ -107,19 +104,19 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
     }, [searchValue]);
 
     return (
-        <FPaper direction='column' alignItems='stretch' lightType='dark-3' className={`moveTodo ${className} p-3`}>
-            <div className="controlPanel row gap2">
+        <>
+            <FLine direction='row' className="controlPanel" alignItems='center' spacing={3}>
                 <ActionButton label="To root" onClick={toRootHandler} />
                 <StandardInput
                     className='flex1'
                     value={searchValue}
                     onChange={(value) => setSearchValue(value)} />
-            </div>
+            </FLine>
             {
                 isLoading ?
                     <LoadingIndicator />
                     :
-                    <FCol className="foundTodo scrollableInLine" spacing={6}>
+                    <FLine scrollableY direction='column' className="foundTodo shrink1" spacing={2}>
                         {
                             foundTodos.map((todo) => (
                                 <MoveTodoCard
@@ -129,9 +126,9 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
                                 />
                             ))
                         }
-                    </FCol>
+                    </FLine>
             }
-        </FPaper>
+        </>
     );
 };
 
@@ -154,23 +151,21 @@ export const EditPriority: React.FC<EditPriorityProps> = ({ priority, onChange }
     };
 
     return (
-        <StandardLabel label='Priority' labelPosition='left'>
-            <div className='editPriority rowStartAndCenter gap2'>
-                <StandardInput
-                    value={String(priority)}
-                    onChange={(value) => setNewPriorityStr(value)} />
-                <ActionButton
-                    label="+"
-                    type='standard'
-                    onClick={() => setNewPriority(priority, 200)} />
-                <ActionButton
-                    label="-"
-                    type='standard'
-                    onClick={() => setNewPriority(priority, -100)} />
-
-                <TodoPriority priority={priority} />
-            </div>
-        </StandardLabel>
+        <FLine direction='row' alignItems='center' className='editPriority'>
+            <label className='mr-2'>Priority</label>
+            <StandardInput
+                value={String(priority)}
+                onChange={(value) => setNewPriorityStr(value)} />
+            <ActionButton
+                label="+"
+                type='standard'
+                onClick={() => setNewPriority(priority, 200)} />
+            <ActionButton
+                label="-"
+                type='standard'
+                onClick={() => setNewPriority(priority, -100)} />
+            <TodoPriority priority={priority} />
+        </FLine>
     );
 };
 
@@ -179,11 +174,11 @@ export const MoveTodoCard: React.FC<{ todo: TodoLightDto, onSelect: (todo: TodoL
     onSelect
 }) => {
     return (
-        <div className="moveTodoCard rowStartAndCenter gap1">
+        <FLine direction='row' className="moveTodoCard" spacing={2} alignItems='center'>
             <div className="todoName">
                 {todo.name}
             </div>
             <IconButton iconUrl={CHOOSE_ICON_URL} onClick={() => onSelect(todo)} />
-        </div>
+        </FLine>
     );
 };
