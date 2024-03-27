@@ -160,9 +160,10 @@ export const EditPriority: React.FC<EditPriorityProps> = ({ priority, onChange }
     };
 
     return (
-        <FRow alignItems='center' className='editPriority' spacing={2}>
-            <label className='mr-2'>Priority</label>
+        <FRow alignItems='end' className='editPriority' spacing={2}>
             <StandardInput
+                label='Priority'
+                labelPosition='left'
                 value={String(priority)}
                 onChange={(value) => setNewPriorityStr(value)} />
             <ActionButton

@@ -22,7 +22,7 @@ export const StandardLabel: React.FC<StandardLabelProps> = ({ label, labelPositi
                 }
             </FCol>
             :
-            <FRow className={`standardLabelWrapper ${className}`} alignItems='center' justifyContent='start'>
+            <FRow className={`standardLabelWrapper ${className}`} alignItems='center' justifyContent='start' spacing={2}>
                 <label>{label}</label>
                 {
                     children

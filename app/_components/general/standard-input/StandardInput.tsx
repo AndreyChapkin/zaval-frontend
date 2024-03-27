@@ -1,7 +1,8 @@
-import React, { ChangeEvent, useCallback } from 'react';
+import React, { ChangeEvent, use, useCallback, useEffect, useState } from 'react';
 
 import './StandardInput.scss';
 import { StandardLabel } from '../standard-label/StandardLabel';
+import { useMobileQuery } from '@/app/_lib/utils/hooks';
 
 interface StandardInputProps {
     value: string;
@@ -19,6 +20,18 @@ export const StandardInput: React.FC<StandardInputProps> = ({ label, labelPositi
         onChange(value);
     }, [onChange]);
 
+    const isMobile = useMobileQuery();
+
+    const [effectiveLabelPosition, setEffectiveLabelPosition] = useState(labelPosition);
+
+    useEffect(() => {
+        if (isMobile) {
+            setEffectiveLabelPosition('top');
+        } else {
+            setEffectiveLabelPosition(labelPosition);
+        }
+    }, [isMobile]);
+
     const standardInput = (
         <input
             className='standardInput'
@@ -30,7 +43,7 @@ export const StandardInput: React.FC<StandardInputProps> = ({ label, labelPositi
 
     return (
         label ?
-            <StandardLabel label={label} labelPosition={labelPosition}>
+            <StandardLabel label={label} labelPosition={effectiveLabelPosition}>
                 {standardInput}
             </StandardLabel >
             : standardInput
