@@ -2,16 +2,7 @@
 @import "/app/_styles/size/mixins.scss";
 @import "/app/_styles/composition/mixins.scss";
 
-.workspace {
-    @include row;
-    @include full-screen-height;
-}
 
-.page {
-    background-color: $main-dark-3-color;
-    @include full-screen-height;
-    box-sizing: border-box;
-    flex: 1;
-    padding: 5px;
-    color: $main-font-color;
+.workspace {
+    @include full-screen;
 }

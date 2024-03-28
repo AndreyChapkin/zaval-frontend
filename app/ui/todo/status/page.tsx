@@ -10,6 +10,10 @@ import TodoCard from "@/app/_components/todo/todo-card/TodoCard";
 import { chooseStatusImgUrl, todoStatusFromUrlForm, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
 import './page.scss';
 import { useSearchParams } from "next/navigation";
+import RecentTodosCard from "@/app/_components/todo/recent-todos-card/RecentTodosCard";
+import { useMobileQuery } from "@/app/_lib/utils/hooks";
+import FCol from "@/app/_components/general/flex-line/FCol";
+import FRow from "@/app/_components/general/flex-line/FRow";
 
 export default function TodoStatusPage() {
 
@@ -20,15 +24,17 @@ export default function TodoStatusPage() {
     const [recentTodos, setRecentTodos] = useState<TodoLightDto[]>([]);
     const { leafTodos, parentBranchesMap } = todosListWithStatusDto || {};
 
+    const isMobile = useMobileQuery();
+
     useEffect(() => {
         getPrioritizedListOfTodosWithStatus(todoStatusFromUrlForm(chosenStatus)).then(setTodosListWithStatusDto);
         getTheMostDatedLightTodos(10, 'recent').then(setRecentTodos);
     }, []);
 
     return (
-        <div className="page todoStatusPage row gap3">
-            <div className="statusedTodos column gap2 flex2">
-                <div className="statusSwitcher row gap2">
+        <FRow className="pageContainer todoStatusPage" squeezableX fitChildrenY spacing={4}>
+            <FCol className="statusedTodos flex2" squeezableX fitChildrenX>
+                <FRow className="statusSwitcher">
                     {
                         All_TODO_STATUSES.map(status => {
                             const urlStatus = todoStatusToUrlForm(status);
@@ -41,14 +47,14 @@ export default function TodoStatusPage() {
                             );
                         })
                     }
-                </div>
+                </FRow>
                 {
                     leafTodos && parentBranchesMap ?
                         leafTodos.length > 0 ?
-                            <div className="todos column scrollableInColumn gap2">
+                            <FCol className="todos" squeezableX scrollableY fitChildrenX spacing={3}>
                                 {
                                     leafTodos.map(todoAndParentBranchIdDto => (
-                                        <div key={todoAndParentBranchIdDto.leafTodo.id} className="todoAndParents">
+                                        <FCol fitChildrenX>
                                             <TodoCard
                                                 todo={todoAndParentBranchIdDto.leafTodo}
                                             />
@@ -57,10 +63,10 @@ export default function TodoStatusPage() {
                                                 &&
                                                 <ParentBreadcrumbs parentTodos={parentBranchesMap[todoAndParentBranchIdDto.parentBranchId].toReversed()} />
                                             }
-                                        </div>
+                                        </FCol>
                                     ))
                                 }
-                            </div>
+                            </FCol>
                             :
                             <div className="noTodos">
                                 No todos
@@ -70,20 +76,17 @@ export default function TodoStatusPage() {
                             Loading...
                         </div>
                 }
-            </div>
-            <div className="recentTodos flex1 column gap2">
-                <div className="title">
-                    Recent
-                </div>
-                <div className="recentTodosList scrollableInColumn column gap2">
-                    {
-                        recentTodos && recentTodos.map(todo => (
-                            <TodoCard key={todo.id} todo={todo} />
-                        ))
-                    }
-                </div>
-            </div>
-        </div >
+            </FCol>
+            {
+                !isMobile &&
+                <FCol className="recentTodos flex1" squeezableY>
+                    <div className="title">
+                        Recent
+                    </div>
+                    <RecentTodosCard todos={recentTodos} />
+                </FCol>
+            }
+        </FRow>
 
     );
 }

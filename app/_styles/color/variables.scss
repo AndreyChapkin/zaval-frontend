@@ -4,50 +4,94 @@ $main-light-2-color: lighten($main-color, 10%);
 $main-light-3-color: lighten($main-color, 20%);
 $main-light-4-color: lighten($main-color, 25%);
 $main-light-5-color: lighten($main-color, 50%);
+$main-light-6-color: lighten($main-color, 55%);
+$main-dark-0-color: darken($main-color, 2%);
 $main-dark-1-color: darken($main-color, 5%);
 $main-dark-2-color: darken($main-color, 8%);
 $main-dark-3-color: darken($main-color, 12%);
 $main-dark-4-color: darken($main-color, 15%);
 $main-dark-5-color: darken($main-color, 18%);
+$main-dark-6-color: darken($main-color, 22%);
 $main-font-color: white;
 
 $secondary-color: #8a674c;
-$secondary-pale-1-color: desaturate($secondary-color, 10%);
-$secondary-pale-dark-1-color: darken($secondary-pale-1-color, 20%);
-$secondary-dark-1-color: darken($secondary-color, 5%);
-$secondary-dark-2-color: darken($secondary-color, 9%);
-$secondary-dark-3-color: darken($secondary-color, 12%);
-$secondary-dark-4-color: darken($secondary-color, 18%);
-$secondary-dark-5-color: darken($secondary-color, 22%);
 $secondary-light-1-color: lighten($secondary-color, 5%);
 $secondary-light-2-color: lighten($secondary-color, 10%);
 $secondary-light-3-color: lighten($secondary-color, 15%);
 $secondary-light-4-color: lighten($secondary-color, 20%);
 $secondary-light-5-color: lighten($secondary-color, 25%);
+$secondary-light-6-color: lighten($secondary-color, 28%);
+$secondary-dark-0-color: darken($secondary-color, 2%);
+$secondary-dark-1-color: darken($secondary-color, 5%);
+$secondary-dark-2-color: darken($secondary-color, 9%);
+$secondary-dark-3-color: darken($secondary-color, 12%);
+$secondary-dark-4-color: darken($secondary-color, 18%);
+$secondary-dark-5-color: darken($secondary-color, 22%);
+$secondary-dark-6-color: darken($secondary-color, 25%);
 $secondary-font-color: white;
 
-$accent-color: #a85882;
+$accent-color: #a94f8e;
 $accent-light-1-color: lighten($accent-color, 5%);
 $accent-light-2-color: lighten($accent-color, 10%);
 $accent-light-3-color: lighten($accent-color, 15%);
 $accent-light-4-color: lighten($accent-color, 20%);
 $accent-light-5-color: lighten($accent-color, 25%);
-$accent-pale-1-color: desaturate($accent-color, 20%);
-$accent-pale-2-color: desaturate($accent-color, 25%);
-$accent-pale-3-color: desaturate($accent-color, 30%);
-$accent-pale-4-color: desaturate($accent-color, 35%);
-$accent-pale-5-color: desaturate($accent-color, 40%);
-$accent-font-color: rgb(255, 255, 255);
+$accent-light-6-color: lighten($accent-color, 30%);
+$accent-dark-0-color: darken($accent-color, 2%);
+$accent-dark-1-color: darken($accent-color, 5%);
+$accent-dark-2-color: darken($accent-color, 8%);
+$accent-dark-3-color: darken($accent-color, 12%);
+$accent-dark-4-color: darken($accent-color, 15%);
+$accent-dark-5-color: darken($accent-color, 18%);
+$accent-dark-6-color: darken($accent-color, 22%);
+$accent-font-color: white;
 
-// // other colors
-// $background-gradient: linear-gradient(
-//     0deg,
-//     rgba($color: #000000, $alpha: 1) 0%,
-//     rgba($color: #000000, $alpha: 0.9) 100%
-// );
+:root {
+    --main-color: #{$main-color};
+    --main-light-1-color: #{$main-light-1-color};
+    --main-light-2-color: #{$main-light-2-color};
+    --main-light-3-color: #{$main-light-3-color};
+    --main-light-4-color: #{$main-light-4-color};
+    --main-light-5-color: #{$main-light-5-color};
+    --main-light-6-color: #{$main-light-6-color};
+    --main-dark-0-color: #{$main-dark-0-color};
+    --main-dark-1-color: #{$main-dark-1-color};
+    --main-dark-2-color: #{$main-dark-2-color};
+    --main-dark-3-color: #{$main-dark-3-color};
+    --main-dark-4-color: #{$main-dark-4-color};
+    --main-dark-5-color: #{$main-dark-5-color};
+    --main-dark-6-color: #{$main-dark-6-color};
+    --main-font-color: #{$main-font-color};
 
-// $background-weak-gradient: linear-gradient(
-//     0deg,
-//     rgba($color: #000000, $alpha: 0.7) 0%,
-//     rgba($color: #000000, $alpha: 0.5) 100%
-// );
+    --secondary-color: #{$secondary-color};
+    --secondary-light-1-color: #{$secondary-light-1-color};
+    --secondary-light-2-color: #{$secondary-light-2-color};
+    --secondary-light-3-color: #{$secondary-light-3-color};
+    --secondary-light-4-color: #{$secondary-light-4-color};
+    --secondary-light-5-color: #{$secondary-light-5-color};
+    --secondary-light-6-color: #{$secondary-light-6-color};
+    --secondary-dark-0-color: #{$secondary-dark-0-color};
+    --secondary-dark-1-color: #{$secondary-dark-1-color};
+    --secondary-dark-2-color: #{$secondary-dark-2-color};
+    --secondary-dark-3-color: #{$secondary-dark-3-color};
+    --secondary-dark-4-color: #{$secondary-dark-4-color};
+    --secondary-dark-5-color: #{$secondary-dark-5-color};
+    --secondary-dark-6-color: #{$secondary-dark-6-color};
+    --secondary-font-color: #{$secondary-font-color};
+
+    --accent-color: #{$accent-color};
+    --accent-light-1-color: #{$accent-light-1-color};
+    --accent-light-2-color: #{$accent-light-2-color};
+    --accent-light-3-color: #{$accent-light-3-color};
+    --accent-light-4-color: #{$accent-light-4-color};
+    --accent-light-5-color: #{$accent-light-5-color};
+    --accent-light-6-color: #{$accent-light-6-color};
+    --accent-dark-0-color: #{$accent-dark-0-color};
+    --accent-dark-1-color: #{$accent-dark-1-color};
+    --accent-dark-2-color: #{$accent-dark-2-color};
+    --accent-dark-3-color: #{$accent-dark-3-color};
+    --accent-dark-4-color: #{$accent-dark-4-color};
+    --accent-dark-5-color: #{$accent-dark-5-color};
+    --accent-dark-6-color: #{$accent-dark-6-color};
+    --accent-font-color: #{$accent-font-color};
+}

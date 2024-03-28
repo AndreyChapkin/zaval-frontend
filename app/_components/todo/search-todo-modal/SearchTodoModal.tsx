@@ -8,6 +8,7 @@ import { TodoLightDto } from '@/app/_lib/types/todo-types';
 
 import './SearchTodoModal.scss';
 import TodoCard from '../todo-card/TodoCard';
+import FCol from '../../general/flex-line/FCol';
 
 type SearchTodoModalProps = {
     onClose: () => void;
@@ -36,28 +37,26 @@ export const SearchTodoModal: React.FC<SearchTodoModalProps> = ({ onClose }) => 
     }, [searchValue]);
 
     return (
-        <ModalWindow onClose={onClose}>
-            <div className="searchTodoModal columnStartAndStretch gap2">
-                <StandardInput
-                    autofocus
-                    value={searchValue}
-                    onChange={setSearchValue}
-                />
-                {
-                    isLoading ?
-                        <LoadingIndicator />
-                        :
-                        <div className="foundTodos column scrollableInColumn gap2">
-                            {
-                                foundTodos.map((todo) => {
-                                    return (
-                                        <TodoCard key={todo.id} todo={todo} />
-                                    );
-                                })
-                            }
-                        </div>
-                }
-            </div>
+        <ModalWindow className='p-3' alignItems='stretch' spacing={3} direction='column' onClose={onClose}>
+            <StandardInput
+                autofocus
+                value={searchValue}
+                onChange={setSearchValue}
+            />
+            {
+                isLoading ?
+                    <LoadingIndicator />
+                    :
+                    <FCol className='foundTodos' fitChildrenX scrollableY>
+                        {
+                            foundTodos.map((todo) => {
+                                return (
+                                    <TodoCard key={todo.id} todo={todo} />
+                                );
+                            })
+                        }
+                    </FCol>
+            }
         </ModalWindow>
     );
 };

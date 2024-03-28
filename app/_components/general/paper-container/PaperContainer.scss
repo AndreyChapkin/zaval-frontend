@@ -1,0 +1,68 @@
+@import "app/_styles/color/variables.scss";
+
+.paperContainer {
+    border-radius: 5px;
+    border: 0px solid var(--main-light-1-color);
+    background-color: var(--main-color);
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+}
+
+.mainPaper {
+    background-color: var(--main-color);
+    border-color: var(--main-light-1-color);
+}
+
+@for $i from 1 through 5 {
+    .mainPaper-light-#{$i} {
+        background-color: var(--main-light-#{$i}-color);
+        border-color: var(--main-light-#{$i + 1}-color);
+    }
+}
+
+@for $i from 1 through 5 {
+    .mainPaper-dark-#{$i} {
+        background-color: var(--main-dark-#{$i}-color);
+        border-color: var(--main-dark-#{$i + 1}-color);
+    }
+}
+
+.secondaryPaper {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-light-1-color);
+}
+
+@for $i from 1 through 5 {
+    .secondaryPaper-light-#{$i} {
+        background-color: var(--secondary-light-#{$i}-color);
+        border-color: var(--secondary-light-#{$i + 1}-color);
+    }
+}
+
+@for $i from 1 through 5 {
+    .secondaryPaper-dark-#{$i} {
+        background-color: var(--secondary-dark-#{$i}-color);
+        border-color: var(--secondary-dark-#{$i + 1}-color);
+    }
+}
+
+.outline-1 {
+    border-width: 1px;
+}
+
+.outline-2 {
+    border-width: 2px;
+}
+
+.outline-3 {
+    border-width: 3px;
+}
+
+.outline-4 {
+    border-width: 4px;
+}
+
+.outline-5 {
+    border-width: 5px;
+}

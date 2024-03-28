@@ -1,6 +1,6 @@
 "use client";
 
-import { ADD_ARTICLE_ICON_URL, ARTICLE_ICON_URL, CREATE_ICON_URL, SEARCH_ICON_URL } from "@/app/_lib/constants/image-url-constants";
+import { ADD_ARTICLE_ICON_URL, ARTICLE_ICON_URL, CREATE_ICON_URL, RECENT_ICON_URL, SEARCH_ICON_URL } from "@/app/_lib/constants/image-url-constants";
 import { chooseStatusImgUrl, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
 import { use, useEffect, useState } from "react";
 import CreateTodo from "../../todo/create-todo-modal/CreateTodoModal";
@@ -9,18 +9,23 @@ import { IconButton } from "../icon-button/IconButton";
 import './SideMenu.scss';
 import { usePathname } from "next/navigation";
 import CreateArticleModal from "../../article/create-article-modal/CreateArticleModal";
+import { ModalWindow } from "../modal-window/ModalWindow";
+import RecentTodosCard from "../../todo/recent-todos-card/RecentTodosCard";
+import FCol from "../flex-line/FCol";
 
 function SideMenu() {
 
     const [isCreateTodoOpen, setIsCreateTodoOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isCreateArticleOpen, setIsCreateArticleOpen] = useState(false);
+    const [isRecentOpen, setIsRecentOpen] = useState(false);
     const pathname = usePathname();
 
     useEffect(() => {
         setIsCreateTodoOpen(false);
         setIsSearchOpen(false);
         setIsCreateArticleOpen(false);
+        setIsRecentOpen(false);
     }, [pathname]);
 
     const createArticleHandler = (article: ArticleLightDto) => {
@@ -29,7 +34,7 @@ function SideMenu() {
 
     return (
         <>
-            <div className="todoSideMenu columnStartAndCenter">
+            <FCol className="todoSideMenu" justifyContent="start" alignItems="center">
                 <div className="todoSideMenuItem">
                     <a href={`/ui/todo/status?status=${todoStatusToUrlForm('IN_PROGRESS')}`}>
                         <IconButton
@@ -46,6 +51,11 @@ function SideMenu() {
                         onClick={() => { setIsSearchOpen(true) }}
                         iconUrl={SEARCH_ICON_URL} />
                 </div>
+                <div className="todoSideMenuItem">
+                    <IconButton
+                        onClick={() => { setIsRecentOpen(true) }}
+                        iconUrl={RECENT_ICON_URL} />
+                </div>
                 <div className="separator" />
                 <div className="todoSideMenuItem">
                     <a href="/ui/article/search">
@@ -58,7 +68,7 @@ function SideMenu() {
                         iconUrl={ADD_ARTICLE_ICON_URL}
                         onClick={() => setIsCreateArticleOpen(true)} />
                 </div>
-            </div>
+            </FCol>
             {
                 isCreateTodoOpen &&
                 <CreateTodo onCancel={() => { setIsCreateTodoOpen(false) }} onSuccess={() => { setIsCreateTodoOpen(false) }} />
@@ -70,6 +80,18 @@ function SideMenu() {
             {
                 isCreateArticleOpen &&
                 <CreateArticleModal onCancel={() => { setIsCreateArticleOpen(false) }} onSuccess={createArticleHandler} />
+            }
+            {
+                isRecentOpen &&
+                <ModalWindow
+                    direction="column"
+                    alignItems="stretch"
+                    width={80}
+                    height={80}
+                    onClose={() => setIsRecentOpen(false)}
+                >
+                    <RecentTodosCard className="p-2" />
+                </ModalWindow>
             }
         </>
     );

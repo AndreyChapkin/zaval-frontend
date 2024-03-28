@@ -1,6 +1,10 @@
 import React from 'react';
 import SideMenu from '../_components/general/side-menu/SideMenu';
 import './layout.scss';
+import "../composition.scss";
+import "../sizing.scss";
+import "../spacing.scss";
+import FRow from '../_components/general/flex-line/FRow';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -8,10 +12,10 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
     return (
-        <div className='workspace'>
+        <FRow alignItems='stretch' justifyContent='start' spacing={0} className='workspace'>
             <SideMenu />
             {children}
-        </div>
+        </FRow>
     );
 };
 

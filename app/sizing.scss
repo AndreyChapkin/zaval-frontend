@@ -1,0 +1,11 @@
+@import "app/_styles/size/mixins.scss";
+@import "app/_styles/color/variables.scss";
+
+.pageContainer {
+    @include full-screen-height;
+    box-sizing: border-box;
+    padding: 5px;
+    background-color: $main-dark-4-color;
+    flex: 1;
+    color: $main-font-color;
+}

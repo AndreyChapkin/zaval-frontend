@@ -1,0 +1,89 @@
+@import 'app/_styles/facade/mixins.scss';
+
+.fColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.fRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.fScrollableX {
+    overflow-x: auto;
+    @include styled-scrollbar;
+}
+
+.fSqueezableX {
+    min-width: 0px;
+}
+
+.fSqueezableY {
+    min-height: 0px;
+}
+
+.fScrollableY {
+    overflow-y: auto;
+    @include styled-scrollbar;
+}
+
+.fJustifyStart {
+    justify-content: flex-start;
+}
+
+.fJustifyCenter {
+    justify-content: center;
+}
+
+.fJustifyEnd {
+    justify-content: flex-end;
+}
+
+.fJustifyBetween {
+    justify-content: space-between;
+}
+
+.fJustifyAround {
+    justify-content: space-around;
+}
+
+.fAlignStart {
+    align-items: flex-start;
+}
+
+.fAlignCenter {
+    align-items: center;
+}
+
+.fAlignEnd {
+    align-items: flex-end;
+}
+
+.fAlignStretch {
+    align-items: stretch;
+}
+
+.fGap1 {
+    gap: 5px;
+}
+
+.fGap2 {
+    gap: 10px;
+}
+
+.fGap3 {
+    gap: 15px;
+}
+
+.fGap4 {
+    gap: 20px;
+}
+
+.fGap5 {
+    gap: 30px;
+}
+
+.fGap6 {
+    gap: 40px;
+}

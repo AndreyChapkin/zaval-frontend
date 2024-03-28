@@ -21,7 +21,7 @@ function CreateArticleModal({ onCancel, onSuccess }: CreateArticleModalProps) {
     };
 
     return (
-        <ModalWindow onClose={onCancel}>
+        <ModalWindow direction="column" onClose={onCancel}>
             <div className="createArticleModal columnCenterAndStretch gap6">
                 <div className="editPanel columnStartAndStretch">
                     <StandardInput

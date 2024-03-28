@@ -1,6 +1,7 @@
 import { TodoLightDto } from '@/app/_lib/types/todo-types';
 import React from 'react';
 import PrimitiveCard from '../primitive-card/PrimitiveCard';
+import FRow from '../../general/flex-line/FRow';
 
 type ParentBreadcrumbsProps = {
     parentTodos: TodoLightDto[];
@@ -8,12 +9,12 @@ type ParentBreadcrumbsProps = {
 
 export const ParentBreadcrumbs: React.FC<ParentBreadcrumbsProps> = ({ parentTodos }) => {
     return (
-        <div className="parentBreadcrumbs rowStartAndCenter gap1 scrollableInColumnHorizontally">
+        <FRow className="parentBreadcrumbs" scrollableX squeezableX>
             {
                 parentTodos.map((parent) => (
                     <PrimitiveCard item={parent} key={parent.id} />
                 ))
             }
-        </div>
+        </FRow>
     );
 };
