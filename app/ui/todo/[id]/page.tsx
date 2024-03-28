@@ -138,22 +138,28 @@ function TodoItemPage() {
                                     <>
                                         {
                                             areChildrenShown &&
-                                            <ModalWindow className="p-2" width={60} height={80} onClose={() => setAreChildrenShown(false)}>
-                                                <FCol alignItems="stretch" className="children flex1" spacing={2}>
-                                                    <FRow className="controlPanel">
-                                                        <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
-                                                        <ActionButton
-                                                            type="standard"
-                                                            label={areDoneChildrenShown ? "Hide done" : "Show done"}
-                                                            onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
-                                                    </FRow>
-                                                    <FlexLine direction="column" alignItems="stretch" className="scrollableInLine">
-                                                        {
-                                                            todoChildren.map((child) => (
-                                                                <PrimitiveCard item={child} key={child.id} />
-                                                            ))
-                                                        }
-                                                    </FlexLine>
+                                            <ModalWindow
+                                                direction="column"
+                                                className="p-3"
+                                                width={60}
+                                                height={80}
+                                                alignItems="stretch"
+                                                spacing={2}
+                                                onClose={() => setAreChildrenShown(false)}
+                                            >
+                                                <FRow className="controlPanel">
+                                                    <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
+                                                    <ActionButton
+                                                        type="standard"
+                                                        label={areDoneChildrenShown ? "Hide done" : "Show done"}
+                                                        onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
+                                                </FRow>
+                                                <FCol alignItems="stretch" scrollableY>
+                                                    {
+                                                        todoChildren.map((child) =>
+                                                            <PrimitiveCard item={child} key={child.id} />
+                                                        )
+                                                    }
                                                 </FCol>
                                             </ModalWindow>
                                         }

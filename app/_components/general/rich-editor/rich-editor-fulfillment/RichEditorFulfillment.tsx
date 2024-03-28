@@ -17,7 +17,7 @@ export const RichEditorFulfillment: React.FC<RichEditorFulfillmentProps> = ({ dr
     return (
         draftAction.actionName === 'create' &&
         draftAction.richType === 'link' &&
-        <ModalWindow onClose={onCancel}>
+        <ModalWindow direction='column' onClose={onCancel}>
             <LinkFulfillment onAccept={onAccept} />
         </ModalWindow>
         ||

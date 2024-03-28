@@ -9,7 +9,7 @@ interface RichEditorPromptProps {
 
 const RichEditorPrompt: React.FC<RichEditorPromptProps> = ({ onClose }) => {
     return (
-        <ModalWindow onClose={onClose}>
+        <ModalWindow direction='column' onClose={onClose}>
             <div className="richEditorShortkeys">
                 <div className="column">
                     <div className="controlPrompt"><b>Create title 1</b><span>Alt + 1</span></div>
