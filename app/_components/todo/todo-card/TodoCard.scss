@@ -6,13 +6,8 @@
 $normal-size: 5px;
 
 .todoCard {
-    color: $main-font-color;
     overflow: hidden;
     border-radius: $normal-size;
-
-    &:hover {
-        background-color: $main-light-1-color;
-    }
 
     .navigation {
         $navigation-opacity: 0.6;
@@ -56,5 +51,4 @@ $normal-size: 5px;
             }
         }
     }
-
 }

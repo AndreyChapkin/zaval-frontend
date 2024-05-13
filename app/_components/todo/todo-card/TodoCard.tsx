@@ -11,17 +11,29 @@ import TodoPriority from "../todo-priority/TodoPriority";
 import "./TodoCard.scss";
 import FRow from "../../general/flex-line/FRow";
 import FCol from "../../general/flex-line/FCol";
-import { FPaper } from "../../general/paper-container/FPaper";
+import { FPaper, FPaperProps } from "../../general/paper-container/FPaper";
 
 export interface TodoCardProps {
   todo: TodoLightDto;
+  className?: string;
+  id?: any;
+  selected?: boolean;
 }
 
-export default function TodoCard({ todo }: TodoCardProps) {
+export default function TodoCard({ todo, selected = false, className, id }: TodoCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <FPaper direction="row" className="todoCard shrink0" alignItems="stretch">
+    <FPaper
+      direction="row"
+      lightType="d-1"
+      outlineLightType="l-1"
+      outline={1}
+      className={`todoCard p-0 shrink0 ${className}`}
+      id={id}
+      alignItems="stretch"
+      secondary={selected}
+    >
       <Link className="column" href={`/ui/todo/${todo.id}`}>
         <div className="navigation columnCenterAndCenter flex1 gap1">
           <img src={SEE_ICON_URL} />
