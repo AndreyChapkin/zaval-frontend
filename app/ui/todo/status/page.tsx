@@ -10,7 +10,7 @@ import { IconButton } from "@/app/_components/general/icon-button/IconButton";
 import { ParentBreadcrumbs } from "@/app/_components/todo/parent-breadcrumbs/ParentBreadCrumbs";
 import RecentTodosCard from "@/app/_components/todo/recent-todos-card/RecentTodosCard";
 import TodoCard from "@/app/_components/todo/todo-card/TodoCard";
-import TodoMoveStatus from "@/app/_components/todo/todo-move-status/TodoMoveStatus";
+import TodoMoveStatus, { generateTodoCardId } from "@/app/_components/todo/todo-move-status/TodoMoveStatus";
 import { SEE_ICON_URL, TWO_VERTICAL_ARROWS_ICON_URL } from "@/app/_lib/constants/image-url-constants";
 import { useMobileQuery } from "@/app/_lib/utils/hooks";
 import { chooseStatusImgUrl, todoStatusFromUrlForm, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
@@ -71,7 +71,7 @@ export default function TodoStatusPage() {
                                         leafTodos.map(todoAndParentBranchIdDto => (
                                             <FCol
                                                 fitChildrenX
-                                                id={"todoCard-" + todoAndParentBranchIdDto.leafTodo.id}
+                                                id={generateTodoCardId(todoAndParentBranchIdDto.leafTodo.id)}
                                                 key={todoAndParentBranchIdDto.leafTodo.id}
                                             >
                                                 <FRow>
