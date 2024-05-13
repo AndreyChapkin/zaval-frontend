@@ -16,6 +16,8 @@ export interface FLineProps {
     children: React.ReactNode;
     onClick?: (e: any) => void;
     onWheel?: (e: any) => void;
+    onMouseDown?: (e: any) => void;
+    onMouseUp?: (e: any) => void;
 }
 
 function FLine({ children, className, ...props }: FLineProps) {

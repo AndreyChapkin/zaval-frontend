@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { ActionButton } from '../../general/action-button/ActionButton';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { FPaper } from '../../general/paper-container/FPaper';
 
 import { TodoLeafWithBranchIdDto } from '@/app/_lib/types/todo-types';
-import FCol from '../../general/flex-line/FCol';
 import './TodoMoveStatus.scss';
+
+export function generateTodoCardId(todoId: number) {
+    return "todoCard-" + todoId;
+}
 
 interface TodoMoveStatusProps {
     currentDtos: TodoLeafWithBranchIdDto[];
@@ -25,7 +27,7 @@ const TodoMoveStatus: React.FC<TodoMoveStatusProps> = ({
     const todoCardRef = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
-        const todoElement = document.getElementById("todoCard-" + chosenId);
+        const todoElement = document.getElementById(generateTodoCardId(chosenId));
         if (todoElement) {
             todoCardRef.current = todoElement;
         }
@@ -33,12 +35,11 @@ const TodoMoveStatus: React.FC<TodoMoveStatusProps> = ({
 
     useEffect(() => {
         if (todoCardRef.current) {
-            console.log("scrolling into view");
-            todoCardRef.current.scrollIntoView({block: "center", behavior: "smooth"});
+            todoCardRef.current.scrollIntoView({ block: "center", behavior: "smooth" });
         }
     }, [currentDtos]);
 
-    const handleWheel = (e: WheelEvent) => {
+    const handleWheel = useCallback((e: WheelEvent) => {
         if (currentDtos.length > 0) {
             const currentTodoIndex = currentDtos.findIndex(todo => todo.leafTodo.id === chosenId) as number;
             const currentTodo = currentDtos[currentTodoIndex];
@@ -70,20 +71,30 @@ const TodoMoveStatus: React.FC<TodoMoveStatusProps> = ({
                 onReorder([...currentDtos]);
             }
         }
-    };
+    }, [currentDtos, chosenId, onReorder]);
 
-    const innerOnSave = async () => {
-        if (currentDtos.length > 0) {
-            const movedTodo = currentDtos.find(todoAndParentBranchIdDto => todoAndParentBranchIdDto.leafTodo.id === chosenId);
-            if (movedTodo) {
-                onSave(movedTodo);
+    const handleClick = useCallback(async (e: MouseEvent) => {
+        if (e.button === 0) {
+            // if left button is clicked
+            if (currentDtos.length > 0) {
+                const movedTodo = currentDtos.find(todoAndParentBranchIdDto => todoAndParentBranchIdDto.leafTodo.id === chosenId);
+                if (movedTodo) {
+                    onSave(movedTodo);
+                }
             }
+        } else if (e.button === 2) {
+            // right button is clicked
+            onCancel();
+            // to cancel the context menu with right click
+            // need to disable context menu for the whole document
+            // because component is unmounted before mouseup event
+            const globalPreventContextMenu = (e: MouseEvent) => {
+                e.preventDefault();
+                document.body.removeEventListener('contextmenu', globalPreventContextMenu);
+            };
+            document.body.addEventListener('contextmenu', globalPreventContextMenu);
         }
-    };
-
-    const innerOnCancel = () => {
-        onCancel();
-    };
+    }, [currentDtos, chosenId, onSave, onCancel]);
 
     return (
         <FPaper
@@ -93,20 +104,16 @@ const TodoMoveStatus: React.FC<TodoMoveStatusProps> = ({
             interactive
             secondary
             outline={2}
-            alignItems='stretch'
+            alignItems='center'
+            justifyContent='center'
             className="todoMoveStatus p-3 screen-w-20"
-
+            onMouseUp={handleClick}
+            // onMouseDown={preventContextMenu}
+            onWheel={handleWheel}
         >
-            <ActionButton type='standard' label='Save' onClick={innerOnSave} />
-            <ActionButton type='standard' label='Cancel' onClick={innerOnCancel} />
-            <FCol
-                className='flex1'
-                alignItems='center'
-                justifyContent='center'
-                onWheel={handleWheel}
-            >
-                <p className='mt-10'>Scroll here to move</p>
-            </FCol>
+            <p>Scroll here to move</p>
+            <p>Left button = save</p>
+            <p>Right button = cancel</p>
         </FPaper>
     );
 };
