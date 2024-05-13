@@ -49,7 +49,7 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onSave, onCl
             onClose={onClose}
             spacing={0}
         >
-            <FPaper lightType='dark-1' direction='column' spacing={3} alignItems='stretch' className='p-2'>
+            <FPaper lightType='d-1' direction='column' spacing={3} alignItems='stretch' className='p-2'>
                 <TodoStatusSelect
                     currentStatus={editStatus}
                     onSelect={(status) => setEditStatus(status)}

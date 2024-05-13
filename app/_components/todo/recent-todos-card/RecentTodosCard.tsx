@@ -35,7 +35,7 @@ const RecentTodosCard: React.FC<Props> = ({ todos, className }) => {
 
     return (
         <FPaper
-            lightType='dark-3'
+            lightType='d-3'
             direction='column'
             className={`recentTodosList ${className} p-3`}
             spacing={2}

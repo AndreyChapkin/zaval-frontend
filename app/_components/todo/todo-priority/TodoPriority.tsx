@@ -23,7 +23,7 @@ const TodoPriority: React.FC<TodoPriorityProps> = ({ priority }) => {
 
     return (
         <div className={`todoPriority ${priorityClass}`}>
-            {priorityValue}
+            {priority}
         </div>
     );
 };

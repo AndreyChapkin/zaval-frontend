@@ -13,7 +13,7 @@ export interface ModalWindowProps extends FPaperProps {
 
 export function ModalWindow({ onClose, width = 80, height = 80, className = "", children, lightType, ...rest }: ModalWindowProps) {
 
-    const resultLightType: FPaperProps["lightType"] = lightType || 'dark-3';
+    const resultLightType: FPaperProps["lightType"] = lightType || 'd-3';
     const isMobile = useMobileQuery();
     const [effectiveHeight, setEffectiveHeight] = useState(height);
 

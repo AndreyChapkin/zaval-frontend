@@ -11,13 +11,16 @@ export interface FLineProps {
     scrollableY?: boolean;
     squeezableY?: boolean;
     className?: string;
+    id?: any;
     spacing?: number;
     children: React.ReactNode;
+    onClick?: (e: any) => void;
+    onWheel?: (e: any) => void;
 }
 
 function FLine({ children, className, ...props }: FLineProps) {
 
-    const { direction, alignItems, justifyContent, scrollableX, squeezableX, scrollableY, squeezableY, spacing } = props;
+    const { direction, alignItems, justifyContent, scrollableX, squeezableX, scrollableY, squeezableY, spacing, ...rest } = props;
     const directionClassname = direction === 'column' ? "fColumn" : "fRow";
     let justifyContentClassname = 'fJustifyStart';
     switch (justifyContent) {
@@ -83,7 +86,7 @@ function FLine({ children, className, ...props }: FLineProps) {
     const resultClassnames = `fLine ${className ? className : ""} ${directionClassname} ${justifyContentClassname} ${alignItemsClassname} ${spacingClassname} ${scrollableXClassname} ${scrollableYClassname} ${squeezeXClassname} ${squeezeYClassname}`;
 
     return (
-        <div className={resultClassnames}>
+        <div className={resultClassnames} {...rest}>
             {children}
         </div>
     );

@@ -2,64 +2,128 @@
 
 .fPaper {
     border-radius: 5px;
-    border: 0px solid var(--main-light-1-color);
-    background-color: var(--main-color);
+    border: 0px solid;
 }
 
-.mainPaper {
-    background-color: var(--main-color);
-    border-color: var(--main-light-1-color);
+.main-fPaper {
+    @extend .fPaper;
+}
+
+.interactive-main-fPaper {
+    @extend .main-fPaper;
+}
+
+.secondary-fPaper {
+    @extend .fPaper;
+}
+
+.interactive-secondary-fPaper {
+    @extend .secondary-fPaper;
 }
 
 @for $i from 1 through 5 {
-    .mainPaper-light-#{$i} {
+
+    .main-fPaper-light-#{$i} {
+        @extend .fPaper;
         background-color: var(--main-light-#{$i}-color);
-        border-color: var(--main-light-#{$i + 1}-color);
     }
-}
 
-@for $i from 1 through 5 {
-    .mainPaper-dark-#{$i} {
+    .interactive-main-fPaper-light-#{$i} {
+        @extend .main-fPaper-light-#{$i};
+
+        &:hover {
+            background-color: var(--main-light-#{$i + 1}-color);
+        }
+    }
+
+    .main-fPaper-dark-#{$i} {
+        @extend .fPaper;
         background-color: var(--main-dark-#{$i}-color);
-        border-color: var(--main-dark-#{$i + 1}-color);
     }
-}
 
-.secondaryPaper {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-light-1-color);
-}
+    .interactive-main-fPaper-dark-#{$i} {
+        @extend .main-fPaper-dark-#{$i};
 
-@for $i from 1 through 5 {
-    .secondaryPaper-light-#{$i} {
+        &:hover {
+            background-color: var(--main-dark-#{$i - 1}-color);
+        }
+    }
+
+    .secondary-fPaper-light-#{$i} {
+        @extend .fPaper;
         background-color: var(--secondary-light-#{$i}-color);
-        border-color: var(--secondary-light-#{$i + 1}-color);
     }
-}
 
-@for $i from 1 through 5 {
-    .secondaryPaper-dark-#{$i} {
+    .interactive-secondary-fPaper-light-#{$i} {
+        @extend .secondary-fPaper-light-#{$i};
+
+        &:hover {
+            background-color: var(--secondary-light-#{$i + 1}-color);
+        }
+    }
+
+    .secondary-fPaper-dark-#{$i} {
+        @extend .fPaper;
         background-color: var(--secondary-dark-#{$i}-color);
-        border-color: var(--secondary-dark-#{$i + 1}-color);
     }
-}
 
-.outline-1 {
-    border-width: 1px;
-}
+    .interactive-secondary-fPaper-dark-#{$i} {
+        @extend .secondary-fPaper-dark-#{$i};
 
-.outline-2 {
-    border-width: 2px;
-}
+        &:hover {
+            background-color: var(--secondary-dark-#{$i - 1}-color);
+        }
+    }
 
-.outline-3 {
-    border-width: 3px;
-}
+    .outline-#{$i} {
+        border-width: #{$i}px;
+    }
 
-.outline-4 {
-    border-width: 4px;
-}
+    .main-outline-light-#{$i} {
+        border-color: var(--main-light-#{$i}-color);
+    }
 
-.outline-5 {
-    border-width: 5px;
+    .interactive-main-outline-light-#{$i} {
+        @extend .main-outline-light-#{$i};
+
+        &:hover {
+            border-color: var(--main-light-#{$i + 1}-color);
+        }
+    }
+
+    .main-outline-dark-#{$i} {
+        border-color: var(--main-dark-#{$i}-color);
+    }
+
+    .interactive-main-outline-dark-#{$i} {
+        @extend .main-outline-dark-#{$i};
+
+        &:hover {
+            border-color: var(--main-dark-#{$i - 1}-color);
+        }
+    }
+
+    .secondary-outline-light-#{$i} {
+        border-color: var(--secondary-light-#{$i}-color);
+    }
+
+    .interactive-secondary-outline-light-#{$i} {
+        @extend .secondary-outline-light-#{$i};
+
+        &:hover {
+            border-color: var(--secondary-light-#{$i + 1}-color);
+        }
+    }
+
+    .secondary-outline-dark-#{$i} {
+        border-color: var(--secondary-dark-#{$i}-color);
+    }
+
+    .interactive-secondary-outline-dark-#{$i} {
+        @extend .secondary-outline-dark-#{$i};
+
+        &:hover {
+            border-color: var(--secondary-dark-#{$i - 1}-color);
+        }
+    }
 }
