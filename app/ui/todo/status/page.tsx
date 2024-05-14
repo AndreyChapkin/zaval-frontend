@@ -11,7 +11,7 @@ import { ParentBreadcrumbs } from "@/app/_components/todo/parent-breadcrumbs/Par
 import RecentTodosCard from "@/app/_components/todo/recent-todos-card/RecentTodosCard";
 import TodoCard from "@/app/_components/todo/todo-card/TodoCard";
 import TodoMoveStatus, { generateTodoCardId } from "@/app/_components/todo/todo-move-status/TodoMoveStatus";
-import { SEE_ICON_URL, TWO_VERTICAL_ARROWS_ICON_URL } from "@/app/_lib/constants/image-url-constants";
+import { TWO_VERTICAL_ARROWS_ICON_URL } from "@/app/_lib/constants/image-url-constants";
 import { useMobileQuery } from "@/app/_lib/utils/hooks";
 import { chooseStatusImgUrl, todoStatusFromUrlForm, todoStatusToUrlForm } from "@/app/_lib/utils/todo-helpers";
 import { useSearchParams } from "next/navigation";
@@ -48,7 +48,7 @@ export default function TodoStatusPage() {
     return (
         <>
             <FRow className="pageContainer todoStatusPage" squeezableX fitChildrenY spacing={4}>
-                <FCol className="statusedTodos flex2" squeezableX fitChildrenX>
+                <FCol className="statusedTodos flex2" squeezableX fitChildrenX spacing={2}>
                     <FRow className="statusSwitcher">
                         {
                             All_TODO_STATUSES.map(status => {
@@ -66,34 +66,39 @@ export default function TodoStatusPage() {
                     {
                         leafTodos && parentBranchesMap ?
                             leafTodos.length > 0 ?
-                                <FCol className="todos pr-2" squeezableX scrollableY fitChildrenX spacing={3}>
+                                <FCol className="todos pr-2 pl-3" squeezableX scrollableY fitChildrenX spacing={5}>
                                     {
                                         leafTodos.map(todoAndParentBranchIdDto => (
-                                            <FCol
-                                                fitChildrenX
+                                            <FRow
                                                 id={generateTodoCardId(todoAndParentBranchIdDto.leafTodo.id)}
                                                 key={todoAndParentBranchIdDto.leafTodo.id}
+                                                spacing={1}
                                             >
-                                                <FRow>
+                                                <FCol
+                                                    fitChildrenX
+                                                    squeezableX
+                                                    className="flex1"
+                                                    spacing={0}
+                                                >
                                                     <TodoCard
                                                         todo={todoAndParentBranchIdDto.leafTodo}
                                                         selected={reorderableId === todoAndParentBranchIdDto.leafTodo.id}
                                                         className="flex1"
                                                     />
                                                     {
-                                                        reorderableId === null &&
-                                                        <IconButton
-                                                            size='medium'
-                                                            iconUrl={TWO_VERTICAL_ARROWS_ICON_URL}
-                                                            onClick={() => setReorderableId(todoAndParentBranchIdDto.leafTodo.id)} />
+                                                        todoAndParentBranchIdDto.parentBranchId != null
+                                                        &&
+                                                        <ParentBreadcrumbs parentTodos={parentBranchesMap[todoAndParentBranchIdDto.parentBranchId].toReversed()} />
                                                     }
-                                                </FRow>
+                                                </FCol>
                                                 {
-                                                    todoAndParentBranchIdDto.parentBranchId != null
-                                                    &&
-                                                    <ParentBreadcrumbs parentTodos={parentBranchesMap[todoAndParentBranchIdDto.parentBranchId].toReversed()} />
+                                                    reorderableId === null &&
+                                                    <IconButton
+                                                        size='medium'
+                                                        iconUrl={TWO_VERTICAL_ARROWS_ICON_URL}
+                                                        onClick={() => setReorderableId(todoAndParentBranchIdDto.leafTodo.id)} />
                                                 }
-                                            </FCol>
+                                            </FRow>
                                         ))
                                     }
                                 </FCol>

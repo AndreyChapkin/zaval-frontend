@@ -38,7 +38,7 @@ const RecentTodosCard: React.FC<Props> = ({ todos, className }) => {
             lightType='d-3'
             direction='column'
             className={`recentTodosList ${className} p-3`}
-            spacing={2}
+            spacing={5}
             scrollableY
             alignItems='stretch'>
             {
