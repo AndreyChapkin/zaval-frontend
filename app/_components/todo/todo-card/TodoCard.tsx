@@ -43,8 +43,16 @@ export default function TodoCard({ todo, selected = false, className, id }: Todo
         <div className="namePanel flex1">
           {todo.name}
         </div>
-        <FRow className="secondaryPanel" alignItems="center">
-          <FRow className="additionalInfo" alignItems="center">
+        <FRow
+          className="secondaryPanel"
+          alignItems="end"
+          spacing={3}
+        >
+          <FRow
+            className="additionalInfo"
+            alignItems="center"
+            spacing={2}
+          >
             <TodoStatusIndicator status={todo.status} />
             <div className="todoInteractedOn">{presentDate(todo.interactedOn)}</div>
             <TodoPriority priority={todo.priority} />

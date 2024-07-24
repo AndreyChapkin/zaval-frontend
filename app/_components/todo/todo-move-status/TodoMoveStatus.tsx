@@ -12,7 +12,7 @@ interface TodoMoveStatusProps {
     currentDtos: TodoLeafWithBranchIdDto[];
     chosenId: number;
     onReorder: (dtos: TodoLeafWithBranchIdDto[]) => void;
-    onSave: (dto: TodoLeafWithBranchIdDto) => void;
+    onSave: () => void;
     onCancel: () => void;
 }
 
@@ -44,12 +44,10 @@ const TodoMoveStatus: React.FC<TodoMoveStatusProps> = ({
             const currentTodoIndex = currentDtos.findIndex(todo => todo.leafTodo.id === chosenId) as number;
             const currentTodo = currentDtos[currentTodoIndex];
             let swapWithTodoIndex = currentTodoIndex;
-            let priorityChangeDirection: 'increase' | 'decrease' = 'increase';
             if (e.deltaY > 0) {
                 // Handle scroll down
                 if (currentTodoIndex < currentDtos.length - 1) {
                     swapWithTodoIndex = currentTodoIndex + 1;
-                    priorityChangeDirection = 'decrease';
                 }
             } else {
                 // Handle scroll up
@@ -60,14 +58,19 @@ const TodoMoveStatus: React.FC<TodoMoveStatusProps> = ({
             if (swapWithTodoIndex != currentTodoIndex) {
                 // Swap todos
                 const swapWithTodo = currentDtos[swapWithTodoIndex];
-                let newPriority = priorityChangeDirection === 'increase'
-                    ? swapWithTodo.leafTodo.priority + 10
-                    : swapWithTodo.leafTodo.priority - 10;
-                newPriority = Math.max(0, newPriority);
+                const swapWithTodoPriority = swapWithTodo.leafTodo.priority;
                 currentDtos[currentTodoIndex] = swapWithTodo;
                 currentDtos[swapWithTodoIndex] = currentTodo;
-                // change priority of currentTodo
-                currentTodo.leafTodo.priority = newPriority;
+                swapWithTodo.leafTodo.priority = currentTodo.leafTodo.priority;
+                currentTodo.leafTodo.priority = swapWithTodoPriority;
+                // normalize priorities from the lowest to the highest
+                for (let i = currentDtos.length - 1; i > 0; i--) {
+                    const lowerDto = currentDtos[i];
+                    const higherDto = currentDtos[i - 1];
+                    if (lowerDto.leafTodo.priority >= higherDto.leafTodo.priority) {
+                        higherDto.leafTodo.priority = lowerDto.leafTodo.priority + 10;
+                    }
+                }
                 onReorder([...currentDtos]);
             }
         }
@@ -77,10 +80,7 @@ const TodoMoveStatus: React.FC<TodoMoveStatusProps> = ({
         if (e.button === 0) {
             // if left button is clicked
             if (currentDtos.length > 0) {
-                const movedTodo = currentDtos.find(todoAndParentBranchIdDto => todoAndParentBranchIdDto.leafTodo.id === chosenId);
-                if (movedTodo) {
-                    onSave(movedTodo);
-                }
+                onSave();
             }
         } else if (e.button === 2) {
             // right button is clicked

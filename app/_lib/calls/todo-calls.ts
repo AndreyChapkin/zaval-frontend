@@ -37,6 +37,11 @@ export async function updateTodo(todoId: number, updateTodoDto: UpdateTodoDto): 
     return result.data;
 }
 
+export async function updatePriorityForAllTodos(updatePriorityTodoDto: { id: number; priority: number }[]): Promise<void> {
+    const url = `${baseTodoURL}/all/priority`;
+    await callPatch<void>(url, updatePriorityTodoDto);
+}
+
 export async function deleteTodo(todoId: number): Promise<void> {
     const url = `${baseTodoURL}/${todoId}`;
     await callDelete<void>(url);

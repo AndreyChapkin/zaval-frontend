@@ -47,9 +47,9 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onSave, onCl
             direction='column'
             alignItems='stretch'
             onClose={onClose}
-            spacing={0}
+            spacing={1}
         >
-            <FPaper lightType='d-1' direction='column' spacing={3} alignItems='stretch' className='p-2'>
+            <FPaper lightType='d-1' direction='column' spacing={3} alignItems='stretch' className='p-4'>
                 <TodoStatusSelect
                     currentStatus={editStatus}
                     onSelect={(status) => setEditStatus(status)}
@@ -113,8 +113,8 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
     }, [searchValue]);
 
     return (
-        <FLine direction='column' className='p-2' alignItems='stretch' squeezableY>
-            <FLine direction='row' className="controlPanel" alignItems='center' spacing={3}>
+        <FCol className='p-4' spacing={4} alignItems='stretch' squeezableY>
+            <FLine direction='row' className="controlPanel" alignItems='end' spacing={3}>
                 <ActionButton label="To root" onClick={toRootHandler} />
                 <StandardInput
                     className='flex1'
@@ -137,7 +137,7 @@ export const MoveTodo: React.FC<MoveTodoProps> = ({ todo, className = "" }) => {
                         }
                     </FLine>
             }
-        </FLine>
+        </FCol>
     );
 };
 
@@ -184,7 +184,13 @@ export const MoveTodoCard: React.FC<{ todo: TodoLightDto, onSelect: (todo: TodoL
     onSelect
 }) => {
     return (
-        <FPaper direction='row' className="moveTodoCard p-1" spacing={2} alignItems='center'>
+        <FPaper
+            direction='row'
+            lightType='l-1'
+            className="moveTodoCard py-1 px-2"
+            spacing={2}
+            alignItems='center'
+        >
             <div className="todoName">
                 {todo.name}
             </div>

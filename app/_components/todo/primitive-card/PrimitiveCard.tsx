@@ -14,9 +14,9 @@ interface PrimitiveCardProps {
 const PrimitiveCard: React.FC<PrimitiveCardProps> = ({ item, externalClass = '' }) => {
 
     return (
-        <FPaper className='primitiveCard px-2' direction='row' lightType='d-2' alignItems='center'>
+        <FPaper className='primitiveCard px-2' direction='row' lightType='d-2'   alignItems='center'>
             <a href={`/ui/todo/${item.id}`}>
-                <IconButton className='navigation' size='xSmall' iconUrl={SEE_ICON_URL} />
+                <IconButton className='navigation mr-1' size='xSmall' iconUrl={SEE_ICON_URL} />
             </a>
             <TodoStatusIndicator status={item.status} />
             <div className="todoName flex1">

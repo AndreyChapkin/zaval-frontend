@@ -38,6 +38,7 @@ function TodoItemPage() {
     const [isCreatChild, setIsCreateChild] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [areDoneChildrenShown, setAreDoneChildrenShown] = useState(false);
+
     const todoChildren = useMemo(() => {
         const rawChildren = (
             areDoneChildrenShown ?
@@ -47,6 +48,10 @@ function TodoItemPage() {
         // descending order
         return rawChildren.toSorted((a, b) => b.priority - a.priority);
     }, [todoFamily, areDoneChildrenShown]);
+
+    const hasDoneChildren = useMemo(() => {
+        return todoFamily?.children.some(child => child.status === "DONE") || false;
+    }, [todoFamily]);
 
     const [areChildrenShown, setAreChildrenShown] = useState(false);
 
@@ -149,10 +154,13 @@ function TodoItemPage() {
                                             >
                                                 <FRow className="controlPanel">
                                                     <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
-                                                    <ActionButton
-                                                        type="standard"
-                                                        label={areDoneChildrenShown ? "Hide done" : "Show done"}
-                                                        onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
+                                                    {
+                                                        hasDoneChildren &&
+                                                        <ActionButton
+                                                            type="standard"
+                                                            label={areDoneChildrenShown ? "Hide done" : "Show done"}
+                                                            onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
+                                                    }
                                                 </FRow>
                                                 <FCol alignItems="stretch" scrollableY>
                                                     {
@@ -168,14 +176,17 @@ function TodoItemPage() {
                                         </FRow>
                                     </>
                                     :
-                                    <FlexLine direction="column" alignItems="stretch" className="children flex1">
-                                        <FlexLine direction="row" className="controlPanel">
+                                    <FCol alignItems="stretch" spacing={2} className="children flex1">
+                                        <FRow className="controlPanel" spacing={2}>
                                             <ActionButton label="Add children" onClick={() => setIsCreateChild(true)} />
-                                            <ActionButton
-                                                type="standard"
-                                                label={areDoneChildrenShown ? "Hide done" : "Show done"}
-                                                onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
-                                        </FlexLine>
+                                            {
+                                                hasDoneChildren &&
+                                                <ActionButton
+                                                    type="standard"
+                                                    label={areDoneChildrenShown ? "Hide done" : "Show done"}
+                                                    onClick={() => setAreDoneChildrenShown(!areDoneChildrenShown)} />
+                                            }
+                                        </FRow>
                                         <FlexLine direction="column" alignItems="stretch" className="scrollableInLine">
                                             {
                                                 todoChildren.map((child) => (
@@ -183,7 +194,7 @@ function TodoItemPage() {
                                                 ))
                                             }
                                         </FlexLine>
-                                    </FlexLine>
+                                    </FCol>
                             }
                         </FlexLine>
                     </>

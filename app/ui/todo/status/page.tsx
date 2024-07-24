@@ -1,6 +1,6 @@
 'use client';
 
-import { getPrioritizedListOfTodosWithStatus, getTheMostDatedLightTodos, updateTodo } from "@/app/_lib/calls/todo-calls";
+import { getPrioritizedListOfTodosWithStatus, getTheMostDatedLightTodos, updatePriorityForAllTodos, updateTodo } from "@/app/_lib/calls/todo-calls";
 import { All_TODO_STATUSES, TodoLeafWithBranchIdDto, TodoLightDto, TodoStatus, TodosListDto } from "@/app/_lib/types/todo-types";
 import { useCallback, useEffect, useState } from "react";
 
@@ -118,14 +118,13 @@ export default function TodoStatusPage() {
                         chosenId={reorderableId}
                         currentDtos={leafTodos}
                         onReorder={(dtos) => setLeafTodos(dtos)}
-                        onSave={async (dto) => {
-                            await updateTodo(reorderableId, {
-                                general: {
-                                    priority: dto.leafTodo.priority,
-                                    name: dto.leafTodo.name,
-                                    status: dto.leafTodo.status
-                                }
-                            });
+                        onSave={async () => {
+                            await updatePriorityForAllTodos(
+                                leafTodos.map(todoAndParentBranchIdDto => ({
+                                    id: todoAndParentBranchIdDto.leafTodo.id,
+                                    priority: todoAndParentBranchIdDto.leafTodo.priority
+                                }))
+                            );
                             setReorderableId(null);
                         }}
                         onCancel={() => {
@@ -135,7 +134,7 @@ export default function TodoStatusPage() {
                 }
                 {
                     !isMobile &&
-                    <FCol className="recentTodos flex1" squeezableY>
+                    <FCol className="recentTodos flex1" alignItems="stretch" squeezableY>
                         <RecentTodosCard todos={recentTodos} />
                     </FCol>
                 }
