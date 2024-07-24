@@ -20,7 +20,7 @@ export interface CreateTodoProps {
 function CreateTodo({ parentId, onCancel: cancelHandler, onSuccess: successHandler }: CreateTodoProps) {
 
     const [name, setName] = useState('');
-    const [status, setStatus] = useState<TodoStatus>('BACKLOG');
+    const [status, setStatus] = useState<TodoStatus>('IN_PROGRESS');
     const [priority, setPriority] = useState(0);
 
     const createHandler = async () => {

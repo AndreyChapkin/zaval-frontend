@@ -1,0 +1,23 @@
+@import "app/_styles/color/variables.scss";
+@import "app/_styles/facade/mixins.scss";
+
+$normal-size: 5px;
+
+textarea.standardText {
+    @include styled-scrollbar($main-dark-1-color);
+
+    color: $main-font-color;
+    background-color: $main-dark-1-color;
+    border: 2px solid $main-light-1-color;
+    padding: 6px;
+    border-radius: $normal-size;
+    outline: none;
+    font-size: medium;
+    color: $main-font-color;
+    resize: none;
+
+    &:focus {
+        border: 2px solid $main-light-3-color;
+        background-color: $main-dark-2-color;
+    }
+}

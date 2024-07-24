@@ -35,6 +35,17 @@ function SideMenu() {
                     </a>
                 </div>
                 <div className="todoSideMenuItem">
+                    <a href={`/ui/todo/status?status=${todoStatusToUrlForm('PING_ME')}`}>
+                        <IconButton
+                            iconUrl={chooseStatusImgUrl('PING_ME')} />
+                    </a>
+                </div>
+                <div className="todoSideMenuItem">
+                    <IconButton
+                        onClick={() => { setIsRecentOpen(true) }}
+                        iconUrl={RECENT_ICON_URL} />
+                </div>
+                <div className="todoSideMenuItem">
                     <IconButton
                         onClick={() => { setIsCreateTodoOpen(true) }}
                         iconUrl={CREATE_ICON_URL} />
@@ -43,11 +54,6 @@ function SideMenu() {
                     <IconButton
                         onClick={() => { setIsSearchOpen(true) }}
                         iconUrl={SEARCH_ICON_URL} />
-                </div>
-                <div className="todoSideMenuItem">
-                    <IconButton
-                        onClick={() => { setIsRecentOpen(true) }}
-                        iconUrl={RECENT_ICON_URL} />
                 </div>
             </FCol>
             {

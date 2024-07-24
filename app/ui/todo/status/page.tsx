@@ -49,7 +49,7 @@ export default function TodoStatusPage() {
         <>
             <FRow className="pageContainer todoStatusPage" squeezableX fitChildrenY spacing={4}>
                 <FCol className="statusedTodos flex2" squeezableX fitChildrenX spacing={2}>
-                    <FRow className="statusSwitcher">
+                    <FRow className="statusSwitcher" justifyContent="center">
                         {
                             All_TODO_STATUSES.map(status => {
                                 const urlStatus = todoStatusToUrlForm(status);
@@ -57,6 +57,7 @@ export default function TodoStatusPage() {
                                     <a key={status} href={`/ui/todo/status?status=${urlStatus}`}>
                                         <IconButton
                                             className={`${chosenStatus === urlStatus ? 'chosenStatus' : ''}`}
+                                            size={chosenStatus === urlStatus ? 'large' : 'medium'}
                                             iconUrl={chooseStatusImgUrl(status)} />
                                     </a>
                                 );
