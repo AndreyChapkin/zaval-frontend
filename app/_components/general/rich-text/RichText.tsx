@@ -77,6 +77,8 @@ function convertSimpleTextToRichElements(text: string): RichElement[] {
                     type: "text",
                     startIndex: i + 1,
                 };
+            } else if (creatingElementDescription.type === "text") {
+                continue;
             } else {
                 // convert fallback text to the next text fragment
                 creatingElementDescription = {
