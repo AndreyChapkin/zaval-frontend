@@ -135,6 +135,7 @@ function TodoItemPage() {
                                                     setDescription(value);
                                                     setIsEditDescription(false);
                                                 }}
+                                                onCancel={() => setIsEditDescription(false)}
                                             />
                                             :
                                             <>
